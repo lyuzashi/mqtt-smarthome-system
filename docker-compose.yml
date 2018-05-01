@@ -25,3 +25,4 @@ services:
     environment:
       SERVER_ENABLE_DBUS: 'no'
       WIDE_AREA_ENABLE_WIDE_AREA: 'yes'
+      SERVER_HOST_NAME: HAL9000
