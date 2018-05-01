@@ -1,13 +1,12 @@
-version: "3"
+version: '2.0'
 services:
   bus:
     image: eclipse-mosquitto
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    network_mode: host
     expose:
       - 1883
-    networks:
-      - bus
   interfaces:
     image: keymetrics/pm2:latest-alpine
     working_dir: /home/node/app
@@ -15,13 +14,14 @@ services:
       - ./interfaces:/home/node/app
     command: /bin/ash -c 'yarn install; pm2-runtime start main.config.js'
     tmpfs: /home/node/app/node_modules/
-    networks:
-      - bus
-      - interfaces
-
-networks:
-  bus:
-  interfaces:
-  logic:
-  visualizations:
-
+    network_mode: host
+  advertise:
+    image: flungo/avahi
+    volumes:
+      - ./services:/etc/avahi/services
+    network_mode: host
+    expose:
+      - 5353
+    environment:
+      SERVER_ENABLE_DBUS: 'no'
+      WIDE_AREA_ENABLE_WIDE_AREA: 'yes'
