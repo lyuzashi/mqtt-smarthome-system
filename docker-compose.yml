@@ -1,5 +1,16 @@
 version: '2.0'
 services:
+  github:
+    image: eduwass/docker-git-webhook
+    volumes:
+      - ./custom_scripts:/custom_scripts
+      - .:/code
+    expose:
+      - 8555
+    environment:
+      GIT_HOOK_TOKEN:
+      AFTER_PULL_COMMANDS: git submodule update --init
+      GIT_REPO: git@github.com:lyuzashi/mqtt-smarthome-system.git
   bus:
     image: eclipse-mosquitto
     volumes:
