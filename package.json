@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "bonjour": "^3.5.0",
+    "mosca": "^2.8.2"
+  }
+}

@@ -23,7 +23,7 @@ services:
     working_dir: /home/node/app
     volumes:
       - ./interfaces:/home/node/app
-      # ./data/interfaces/hue:/home/<username>/.hue2mqtt
+      - ./data/interfaces/hue2mqtt:/root/.hue2mqtt
     command: /bin/ash -c 'yarn install; pm2-runtime start main.config.js'
     tmpfs: /home/node/app/node_modules/
     network_mode: host
