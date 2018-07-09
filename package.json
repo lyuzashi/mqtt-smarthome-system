@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "bonjour": "^3.5.0",
+    "hap-nodejs": "^0.4.47",
+    "homebridge-hue": "^0.9.8",
     "mosca": "^2.8.2"
   }
 }
