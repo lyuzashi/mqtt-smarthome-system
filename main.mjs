@@ -1,3 +1,1 @@
-import mDNS from './system/mdns';
-
-console.log(mDNS);
+import './system/mqtt';

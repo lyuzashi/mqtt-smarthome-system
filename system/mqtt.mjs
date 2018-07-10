@@ -1,7 +1,8 @@
-var mosca = require('mosca');
+import Mosca from 'mosca';
+import mDNS from './mdns';
 
-var server = new mosca.Server({
-  interfaces: [ ] //  list of network interfaces with necessary options. - IP and socket?
+const server = new Mosca.Server({
+  // interfaces: [ ] //  list of network interfaces with necessary options. - IP and socket?
   // Other interfaces can connect directly to socket, exposed on tcp port for Tasmota etc.
 });
 
@@ -29,9 +30,15 @@ server.on('published', function(packet, client) {
 
 server.on('ready', setup);
 
-server.on('closed', () => { }); // destroy mdns?
-
 // fired when the mqtt server is ready
-function setup() {
+function setup(s) {
   console.log('Mosca server is up and running');
+  console.log(s);
+   // advertise an HTTP server on port 3000
+  const service = mDNS.publish({ name: 'My Web Server', type: 'mqtt', port: 1883 });
+  server.on('closed', () => {
+    console.log('closed');
+    // Register this for mqtt termination
+    service.stop();
+  }); 
 }
