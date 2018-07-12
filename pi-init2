@@ -18,3 +18,4 @@ sudo apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev 
 sudo rpi-update
 reboot
 
+sudo npm install -g pm2
