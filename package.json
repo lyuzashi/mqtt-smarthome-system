@@ -1,8 +1,9 @@
 {
   "dependencies": {
+    "@octokit/rest": "^15.9.4",
     "bonjour": "^3.5.0",
     "hap-nodejs": "^0.4.47",
     "homebridge-hue": "^0.9.8",
-    "mosca": "^2.8.2"
+    "mosca": "^2.8.3"
   }
 }
