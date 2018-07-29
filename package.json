@@ -4,6 +4,11 @@
     "bonjour": "^3.5.0",
     "hap-nodejs": "^0.4.47",
     "homebridge-hue": "^0.9.8",
-    "mosca": "^2.8.3"
+    "mosca": "^2.8.3",
+    "nat-upnp": "^1.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lyuzashi/mqtt-smarthome-system.git"
   }
 }

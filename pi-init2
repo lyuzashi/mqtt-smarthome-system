@@ -22,6 +22,7 @@ sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
 # Setup user and global modules directory
 USERNAME=hal
 sudo useradd -m $USERNAME
+sudo usermod -s /bin/bash hal
 NEWHOME=$(eval echo ~$USERNAME)
 mkdir "${NEWHOME}/.npm-packages"
 echo 'NPM_PACKAGES="${HOME}/.npm-packages"
@@ -29,14 +30,23 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 PATH="$NPM_PACKAGES/bin:$PATH"
 unset MANPATH
 MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
-' | sudo tee -a $NEWHOME/.bashrc > /dev/null
+' | sudo tee -a $NEWHOME/.profile > /dev/null
 echo 'prefix=${HOME}/.npm-packages' | sudo tee -a $NEWHOME/.npmrc > /dev/null
 sudo chown hal:hal $NEWHOME/.npmrc
 
+sudo su - hal -c "npm install -g forever"
+sudo su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
+sudo su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 
-npm install -g forever
+FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
+FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
+sudo $FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " --watchDirectory $NEWHOME/mqtt-smarthome-system -c 'node --experimental-modules'" 
 
-forever start -c "node --experimental-modules" main.mjs 
+# --runAsUser $USERNAME # does not work; adds login prompt warning to variables in service script
+
+sudo service mqtt-smarthome-system start
+
+# sudo su - hal -c "forever start -c 'node --experimental-modules' main.mjs"
 
 # Modules for node won't be available until reboot. Can they be installed though?
 sudo rpi-update
