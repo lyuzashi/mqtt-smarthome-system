@@ -1,6 +1,7 @@
 import natUpnp from 'nat-upnp';
-import crypto from 'crypto';
+import { randomBytes } from 'crypto';
 import { promisify } from 'util';
+import shutdown from './shutdown';
 import { repo as descriptionPrefix } from './git/repository';
  
 const portRange = ((start = 29170, end = 29998) =>
@@ -8,11 +9,13 @@ const portRange = ((start = 29170, end = 29998) =>
 
 const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.length), 1)[0];
 
-const randomId = () => crypto.randomBytes(16).toString('hex');
+const randomId = () => randomBytes(16).toString('hex');
 
 const mappedPorts = new Map();
 
 export const client = natUpnp.createClient();
+
+shutdown.on('exit', client.close.bind(client));
 
 export const getIpAddress = promisify(client.externalIp.bind(client));
 
@@ -46,7 +49,11 @@ const mapPort = (port = randomPort()) => portMapping({
 
 // export const tidyPorts = () => 
 
-export default Promise.all([ getIpAddress, getPort ]).then(([ip, port]) => ({ ip, port }));
+// mapPort().then(console.log, console.warn);
+
+// getAllMappings().then(console.log);
+
+// export default Promise.all([ getIpAddress, getPort ]).then(([ip, port]) => ({ ip, port }));
  
 // client.portMapping({
 //   public: 12345,
