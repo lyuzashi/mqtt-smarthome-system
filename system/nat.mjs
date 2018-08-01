@@ -21,19 +21,32 @@ export const getIpAddress = promisify(client.externalIp.bind(client));
 
 const getAllMappings = promisify(client.getMappings.bind(client, { local: true }));
 
-export const getMappings = () =>
+export const getMappings = ({ port: searchPort, description: searchDescription } = {}) =>
   getAllMappings().then(mappings =>
-    mappings.filter(({ description }) =>
-      description.startsWith(descriptionPrefix)));
+    mappings.filter(({ description, public: { port } }) =>
+      description.startsWith(descriptionPrefix) &&
+      (searchPort ? port === searchPort : true) &&
+      (searchDescription ? description === searchDescription : true)
+    ));
 
 const portMapping = promisify(client.portMapping.bind(client));
 
-const mapPort = (port = randomPort()) => portMapping({
-  public: port,
-  private: port,
-  ttl: 60,
-  description: `${descriptionPrefix} ${randomId()}`
-});
+const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${randomId()}`) =>
+  portMapping({
+    public: port,
+    private: port,
+    ttl: 60, // After this period the rule will be deleted, even if client is still open. Requires a keepalive interval
+    description,
+  })
+  .then(() => getMappings({ port, description }))
+  .then(([successfulMapping]) => successfulMapping || Promise.reject(`Did not map ${description} to ${port}`))
+  // The following should be placed in a wrapper which handles retried and keep alive
+  .catch(() => {
+    // Perform some kind of retry with another port
+  })
+  .then(({ ttl } => {
+    // set interval for keep alive
+  })
 // Then check the same description exists
 
 // export const getPort = 
@@ -49,11 +62,12 @@ const mapPort = (port = randomPort()) => portMapping({
 
 // export const tidyPorts = () => 
 
-// mapPort().then(console.log, console.warn);
+mapPort().then(console.log).catch(console.warn);
 
 // getAllMappings().then(console.log);
 
 // export default Promise.all([ getIpAddress, getPort ]).then(([ip, port]) => ({ ip, port }));
+// What about when port changes or IP changes? Has to trigger a re-bind somehow
  
 // client.portMapping({
 //   public: 12345,
