@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@octokit/rest": "^15.9.4",
+    "@octokit/webhooks": "^4.0.0",
     "bonjour": "^3.5.0",
     "hap-nodejs": "^0.4.47",
     "homebridge-hue": "^0.9.8",

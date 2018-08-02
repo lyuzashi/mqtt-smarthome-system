@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 const emitter = new EventEmitter();
 
 const exitHandler = (options, err) => {
+  // Is there a way to get functions called on emit and wait for promises before exiting?
   if (options.cleanup) emitter.emit('exit');
   if (err) console.log(err.stack);
   if (options.exit) process.exit();
