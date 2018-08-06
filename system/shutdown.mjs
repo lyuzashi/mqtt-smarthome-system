@@ -1,24 +1,50 @@
-import EventEmitter from 'events';
+import EventEmitter from './common/promise-events';
+import asyncHooks from 'async_hooks';
+
 const emitter = new EventEmitter();
 
-const exitHandler = (options, err) => {
+export const ignoredHandles = new Set([
+  process.stdin,
+  process.stdout,
+  process.stderr
+])
+
+const removeHook = () => {
+  if (!process._getActiveHandles().filter(handle => !ignoredHandles.has(handle)).length) {
+    asyncHook.disable();
+    exitHandler();
+  }
+};
+
+const asyncHook = asyncHooks.createHook({
+  after: removeHook,
+  destroy: removeHook,
+  promiseResolve: removeHook,
+}).enable();
+
+export const exitHandler = (error, exit = true) => {
   // Is there a way to get functions called on emit and wait for promises before exiting?
-  if (options.cleanup) emitter.emit('exit');
-  if (err) console.log(err.stack);
-  if (options.exit) process.exit();
+  console.log('exit?')
+  const cleanup = emitter.emit('exit');
+  console.log(cleanup)
+  if (error) console.log(error.stack);
+  if (exit) cleanup.then(process.exit);
 }
 
 //do something when app is closing
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
+process.on('beforeExit', exitHandle.bind(null, null, false));
 
 //catches ctrl+c event
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+process.on('SIGINT', exitHandler);
 
 // catches "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
-process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
 
 //catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+process.on('uncaughtException', exitHandler);
+
+
+emitter.on('exit', () => { console.log('exiting'); setTimeout(() => console.log('done'), 2000)});
 
 export default emitter;
