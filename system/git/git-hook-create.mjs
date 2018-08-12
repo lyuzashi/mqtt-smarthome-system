@@ -21,11 +21,11 @@ import shutdown from '../shutdown';
   const { data: hooks } = await octokit.repos.getHooks({ owner, repo });
   const existingHook = hooks.find(({config: { url: existingUrl }}) => url === existingUrl);
 
-  console.log('current hooks', hooks);
+  if (existingHook) return;
 
   await listen;
 
-  const result = await octokit.repos.createHook({
+  const { data: { id: hook_id } } = await octokit.repos.createHook({
     owner,
     repo,
     name: 'web',
@@ -37,12 +37,6 @@ import shutdown from '../shutdown';
       events: ['push'],
     }
   });
-
-  // Delete on shutdown (definitely requires promise handling)
-
-  console.log('results', result);
-
-  const { id: hook_id } = result;
 
   shutdown.on('exit', () => 
     octokit.repos.deleteHook({

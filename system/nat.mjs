@@ -9,9 +9,7 @@ const portRange = ((start = 29170, end = 29998) =>
 const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.length), 1)[0];
 
 export const client = natUpnp.createClient();
-
 client.ssdp.sockets.forEach(ignore);
-shutdown.on('exit', client.close.bind(client));
 
 const externalIp = promisify(client.externalIp.bind(client));
 const getMappings = promisify(client.getMappings.bind(client, { local: true }));
@@ -31,7 +29,7 @@ const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${rand
     public: port,
     private: port,
     description,
-    ttl: 60,
+    ttl: 300,
   })
   .then(() => getPrefixedMappings({ port, description }))
   .then(([successfulMapping]) => successfulMapping || Promise.reject(`Did not map ${description} to ${port}`))
@@ -41,9 +39,10 @@ const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${rand
       shutdown.off('exit', tidy);
       mapPort(port, description);
     }, (ttl - 5) * 1000);
-    tidy = () => {
+    tidy = async () => {
       clearTimeout(relive);
-      return portUnmapping({ public: port });
+      await portUnmapping({ public: port });
+      client.close();
     };
     shutdown.on('exit', tidy);
     return port;

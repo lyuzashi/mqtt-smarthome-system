@@ -14,7 +14,13 @@ const exitHandler = ((error, exit = true) => {
     asyncHook.disable();
     const cleanup = emitter.emit('exit') || Promise.resolve();
     if (error) console.log(error.stack);
-    if (exit) cleanup.then(process.exit);
+    if (exit) {
+      cleanup.then(process.exit)
+      .catch(errors => {
+        console.log(errors);
+        process.exit();
+      })
+    }
   }
 })();
 
