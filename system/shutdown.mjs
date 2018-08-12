@@ -23,6 +23,7 @@ export const ignore = resource => {
     .find(symbol => symbol.toString() === 'Symbol(asyncId)');
   const asyncId = resource[asyncIdSymbol];
   ignoredHandles.add(asyncId);
+  return resource;
 }
 
 const asyncHook = asyncHooks.createHook({

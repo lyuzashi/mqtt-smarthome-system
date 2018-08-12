@@ -6,6 +6,7 @@ import keys from '../../config/keys';
 import secret from './git-hook-secret';
 import listen from './git-hook-listen';
 import nat from '../nat';
+import shutdown from '../shutdown';
 
 (async () => {
 
@@ -40,5 +41,15 @@ import nat from '../nat';
   // Delete on shutdown (definitely requires promise handling)
 
   console.log('results', result);
+
+  const { id: hook_id } = result;
+
+  shutdown.on('exit', () => 
+    octokit.repos.deleteHook({
+      owner,
+      repo,
+      hook_id,
+    })
+  );
 
 })();

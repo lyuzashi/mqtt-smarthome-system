@@ -1,7 +1,7 @@
 import natUpnp from 'nat-upnp';
 import { promisify } from 'util';
 import randomId from './common/random-id';
-import shutdown from './shutdown';
+import shutdown, { ignore } from './shutdown';
 import { repo as descriptionPrefix } from './git/repository';
  
 const portRange = ((start = 29170, end = 29998) =>
@@ -10,6 +10,7 @@ const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.l
 
 export const client = natUpnp.createClient();
 
+client.ssdp.sockets.forEach(ignore);
 shutdown.on('exit', client.close.bind(client));
 
 const externalIp = promisify(client.externalIp.bind(client));
@@ -48,5 +49,5 @@ const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${rand
     return port;
   })
 
-export default Promise.all([ externalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }));
+export default Promise.all([ externalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
 // What about when port changes or IP changes? Has to trigger a re-bind somehow
