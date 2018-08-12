@@ -2,11 +2,19 @@ import Hook from '@octokit/webhooks';
 import http from 'http';
 import secret from './git-hook-secret';
 import nat from '../nat';
+import update from './git-update';
+import { now } from '../shutdown';
+import { owner } from './repository';
 
 export const hook = new Hook({ secret });
 
-hook.on('push', ({id, name, payload}) => {
-  console.log(name, 'event received', id, payload);
+hook.on('push', async ({ payload }) => {
+  const { ref, pusher: { name }, repository: { master_branch } } = payload;
+  if (name === owner) {
+    console.log('Updating system');
+    await update(ref);
+    now();
+  }
 })
 
 export default (async () => {

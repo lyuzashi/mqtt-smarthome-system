@@ -68,3 +68,4 @@ process.on('SIGUSR2', exitHandler);
 process.on('uncaughtException', exitHandler);
 
 export default emitter;
+export { exitHandler as now };
