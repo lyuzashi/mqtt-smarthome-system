@@ -12,7 +12,7 @@ hook.on('push', async ({ payload }) => {
   const { ref, pusher: { name }, repository: { master_branch } } = payload;
   if (name === owner) {
     console.log('Updating system');
-    await update(master_branch);
+    await update();
     now();
   }
 })
