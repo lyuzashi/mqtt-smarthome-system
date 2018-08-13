@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node --experimental-modules main.mjs"
+  },
   "dependencies": {
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",

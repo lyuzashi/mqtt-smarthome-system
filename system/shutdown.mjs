@@ -6,9 +6,9 @@ const emitter = new EventEmitter();
 const hooks = new Map();
 const ignoredHandles = new Set();
 
-const exitHandler = ((error, exit = true) => {
+const exitHandler = (() => {
   let handled = false;
-  return () => {
+  return (error, exit = true) => {
     if (handled) return;
     handled = true;
     asyncHook.disable();
