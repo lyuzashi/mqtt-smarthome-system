@@ -9,6 +9,7 @@ const portRange = ((start = 29170, end = 29998) =>
 const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.length), 1)[0];
 
 export const client = natUpnp.createClient();
+client.timeout = 10000;
 client.ssdp.sockets.forEach(ignore);
 
 const externalIp = promisify(client.externalIp.bind(client));
