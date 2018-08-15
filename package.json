@@ -10,7 +10,9 @@
     "homebridge-hue": "^0.9.8",
     "mosca": "^2.8.3",
     "nat-upnp": "^1.1.1",
-    "simple-git": "^1.96.0"
+    "simple-git": "^1.96.0",
+    "yamljs": "^0.3.0",
+    "midi": "^0.9.5"
   },
   "repository": {
     "type": "git",
