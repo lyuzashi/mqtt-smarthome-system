@@ -8,11 +8,12 @@
     "bonjour": "^3.5.0",
     "hap-nodejs": "^0.4.47",
     "homebridge-hue": "^0.9.8",
+    "midi": "^0.9.5",
     "mosca": "^2.8.3",
+    "nan": "^2.10.0",
     "nat-upnp": "^1.1.1",
     "simple-git": "^1.96.0",
-    "yamljs": "^0.3.0",
-    "midi": "^0.9.5"
+    "yamljs": "^0.3.0"
   },
   "repository": {
     "type": "git",
