@@ -22,16 +22,20 @@ let bank = undefined;
 const status = Object.keys(config.status).reduce((status, type) =>
   Object.assign(status, { [config.status[type].status]: { ...config.status[type], type } }), {});
 
+const banks = Object.keys(config.banks).reduce((banks, number) =>
+  Object.assign(banks, { [config.banks[bank].value]: config.banks[bank] }), {});
+
 input.on('message', (deltaTime, [statusNumber, ...data]) => {
   const { dataValue, id, type } = status[statusNumber];
   const value = data[dataValue];
   const key = data[id];
   switch(type) {
     case 'bank':
-      bank = value;
+      bank = banks[value];
       console.log('Now on bank', bank);
     break;
     case 'note':
+      
       console.log('hit note', key, value);
     break;
   }
