@@ -1,8 +1,10 @@
 import midi from 'midi';
+import path from 'path';
 import YAML from 'yamljs';
+import root from '../root';
 import shutdown from '../system/shutdown';
 
-const config = YAML.load('./config/midi.yml');
+const config = YAML.load(path.resolve(root, 'config/midi.yml'));
 
 export const input = new midi.input();
 
