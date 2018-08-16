@@ -40,7 +40,8 @@ sudo su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
 FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
-sudo $FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " --watchDirectory $NEWHOME/mqtt-smarthome-system -c 'node --experimental-modules'" 
+cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
+sudo $FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " -c 'node --experimental-modules'" 
 
 # --runAsUser $USERNAME # does not work; adds login prompt warning to variables in service script
 
