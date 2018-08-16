@@ -22,8 +22,8 @@ let bank = undefined;
 const status = Object.keys(config.status).reduce((status, type) =>
   Object.assign(status, { [config.status[type].status]: { ...config.status[type], type } }), {});
 
-const banks = Object.keys(config.banks).reduce((banks, number) =>
-  Object.assign(banks, { [config.banks[bank].value]: config.banks[bank] }), {});
+const banks = Object.keys(config.banks).reduce((banks, index) =>
+  Object.assign(banks, { [config.banks[index].value]: config.banks[index] }), {});
 
 input.on('message', (deltaTime, [statusNumber, ...data]) => {
   const { dataValue, id, type } = status[statusNumber];
