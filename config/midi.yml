@@ -11,13 +11,13 @@ status:
 keys:
   - name: Slider 1
     type: slider
-    value: 5
-  - name: Button 1
-    type: button
     value: 3
-  - name: Button 2
-    type: button
+  - name: Slider 2
+    type: slider
     value: 4
+  - name: Slider 3
+    type: slider
+    value: 5
 banks:
   - value: 0
     name: Lighting
@@ -30,11 +30,11 @@ banks:
         modifier:
           name: Button 1
           value: 125
-      - key: Button 1
+      - key: Slider 2
         map:
           from: [0, 125]
           to: [0, 1]
-      - key: Button 2
+      - key: Slider 3
         map:
           from: 125
           to: 2 # toggle

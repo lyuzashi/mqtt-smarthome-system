@@ -28,3 +28,5 @@ server.on('ready', () => {
     server.close();
   })
 });
+
+export default server;
