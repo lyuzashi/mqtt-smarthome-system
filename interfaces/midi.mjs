@@ -55,7 +55,7 @@ input.on('message', (deltaTime, [statusNumber, ...data]) => {
       if(note.topic) {
         mqtt.publish({
           topic: note.topic,
-          payload: value,
+          payload: String(value),
           qos: 0, // 0, 1, or 2
           retain: false // or true
         });
