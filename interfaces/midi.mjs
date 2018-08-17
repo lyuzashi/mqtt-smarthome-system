@@ -15,7 +15,7 @@ shutdown.on('exit', input.closePort.bind(input));
 const port = [...Array(input.getPortCount()).keys()].map(port =>input.getPortName(port))
   .findIndex(name => name.includes(config.controller));
 
-input.openPort(port);
+// if(port) input.openPort(port);
 
 let bank = undefined;
 
@@ -23,7 +23,23 @@ const status = Object.keys(config.status).reduce((status, type) =>
   Object.assign(status, { [config.status[type].status]: { ...config.status[type], type } }), {});
 
 const banks = Object.keys(config.banks).reduce((banks, index) =>
-  Object.assign(banks, { [config.banks[index].value]: config.banks[index] }), {});
+  Object.assign(banks, {
+    [config.banks[index].value]: {
+      ...config.banks[index],
+      notes: Object.keys(config.banks[index].notes).reduce((notes, index) => 
+        Object.assign(notes), {
+          [config.keys.find(key => key.name === config.banks[index].notes[index].key).value]: {
+            ...config.keys.find(key => key.name === config.banks[index].notes[index].key),
+            ...config.banks[index].notes[index],
+          }
+        }),
+    }
+  }), {});
+
+const keys = Object.keys(config.keys).reduce((keys, index) =>
+  Object.assign(keys, { [config.keys[index].value]: config.keys[index] }), {});
+
+console.log(banks);
 
 input.on('message', (deltaTime, [statusNumber, ...data]) => {
   const { dataValue, id, type } = status[statusNumber];
