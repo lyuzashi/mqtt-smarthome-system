@@ -49,14 +49,17 @@ input.on('message', (deltaTime, [statusNumber, ...data]) => {
       bank = banks[value];
     break;
     case 'note':
+      if (!bank) return;
       const note = bank.notes[key];
       if (!note) return console.log('hit undefined note', key, value, data);
-      mqtt.publish({
-        topic: note.topic,
-        payload: value,
-        qos: 0, // 0, 1, or 2
-        retain: false // or true
-      });
+      if(note.topic) {
+        mqtt.publish({
+          topic: note.topic,
+          payload: value,
+          qos: 0, // 0, 1, or 2
+          retain: false // or true
+        });
+      }
     break;
   }
 });

@@ -38,4 +38,4 @@ banks:
         map:
           from: 125
           to: 2 # toggle
-        topic: kitchen-lights/set/power2
+        topic: kitchen-lights/set/power1

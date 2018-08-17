@@ -7,14 +7,14 @@ server.servers.forEach(ignore);
 ignore(server.logger.stream);
 // There is also a socket and maybe a timer that is keeping the app alive
 
-server.on('clientConnected', function(client) {
-    console.log('client connected', client.id);
-});
+// server.on('clientConnected', function(client) {
+//     console.log('client connected', client.id);
+// });
 
 // fired when a message is received
-server.on('published', function(packet, client) {
-  console.log('Published', packet.payload);
-});
+// server.on('published', function(packet, client) {
+//   console.log('Published', packet.payload);
+// });
 
 server.on('ready', () => {
   console.log('Mosca server is up and running');
