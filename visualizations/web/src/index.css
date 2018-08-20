@@ -5,8 +5,9 @@ body {
   min-height: 100%;
   background-color: black;
   background-size: contain;
-  background-image: radial-gradient(circle at top right, rgb(0,255,0), transparent),
+  background-image: radial-gradient(circle at top right, rgb(0,200,0), transparent),
             radial-gradient(circle at top left, rgb(255,0,0), transparent),
             radial-gradient(circle at bottom left, rgb(0,0,255), transparent),
-            radial-gradient(circle at bottom right, rgb(255,255,0), transparent);;
+            radial-gradient(circle at bottom right, rgb(255,255,0), transparent);
+  background-blend-mode: hard-light;
 }
