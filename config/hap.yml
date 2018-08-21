@@ -1,0 +1,19 @@
+wall-e-lights:
+  name: Wall-E
+  manufacturer: RobotJamie
+  model: 1
+  serial: 000001
+  identify: kitchen-lights/set/power1 # Causes get topic to be sent
+  services:
+    - service: Lightbulb
+      characteristics:
+        On:
+          set:
+            topic: kitchen-lights/set/power1
+            map: 
+              true: ON
+              false: OFF
+          # get:
+          #   topic: kitchen-lights/status/POWER1
+          #   map: [[ON, true], [OFF, false]]
+
