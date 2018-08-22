@@ -1,6 +1,18 @@
-# No password set for sudo
-sudo apt update
-sudo apt full-upgrade -y
+#!/bin/bash
+
+# Remove this file if you want to re-run the setup
+#
+if [ -f /boot/pi-install.done ] ; then
+	exit 0
+fi
+
+
+mv -f /boot/cmdline.original.txt /boot/cmdline.txt
+
+export DEBIAN_FRONTEND=noninteractive
+
+apt update
+apt full-upgrade -y
 
 # Install node (finding latest version for major in .nvmrc, using correct arch version)
 SOURCE="https://nodejs.org/dist/latest"
@@ -10,19 +22,19 @@ NODE="$(curl -sL $SOURCE-v$MAJOR.x | grep arm$ARM.tar.xz | cut -d'"' -f2)"
 wget -O node.tar.xz $SOURCE/$NODE
 tar -xf node.tar.xz
 chmod -R 755 node*/bin/*
-sudo cp -r node*/{bin,lib,share} /usr/local
+cp -r node*/{bin,lib,share} /usr/local
 rm -r node*
 
 # Install binary deps 
-sudo apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
 
 # Provide BTL permissions to node binary
-sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+setcap cap_net_raw+eip $(eval readlink -f `which node`)
 
 # Setup user and global modules directory
 USERNAME=hal
-sudo useradd -m $USERNAME
-sudo usermod -s /bin/bash hal
+useradd -m $USERNAME
+usermod -s /bin/bash hal
 NEWHOME=$(eval echo ~$USERNAME)
 mkdir "${NEWHOME}/.npm-packages"
 echo 'NPM_PACKAGES="${HOME}/.npm-packages"
@@ -30,25 +42,25 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 PATH="$NPM_PACKAGES/bin:$PATH"
 unset MANPATH
 MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
-' | sudo tee -a $NEWHOME/.profile > /dev/null
-echo 'prefix=${HOME}/.npm-packages' | sudo tee -a $NEWHOME/.npmrc > /dev/null
-sudo chown hal:hal $NEWHOME/.npmrc
+' | tee -a $NEWHOME/.profile > /dev/null
+echo 'prefix=${HOME}/.npm-packages' | tee -a $NEWHOME/.npmrc > /dev/null
+chown hal:hal $NEWHOME/.npmrc
 
-sudo su - hal -c "npm install -g forever"
-sudo su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
-sudo su - hal -c "cd ~/mqtt-smarthome-system; npm install"
+su - hal -c "npm install -g forever"
+su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
+su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
 FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
 cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
-sudo $FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " -c 'node --experimental-modules'" 
+$FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " -c 'node --experimental-modules'" 
 
-# --runAsUser $USERNAME # does not work; adds login prompt warning to variables in service script
+service mqtt-smarthome-system start
 
-sudo service mqtt-smarthome-system start
-
-# sudo su - hal -c "forever start -c 'node --experimental-modules' main.mjs"
+touch /boot/pi-install.done
 
 # Modules for node won't be available until reboot. Can they be installed though?
 sudo rpi-update
 reboot
+
+exit 0
