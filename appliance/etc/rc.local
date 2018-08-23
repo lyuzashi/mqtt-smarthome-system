@@ -3,20 +3,33 @@
 # Remove this file if you want to re-run the setup
 #
 if [ -f /boot/pi-install.done ] ; then
-	exit 0
+  exit 0
 fi
 
-
-mv -f /boot/cmdline.original.txt /boot/cmdline.txt
+if [ -f /boot/cmdline.original.txt ] ; then
+  mv -f /boot/cmdline.original.txt /boot/cmdline.txt
+fi
 
 export DEBIAN_FRONTEND=noninteractive
 
 apt update
 apt full-upgrade -y
 
+# Install binary deps 
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
+
+# Setup user
+USERNAME=hal
+useradd -m $USERNAME
+usermod -s /bin/bash hal
+NEWHOME=$(eval echo ~$USERNAME)
+
+# Download current codebase
+su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
+
 # Install node (finding latest version for major in .nvmrc, using correct arch version)
 SOURCE="https://nodejs.org/dist/latest"
-MAJOR="$(sed -En 's/[^0-9]*([0-9]+).*/\1/p' .nvmrc)"
+MAJOR="$(sed -En 's/[^0-9]*([0-9]+).*/\1/p' $NEWHOME/mqtt-smarthome-system/.nvmrc)"
 ARM="$(sed -n 's/model name.*(\(\S*\)).*$/\1/p' /proc/cpuinfo)"
 NODE="$(curl -sL $SOURCE-v$MAJOR.x | grep arm$ARM.tar.xz | cut -d'"' -f2)"
 wget -O node.tar.xz $SOURCE/$NODE
@@ -25,17 +38,10 @@ chmod -R 755 node*/bin/*
 cp -r node*/{bin,lib,share} /usr/local
 rm -r node*
 
-# Install binary deps 
-apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
-
 # Provide BTL permissions to node binary
 setcap cap_net_raw+eip $(eval readlink -f `which node`)
 
-# Setup user and global modules directory
-USERNAME=hal
-useradd -m $USERNAME
-usermod -s /bin/bash hal
-NEWHOME=$(eval echo ~$USERNAME)
+# Setup global modules directory
 mkdir "${NEWHOME}/.npm-packages"
 echo 'NPM_PACKAGES="${HOME}/.npm-packages"
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
@@ -46,10 +52,11 @@ MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 echo 'prefix=${HOME}/.npm-packages' | tee -a $NEWHOME/.npmrc > /dev/null
 chown hal:hal $NEWHOME/.npmrc
 
-su - hal -c "npm install -g forever"
-su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
+# Install service manager
+su - hal -c "npm install -g forever forever-service"
 su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 
+# Setup service
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
 FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
 cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
