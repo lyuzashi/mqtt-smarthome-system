@@ -60,9 +60,10 @@ su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
 FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
 cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
-$FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions " -c 'node --experimental-modules'" 
+$FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --foreverOptions " -c '$NEWHOME/mqtt-smarthome-system/start.sh'" 
 
-service mqtt-smarthome-system start
+# Don't start automatically... should start on boot
+# service mqtt-smarthome-system start
 
 touch /boot/pi-install.done
 
