@@ -2,13 +2,14 @@ import storage from 'node-persist';
 import hap from 'hap-nodejs';
 import YAML from 'yamljs';
 import path from 'path';
+import Mapper from '../system/common/mapper';
 import root from '../root';
 import mqtt from '../system/mqtt';
 import shutdown from '../system/shutdown';
 
 const config = YAML.load(path.resolve(root, 'config/hap.yml'));
 const { uuid, Bridge, Accessory, Service, Characteristic } = hap;
-const subscriptions = new Map();
+const subscriptions = new Mapper();
 
 storage.initSync(); // forced to use this by node-hap... how can it be hacked
 // to use web dav fs or similar?

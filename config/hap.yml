@@ -16,5 +16,7 @@ wall-e-lights:
           get:
             topic: kitchen-lights/status/POWER1
             request: kitchen-lights/set/power1
-            map: [[ON, true], [OFF, false]]
+            map: 
+              ON: true
+              OFF: false
 
