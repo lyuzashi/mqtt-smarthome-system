@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /home/hal/mqtt-smarthome-system
-git pull
-npm install
-node --experimental-modules main.mjs
+su - hal -c "cd /home/hal/mqtt-smarthome-system && \
+git pull && \
+yarn && \
+node --experimental-modules main.mjs"

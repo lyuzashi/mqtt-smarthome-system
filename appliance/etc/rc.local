@@ -12,14 +12,20 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
+# Find best apt mirror
+sudo apt-get install netselect-apt -y
+sudo netselect-apt
+
 # Prepare install yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 apt-get remove cmdtest yarn -y
 apt update
 apt full-upgrade -y
 
 # Install binary deps 
 apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
-apt install --no-install-recommends yarn
+apt install --no-install-recommends yarn -y
 
 # Setup user
 USERNAME=hal
@@ -59,7 +65,6 @@ chown hal:hal $NEWHOME/.npm-packages
 
 # Install service manager
 su - hal -c "npm install -g forever forever-service"
-su - hal -c "cd ~/mqtt-smarthome-system; npm install"
 
 # Setup service
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
