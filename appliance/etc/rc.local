@@ -12,11 +12,14 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 
+# Prepare install yarn
+apt-get remove cmdtest yarn -y
 apt update
 apt full-upgrade -y
 
 # Install binary deps 
 apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
+apt install --no-install-recommends yarn
 
 # Setup user
 USERNAME=hal
