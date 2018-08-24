@@ -51,6 +51,7 @@ Object.keys(config).forEach(namespace => {
           break;
           case 'get':
             // Requires mapping
+            subscriptions.map(event.topic, event.map);
             mqtt.subscribe(event.topic, (...value) => subscriptions.set(event.topic, value));
             characteristic.on(eventName, callback => {
               if (subscriptions.has(event.topic)) return callback(subscriptions.get(event.topic));
