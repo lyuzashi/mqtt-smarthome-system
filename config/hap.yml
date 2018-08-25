@@ -3,7 +3,7 @@ wall-e-lights:
   manufacturer: RobotJamie
   model: 1
   serial: 000001
-  identify: kitchen-lights/set/power1 # Causes get topic to be sent
+  identify: kitchen-lights/set/power1
   services:
     - service: Lightbulb
       characteristics:
