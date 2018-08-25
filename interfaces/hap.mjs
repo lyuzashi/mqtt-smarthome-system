@@ -53,7 +53,7 @@ Object.keys(config).forEach(namespace => {
             subscriptions.map(event.topic, event.map);
             mqtt.subscribe(event.topic, (topic, value) => {
               subscriptions.set(event.topic, value);
-              service.updateCharacteristic(characteristic, subscriptions.get(event.topic));
+              service.updateCharacteristic(Characteristic[characteristicName], subscriptions.get(event.topic));
             });
             characteristic.on(eventName, callback => {
               if (subscriptions.has(event.topic)) {
