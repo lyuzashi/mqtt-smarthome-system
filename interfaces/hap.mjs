@@ -25,6 +25,7 @@ Object.keys(config).forEach(namespace => {
     .setCharacteristic(Characteristic.Model, device.model)
     .setCharacteristic(Characteristic.SerialNumber, device.serial);
   accessory.on('identify', (paired, callback) => {
+    console.log('idenifying', device.name);
     mqtt.publish({
       topic: device.identify,
     }, callback);
@@ -43,18 +44,20 @@ Object.keys(config).forEach(namespace => {
         switch(eventName) {
           case 'set':
             characteristic.on(eventName, (value, callback) => {
-              mqtt.publish({
-                topic: event.topic,
-                payload: event.map[value],
-              }, callback);
+              console.log('setting', device.name, value, event.map[value]);
+              mqtt.publish({ topic: event.topic, payload: event.map[value] }, callback);
             });
           break;
           case 'get':
             // Requires mapping
             subscriptions.map(event.topic, event.map);
-            mqtt.subscribe(event.topic, (...value) => subscriptions.set(event.topic, value));
+            mqtt.subscribe(event.topic, (topic, value) => subscriptions.set(event.topic, value));
             characteristic.on(eventName, callback => {
-              if (subscriptions.has(event.topic)) return callback(subscriptions.get(event.topic));
+              if (subscriptions.has(event.topic)) {
+                return callback(null, subscriptions.get(event.topic));
+              }
+              mqtt.publish({ topic: event.request });
+              return subscriptions.once(event.topic, value => callback(null, value));
               // Publish request then wait for an evented response.
               // Can the subscriptions map send "once" event for the required topic?
             })

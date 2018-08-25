@@ -1,9 +1,6 @@
-// import EventEmitter from 'events';
+import EventEmitter from 'events';
 
-// export default 
-const EventEmitter = require('events');
-module.exports = 
-class Mapper extends EventEmitter {
+export default class Mapper extends EventEmitter {
   constructor(iterable) {
     super();
     this.store = new Map(iterable);
@@ -43,8 +40,9 @@ class Mapper extends EventEmitter {
   }
 
   set(key, value) {
-    this.emit(key, this.mapped(key, value));
-    return this.store.set(key, value);
+    const stringValue = String(value);
+    this.emit(key, this.mapped(key, stringValue));
+    return this.store.set(key, stringValue);
   }
 
   values() {
