@@ -10,6 +10,9 @@ if [ -f /boot/cmdline.original.txt ] ; then
   mv -f /boot/cmdline.original.txt /boot/cmdline.txt
 fi
 
+# Set hostname
+echo "HAL9000" > /etc/hostname
+
 export DEBIAN_FRONTEND=noninteractive
 
 # Find best apt mirror
@@ -49,6 +52,8 @@ rm -r node*
 
 # Provide BTL permissions to node binary
 setcap cap_net_raw+eip $(eval readlink -f `which node`)
+# Provide audio permissions to user
+usermod -a -G audio hal
 
 # Setup global modules directory
 mkdir "${NEWHOME}/.npm-packages"
