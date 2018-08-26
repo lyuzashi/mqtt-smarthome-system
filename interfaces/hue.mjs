@@ -1,69 +1,81 @@
-import Hue from 'homebridge-hue';
-import { HueBridge } from 'homebridge-hue/lib/HueBridge';
-import hap from 'hap-nodejs';
+import hue from 'huejay';
+import truthy from 'truthy';
+import mqtt from '../system/mqtt';
+import keys, { set } from '../config/keys';
 
-/*
-var Hue = require('homebridge-hue');
-var { HueBridge } = require ('homebridge-hue/lib/HueBridge');
-var hap = require('hap-nodejs');
-*/
-
-const options = {
-  "platform": "Hue",
-  "name": "Hue",
-  "sensors": true,
-  "philipsLights": true,
-  "lights": true,
-  "ct": true,
-  "rooms": false,
-  "groups": false,
-  "schedules": false,
-  "rules": false,
-  "heartrate": 2,
-  "nativeHomeKit": false,
-  "users": {
-
-  }
+const characteristics = {
+  on: {
+    map: truthy,
+    fix(light, lights) {
+      switch(light.manufacturer) {
+        case 'OSRAM':
+          if (light.on === false) {
+            lights.save(light);
+            light.transitionTime = 0;
+          }
+          console.log(light);
+        break;
+      }
+    }
+  }, // truthy or falsy
+  // TODO bound by range to allow out of bound maxing out
+  brightness: { map: Number }, // 0-254
+  hue: { map: Number }, // 0-65535
+  saturation: { map: Number }, // 0-254
+  colorTemp: { map: Number }, // 153-500
+  transitionTime: { map: Number }, // 0-5s
 };
 
-const logger = {
-  debug() {},
-  info() {},
-  warn() {},
-  error() {},
-  log() {},
-}
+(async () => {
+  const { 'hue-username': username, 'hue-ip': lastKnownIP } = await keys;
+  // Ping stored IP address if there is one, failing either case discover first bridge on network
+  const host = (lastKnownIP && await new hue.Client({ host: lastKnownIP })
+    .bridge.ping().catch(() => false) && lastKnownIP) || ((await hue.discover())[0].ip);
+  await set('hue-ip', host);
 
-export const platform = new Promise((resolve, reject) => {
-  const homebridge = {
-    hap,
-    user: {
-      storagePath() { return path.resolve('.') }
-    },
-    registerPlatform(id, name, platform) {
-      resolve(new platform(logger, options, homebridge));
-    }
+  const client = new hue.Client({ username, host });
+
+  // Test authentication and create user if it fails
+  try {
+    await client.bridge.isAuthenticated();
+  } catch {
+    mqtt.publish({ topic: 'system/hue/needs-link-button', payload: 1, qos: 1, retain: true });
+    const newUser = new client.users.User({ deviceType: 'mqtt-smarthome-system' });
+    let user;
+    do {
+      user = await client.users.create(newUser).catch(error =>
+        (error instanceof hue.Error && error.type === 101) ? false : Promise.reject(error));
+      await new Promise(resolve => setTimeout(resolve, 5000));
+    } while(!user);
+    mqtt.publish({ topic: 'system/hue/needs-link-button', payload: 0 });
+    client.username = user.username;
+    await set('hue-username', user.username);
   }
-  Hue(homebridge);
-}).then((platform) => {
-  return platform.findBridges().map((host) => {
-    const bridge = new HueBridge(platform, host)
-    platform.bridges.push(bridge);
-    let beat = -1
-    setInterval(() => {
-      beat += 1
-      beat %= 7 * 24 * 3600
-      bridge.heartbeat(beat)
-    }, 1000);
-    return bridge.accessories();
+
+  const lights = await client.lights.getAll();
+  const all = await client.groups.getById(0);
+
+  lights.forEach(light => {
+    console.log(light.name, light.brightness, light.colorTemp, light.hue)
+    Object.keys(characteristics).forEach(characteristicName => {
+      const characteristic = characteristics[characteristicName];
+      mqtt.subscribe(`lights/set/${light.name}/${characteristicName}`,
+        (topic, value) => {
+          light[characteristicName] = characteristic.map(value);
+          if (characteristic.fix) characteristic.fix(light, client.lights);
+          client.lights.save(light);
+        });
+    });
   });
-});
 
-// Returns an array-wrapped array of accessories
-// Each has a lights or sensors class on resource
-// Hue Tap events can be listened to on [HueAccessory{sensors}].resource.buttonMap['1'].characteristics[{displayName: 'Programmable Switch Event'}].on('change')
-// '1' should be the button number
-// For a light – [HueAccessory{lights}].resource, the resource is a HueLight 
-// .setSat, .setCT, setOn etc all work
+  Object.keys(characteristics).forEach(characteristicName => {
+    const characteristic = characteristics[characteristicName];
+    mqtt.subscribe(`lights/set/all/${characteristicName}`,
+      (topic, value) => {
+        all[characteristicName] = characteristic.map(value);
+        client.groups.save(all);
+        // Then follow up by setting each light individually with fixes applied
+      });
+  });
 
-// Osram lights work with included fix to disable transition, otherwise they get stuck at 1% when turning off
+})();
