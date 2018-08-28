@@ -1,15 +1,19 @@
 import natUpnp from 'nat-upnp';
 import { promisify } from 'util';
+import EventEmitter from 'events';
 import randomId from './common/random-id';
 import shutdown, { ignore } from './shutdown';
 import { repo as descriptionPrefix } from './git/repository';
- 
+
+const current = { ip: undefined, port: undefined };
+const reconfigure = new EventEmitter();
+
 const portRange = ((start = 29170, end = 29998) =>
   Array.from({length: (end - start)}, (v, k) => k + start))();
 const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.length), 1)[0];
 
 export const client = natUpnp.createClient();
-client.timeout = 300000;
+client.timeout = 3000;
 client.ssdp.sockets.forEach(ignore);
 
 const externalIp = promisify(client.externalIp.bind(client));
@@ -46,8 +50,29 @@ const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${rand
       client.close();
     };
     shutdown.on('exit', tidy);
+    if (current.port && current.port !== port) reconfigure.emit('port', port);
+    current.port = port;
     return port;
   })
+  .catch(error =>{
+    console.warn(error);
+    return mapPort(randomPort(), description);
+  })
 
-export default Promise.all([ externalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
+const getExternalIp = () =>
+  externalIp()
+  .then(ip => {
+    if (current.ip && current.ip !== ip) reconfigure.emit('ip', ip);
+    current.ip = ip;
+    return ip;
+  })
+  .catch(error => {
+    console.warn(error);
+    return getExternalIp();
+  });
+
+export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
+
+export const portChange = (...args) => reconfigure.on('port', ...args);
+export const ipChange = (...args) => reconfigure.on('port', ...args);
 // What about when port changes or IP changes? Has to trigger a re-bind somehow
