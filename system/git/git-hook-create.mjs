@@ -2,7 +2,7 @@
  */
 import Octokit from '@octokit/rest';
 import { owner, repo } from './repository';
-import keys from '../../config/keys';
+import { get, set } from '../../config/keys';
 import secret from './git-hook-secret';
 import listen from './git-hook-listen';
 import nat from '../nat';
@@ -14,7 +14,7 @@ import shutdown from '../shutdown';
   const url = `http://${ip}:${port}`;
 
   const octokit = new Octokit();
-  const { 'github-hook-token': token } = await keys;
+  const token = await get('github-hook-token');
 
   octokit.authenticate({ type: 'token', token });
 
@@ -37,6 +37,8 @@ import shutdown from '../shutdown';
       events: ['push'],
     }
   });
+
+  await set('github-hook-id', hook_id);
 
   shutdown.on('exit', () => 
     octokit.repos.deleteHook({

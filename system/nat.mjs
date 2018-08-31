@@ -71,6 +71,8 @@ const getExternalIp = () =>
     return getExternalIp();
   });
 
+setInterval(getExternalIp, 300000);
+
 export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
 
 export const portChange = (...args) => reconfigure.on('port', ...args);
