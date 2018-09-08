@@ -13,9 +13,12 @@ fi
 # Set hostname
 echo "HAL9000" > /etc/hostname
 
-export DEBIAN_FRONTEND=noninteractive
+# Enable RTC
+sudo raspi-config nonint do_i2c 0
+echo "dtoverlay=i2c-rtc,pcf8523" | sudo tee -a /boot/config.txt
 
 # Find best apt mirror
+export DEBIAN_FRONTEND=noninteractive
 sudo apt-get install netselect-apt -y
 sudo netselect-apt
 
