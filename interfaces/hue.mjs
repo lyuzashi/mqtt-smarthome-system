@@ -78,4 +78,13 @@ const characteristics = {
       });
   });
 
+  // do {
+  //   const lights = await client.lights.getAll();
+  //   lights.forEach(light => {
+  //     console.log(light.name, light.brightness, light.colorTemp, light.hue)
+  //   });
+  //   await new Promise(resolve => setTimeout(resolve, 100));
+  // } while (true);
+
+
 })();
