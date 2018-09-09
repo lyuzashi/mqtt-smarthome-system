@@ -1,22 +1,43 @@
-wall-e-lights:
-  name: Wall-E
-  manufacturer: RobotJamie
+# wall-e-lights:
+#   name: Wall-E
+#   manufacturer: RobotJamie
+#   model: 1
+#   serial: 000001
+#   identify: kitchen-lights/set/power1
+#   services:
+#     - service: Lightbulb
+#       characteristics:
+#         On:
+#           set:
+#             topic: kitchen-lights/set/power1
+#             map: 
+#               true: ON
+#               false: OFF
+#           get:
+#             topic: kitchen-lights/status/POWER1
+#             request: kitchen-lights/set/power1
+#             map: 
+#               ON: true
+#               OFF: false
+desk-left:
+  name: Desk Left
+  manufactuer: OSRAM
   model: 1
-  serial: 000001
-  identify: kitchen-lights/set/power1
+  serial: 1
+  identify: lights/set/Desk Left/alert
   services:
     - service: Lightbulb
       characteristics:
         On:
           set:
-            topic: kitchen-lights/set/power1
+            topic: lights/set/Desk Left/on
             map: 
-              true: ON
-              false: OFF
-          get:
-            topic: kitchen-lights/status/POWER1
-            request: kitchen-lights/set/power1
-            map: 
-              ON: true
-              OFF: false
+              true: true
+              false: false
+          # get:
+          #   topic: lights/set/Desk Left/on
+          #   request: kitchen-lights/set/power1
+          #   map: 
+          #     true: true
+          #     false: false
 

@@ -24,6 +24,7 @@ const characteristics = {
   saturation: { map: Number }, // 0-254
   colorTemp: { map: Number }, // 153-500
   transitionTime: { map: Number }, // 0-5s
+  alert: { map: () => 'select' },
 };
 
 (async () => {
