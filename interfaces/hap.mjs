@@ -40,10 +40,11 @@ Object.keys(config).forEach(namespace => {
         const event = characteristicDefinition[eventName];
         // Might need to create a characteristic if it's not part of the service defaults
         const characteristic = service.getCharacteristic(Characteristic[characteristicName]);
+        const map = event.map || {};
         switch(eventName) {
           case 'set':
             characteristic.on(eventName, (value, callback) => {
-              mqtt.publish({ topic: event.topic, payload: event.map[value] }, callback);
+              mqtt.publish({ topic: event.topic, payload: map[value] || value }, callback);
             });
           break;
           case 'get':

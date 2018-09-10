@@ -1,24 +1,3 @@
-# wall-e-lights:
-#   name: Wall-E
-#   manufacturer: RobotJamie
-#   model: 1
-#   serial: 000001
-#   identify: kitchen-lights/set/power1
-#   services:
-#     - service: Lightbulb
-#       characteristics:
-#         On:
-#           set:
-#             topic: kitchen-lights/set/power1
-#             map: 
-#               true: ON
-#               false: OFF
-#           get:
-#             topic: kitchen-lights/status/POWER1
-#             request: kitchen-lights/set/power1
-#             map: 
-#               ON: true
-#               OFF: false
 desk-left:
   name: Desk Left
   manufactuer: OSRAM
@@ -31,13 +10,46 @@ desk-left:
         On:
           set:
             topic: lights/set/Desk Left/on
-            map: 
-              true: true
-              false: false
-          # get:
-          #   topic: lights/set/Desk Left/on
-          #   request: kitchen-lights/set/power1
-          #   map: 
-          #     true: true
-          #     false: false
+          get:
+            topic: lights/status/Desk Left/on
+            request: lights/get/Desk Left/on
+        Brightness:
+          set:
+            topic: lights/set/Desk Left/brightness
+          get:
+            topic: lights/status/Desk Left/brightness
+            request: lights/get/Desk Left/brightness
+        ColorTemperature:
+          set:
+            topic: lights/set/Desk Left/colorTemp
+          get:
+            topic: lights/status/Desk Left/colorTemp
+            request: lights/get/Desk Left/colorTemp
+desk-right:
+  name: Desk Right
+  manufactuer: OSRAM
+  model: 1
+  serial: 1
+  identify: lights/set/Desk right/alert
+  services:
+    - service: Lightbulb
+      characteristics:
+        On:
+          set:
+            topic: lights/set/Desk right/on
+          get:
+            topic: lights/status/Desk right/on
+            request: lights/get/Desk right/on
+        Brightness:
+          set:
+            topic: lights/set/Desk right/brightness
+          get:
+            topic: lights/status/Desk right/brightness
+            request: lights/get/Desk right/brightness
+        ColorTemperature:
+          set:
+            topic: lights/set/Desk right/colorTemp
+          get:
+            topic: lights/status/Desk right/colorTemp
+            request: lights/get/Desk right/colorTemp
 
