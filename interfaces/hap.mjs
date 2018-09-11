@@ -44,7 +44,7 @@ Object.keys(config).forEach(namespace => {
         switch(eventName) {
           case 'set':
             characteristic.on(eventName, (value, callback) => {
-              mqtt.publish({ topic: event.topic, payload: map[value] || value }, callback);
+              mqtt.publish({ topic: event.topic, payload: String(map[value] || value) }, callback);
             });
           break;
           case 'get':

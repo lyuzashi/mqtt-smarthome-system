@@ -18,7 +18,12 @@ const characteristics = {
     }
   }, // truthy or falsy
   // TODO bound by range to allow out of bound maxing out
-  brightness: { map: Number }, // 0-254
+  brightness: {
+    map: Number,
+    fix(light) {
+      light.on = true;
+    }
+  }, // 0-254
   hue: { map: Number }, // 0-65535
   saturation: { map: Number }, // 0-254
   colorTemp: { map: Number }, // 153-500
