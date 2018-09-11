@@ -65,12 +65,12 @@ const characteristics = {
           if (characteristic.fix) characteristic.fix(light, client.lights);
           client.lights.save(light);
         });
-      mqtt.subscribe(`lights/get/${light.name}/${characteristicName}`, async () => {
+      mqtt.subscribe(`lights/get/${light.name}/${characteristicName}`, async (topic) => {
         const state = await client.lights.getById(light.id);
         const value = state[characteristicName];
         mqtt.publish({
           topic: `lights/status/${light.name}/${characteristicName}`,
-          payload: value
+          payload: String(value),
         });
       });
     });
