@@ -13,7 +13,6 @@ const characteristics = {
             lights.save(light);
             light.transitionTime = 0;
           }
-          console.log(light);
         break;
       }
     }
@@ -66,6 +65,14 @@ const characteristics = {
           if (characteristic.fix) characteristic.fix(light, client.lights);
           client.lights.save(light);
         });
+      mqtt.subscribe(`lights/get/${light.name}/${characteristicName}`, async () => {
+        const state = await client.lights.getById(light.id);
+        const value = state[characteristicName];
+        mqtt.publish({
+          topic: `lights/status/${light.name}/${characteristicName}`,
+          payload: value
+        });
+      });
     });
   });
 
@@ -79,13 +86,13 @@ const characteristics = {
       });
   });
 
-  // do {
+  // setInterval(async () => {
   //   const lights = await client.lights.getAll();
   //   lights.forEach(light => {
+  //     // TODO store all values and publish if changed?
   //     console.log(light.name, light.brightness, light.colorTemp, light.hue)
   //   });
-  //   await new Promise(resolve => setTimeout(resolve, 100));
-  // } while (true);
-
+  //   // Slow down polling if data is coming from elsewhere
+  // }, 300).unref();
 
 })();
