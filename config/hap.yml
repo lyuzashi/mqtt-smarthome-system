@@ -40,6 +40,9 @@ desk-right:
           get:
             topic: lights/status/Desk right/on
             request: lights/get/Desk right/on
+            map:
+              true: true
+              false: false
         Brightness:
           set:
             topic: lights/set/Desk right/brightness
