@@ -1,7 +1,6 @@
-import hue from 'huejay';
+import getClient from './hue/client';
 import truthy from 'truthy';
 import mqtt from '../system/mqtt';
-import keys, { set } from '../config/keys';
 
 const characteristics = {
   on: {
@@ -18,12 +17,7 @@ const characteristics = {
     }
   }, // truthy or falsy
   // TODO bound by range to allow out of bound maxing out
-  brightness: {
-    map: Number,
-    fix(light) {
-      light.on = true;
-    }
-  }, // 0-254
+  brightness: { map: Number }, // 0-254
   hue: { map: Number }, // 0-65535
   saturation: { map: Number }, // 0-254
   colorTemp: { map: Number }, // 153-500
@@ -32,30 +26,8 @@ const characteristics = {
 };
 
 (async () => {
-  const { 'hue-username': username, 'hue-ip': lastKnownIP } = await keys;
-  // Ping stored IP address if there is one, failing either case discover first bridge on network
-  const host = (lastKnownIP && await new hue.Client({ host: lastKnownIP })
-    .bridge.ping().catch(() => false) && lastKnownIP) || ((await hue.discover())[0].ip);
-  await set('hue-ip', host);
 
-  const client = new hue.Client({ username, host });
-
-  // Test authentication and create user if it fails
-  try {
-    await client.bridge.isAuthenticated();
-  } catch {
-    mqtt.publish({ topic: 'system/hue/needs-link-button', payload: 1, qos: 1, retain: true });
-    const newUser = new client.users.User({ deviceType: 'mqtt-smarthome-system' });
-    let user;
-    do {
-      user = await client.users.create(newUser).catch(error =>
-        (error instanceof hue.Error && error.type === 101) ? false : Promise.reject(error));
-      await new Promise(resolve => setTimeout(resolve, 5000));
-    } while(!user);
-    mqtt.publish({ topic: 'system/hue/needs-link-button', payload: 0 });
-    client.username = user.username;
-    await set('hue-username', user.username);
-  }
+  const client = await getClient;
 
   const lights = await client.lights.getAll();
   const all = await client.groups.getById(0);
@@ -68,7 +40,12 @@ const characteristics = {
         (topic, value) => {
           light[characteristicName] = characteristic.map(value);
           if (characteristic.fix) characteristic.fix(light, client.lights);
-          client.lights.save(light);
+          client.lights.save(light).catch(e => console.log('⚠️', e));
+          // To avoid logic errors like setting brightness on an off light, could multiple
+          // requests be batched up within a very small time window?  (next tick)
+          // This could also manage auto rate limiting (and open up the possibility of switching
+          // to entertainment API automatically when rate is exceeded for compatible lights)
+
         });
       mqtt.subscribe(`lights/get/${light.name}/${characteristicName}`, async (topic) => {
         const state = await client.lights.getById(light.id);
