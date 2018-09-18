@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import XTerm from './xterm';
+import XTerm from './components/xterm';
 
 export default class App extends Component {
   render() {

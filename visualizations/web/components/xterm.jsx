@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Terminal } from 'xterm';
 import websocket from 'websocket-stream';
+import 'xterm/dist/xterm.css';
 
-var ws = websocket('ws://localhost:3000')
+var ws = websocket('ws://localhost:8080/repl')
 
 
 console.log(ws);

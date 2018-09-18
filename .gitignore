@@ -2,3 +2,5 @@
 node_modules
 /persist
 yarn-error.log
+/.cache
+/dist
