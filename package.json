@@ -6,6 +6,7 @@
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",
     "bonjour": "^3.5.0",
+    "express": "^4.16.3",
     "hap-nodejs": "^0.4.47",
     "homebridge-hue": "^0.9.8",
     "huejay": "^1.8.4",
@@ -14,9 +15,14 @@
     "nan": "^2.10.0",
     "nat-upnp": "^1.1.1",
     "node-upnp-utils": "^0.0.5",
+    "parcel-bundler": "^1.9.7",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
     "simple-git": "^1.96.0",
     "truthy": "^0.0.1",
     "webdav-fs": "^1.10.2",
+    "websocket-stream": "^5.1.2",
+    "xterm": "^3.7.0",
     "yamljs": "^0.3.0"
   },
   "repository": {
