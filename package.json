@@ -9,7 +9,6 @@
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
     "hap-nodejs": "^0.4.47",
-    "homebridge-hue": "^0.9.8",
     "huejay": "^1.8.4",
     "midi": "^0.9.5",
     "mosca": "^2.8.3",

@@ -14,12 +14,11 @@ expressWebSocket(app, null, {
 
 app.ws('/repl', function(ws, req) {
   // convert ws instance to stream
-  const stream = websocketStream(ws, {
+  const stream = websocket(ws, {
     // websocket-stream options here
     binary: true,
   });
 
-  console.log('opening', stream);
 
   REPL.start({
     prompt: '> ',
@@ -30,18 +29,6 @@ app.ws('/repl', function(ws, req) {
 });
 
 
-// const server = http.createServer().listen(3000);
-// var wss = websocket.createServer({server}, handle)
-
-// function handle(stream, request) {
-//   // `request` is the upgrade request sent by the client.
-//   REPL.start({
-//     prompt: '> ',
-//     input: stream,
-//     output: stream,
-//     terminal: true,
-//   });
-// }
 const repl = REPL.start({
   prompt: '> ',
 });
