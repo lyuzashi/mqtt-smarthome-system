@@ -29,6 +29,6 @@ const client = (async () => {
   return client;
 })();
 
-client.then(hue => repl.context.hue = hue);
+client.then(hue => repl.hue = hue);
 
 export default client;
