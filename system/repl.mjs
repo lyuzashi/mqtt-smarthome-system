@@ -1,10 +1,10 @@
 import REPL from 'repl';
 import app from '../visualizations/web';
 import expressWebSocket from 'express-ws';
-import http from 'http';
-
-
 import websocket from 'websocket-stream/stream';
+import convertNewline from 'convert-newline';
+
+const newline = convertNewline('crlf').stream();
 
 // extend express app with app.ws()
 expressWebSocket(app, null, {
@@ -19,15 +19,15 @@ app.ws('/repl', function(ws, req) {
     binary: true,
   });
 
-
   REPL.start({
     prompt: '> ',
     input: stream,
-    output: stream,
+    output: newline,
     terminal: true,
   });
-});
 
+  newline.pipe(stream);
+});
 
 const repl = REPL.start({
   prompt: '> ',
