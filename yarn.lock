@@ -5234,6 +5234,10 @@ react-observe-size@^0.3.0:
     react "^16.3.2"
     resize-observer-polyfill "^1.4.2"
 
+react-panelgroup@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-panelgroup/-/react-panelgroup-1.0.7.tgz#20304b0bd2bba0a58f85f673903e449cd5e5993b"
+
 react@^16.3.2, react@^16.5.1:
   version "16.5.2"
   resolved "https://registry.yarnpkg.com/react/-/react-16.5.2.tgz#19f6b444ed139baa45609eee6dc3d318b3895d42"
