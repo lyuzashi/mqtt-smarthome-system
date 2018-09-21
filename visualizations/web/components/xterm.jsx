@@ -3,6 +3,7 @@ import { Terminal } from 'xterm';
 import styled from 'styled-components';
 import * as fit from 'xterm/lib/addons/fit/fit';
 import * as attach from 'xterm/lib/addons/attach/attach';
+import ObserveSize from 'react-observe-size';
 import 'xterm/dist/xterm.css';
 
 Terminal.applyAddon(attach);
@@ -12,6 +13,8 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   background: black;
+  display: flex;
+  align-items: flex-end;
 `;
 
 export default class XTerm extends Component {
@@ -41,6 +44,10 @@ export default class XTerm extends Component {
 
   render() {
     // TODO watch resize of container and call fit
-    return <Container ref={container => (this.container = container)} />
+    return (
+      <ObserveSize observerFn={() => this.term && this.term.fit()}>
+        <Container ref={container => (this.container = container)} />
+      </ObserveSize>
+    )
   }
 }
