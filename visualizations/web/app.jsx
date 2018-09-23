@@ -8,7 +8,7 @@ export default class App extends Component {
     return (
       <Fragment>
         <Body />
-        <PanelGroup direction="column">
+        <PanelGroup direction="column" borderColor="grey">
           <div>Something else</div>
           <div style={{width: '100%', height: '100%'}}>
             <XTerm />

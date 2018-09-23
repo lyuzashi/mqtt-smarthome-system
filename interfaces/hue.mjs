@@ -1,6 +1,7 @@
 import getClient from './hue/client';
 import truthy from 'truthy';
 import mqtt from '../system/mqtt';
+import requestSave from './hue/request-save';
 
 const characteristics = {
   on: {
@@ -40,12 +41,7 @@ const characteristics = {
         (topic, value) => {
           light[characteristicName] = characteristic.map(value);
           if (characteristic.fix) characteristic.fix(light, client.lights);
-          client.lights.save(light).catch(e => console.log('⚠️', e));
-          // To avoid logic errors like setting brightness on an off light, could multiple
-          // requests be batched up within a very small time window?  (next tick)
-          // This could also manage auto rate limiting (and open up the possibility of switching
-          // to entertainment API automatically when rate is exceeded for compatible lights)
-
+          requestSave(client.lights, light);
         });
       mqtt.subscribe(`lights/get/${light.name}/${characteristicName}`, async (topic) => {
         const state = await client.lights.getById(light.id);
@@ -63,7 +59,7 @@ const characteristics = {
     mqtt.subscribe(`lights/set/all/${characteristicName}`,
       (topic, value) => {
         all[characteristicName] = characteristic.map(value);
-        client.groups.save(all);
+        requestSave(client.groups, all);
         // Then follow up by setting each light individually with fixes applied
       });
   });
