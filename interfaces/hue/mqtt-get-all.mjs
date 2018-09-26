@@ -6,6 +6,10 @@ import characteristics from './characteristics';
 (async () => {
   const client = await getClient;
 
+  // Subscribe to all status topics, measure age and only get if they are all not updated for a while
+  // also use these existing status' to diff new data from getAll
+  // publish with retain
+
   setInterval(async () => {
     const lights = await client.lights.getAll();
     lights.forEach(light => {

@@ -18,6 +18,7 @@ import characteristics from './characteristics';
         mqtt.publish({
           topic: `lights/status/${light.name}/${characteristicName}`,
           payload: String(value),
+          retain: true,
         });
       });
     });
