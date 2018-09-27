@@ -13,6 +13,9 @@ desk-left:
           get:
             topic: lights/status/Desk Left/on
             request: lights/get/Desk Left/on
+            map:
+              true: true
+              false: false
         Brightness:
           set:
             topic: lights/set/Desk Left/brightness
