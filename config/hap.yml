@@ -19,9 +19,13 @@ desk-left:
         Brightness:
           set:
             topic: lights/set/Desk Left/brightness
+            map:
+              0-100: 0-255
           get:
             topic: lights/status/Desk Left/brightness
             request: lights/get/Desk Left/brightness
+            map:
+              0-255: 0-100
         ColorTemperature:
           set:
             topic: lights/set/Desk Left/colorTemp
@@ -49,9 +53,13 @@ desk-right:
         Brightness:
           set:
             topic: lights/set/Desk right/brightness
+            map:
+              0-100: 0-255
           get:
             topic: lights/status/Desk right/brightness
             request: lights/get/Desk right/brightness
+            map:
+              0-255: 0-100
         ColorTemperature:
           set:
             topic: lights/set/Desk right/colorTemp

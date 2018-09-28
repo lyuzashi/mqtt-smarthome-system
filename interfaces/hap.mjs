@@ -2,14 +2,15 @@ import storage from 'node-persist';
 import hap from 'hap-nodejs';
 import YAML from 'yamljs';
 import path from 'path';
-import Mapper from '../system/common/mapper';
+import EventedMap from '../system/common/evented-map';
+import mapper from '../system/common/mapper';
 import root from '../root';
 import mqtt from '../system/mqtt';
 import shutdown from '../system/shutdown';
 
 const config = YAML.load(path.resolve(root, 'config/hap.yml'));
 const { uuid, Bridge, Accessory, Service, Characteristic } = hap;
-const subscriptions = new Mapper();
+const subscriptions = new EventedMap();
 
 storage.initSync(); // forced to use this by node-hap... how can it be hacked
 // to use web dav fs or similar?
@@ -44,13 +45,17 @@ Object.keys(config).forEach(namespace => {
         switch(eventName) {
           case 'set':
             characteristic.on(eventName, (value, callback) => {
-              mqtt.publish({ topic: event.topic, payload: String(map[value] || value) }, callback);
+              // TODO perform mapping in reverse
+              // Can call subscriptions.map(event.topic, event.map) to save
+              // set mappings, since the topics will be different
+              mqtt.publish({ topic: event.topic, payload: String(mapper(map,value)) }, callback);
             });
           break;
           case 'get':
             subscriptions.map(event.topic, event.map);
             mqtt.subscribe(event.topic, (topic, value) => {
               subscriptions.set(event.topic, value);
+              console.log('Updating HAP value', event.topic, subscriptions.get(event.topic));
               characteristic.updateValue(subscriptions.get(event.topic));
             });
             characteristic.on(eventName, callback => {

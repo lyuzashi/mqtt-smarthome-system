@@ -1,61 +1,28 @@
-import EventEmitter from 'events';
+/* mapper function, takes an object of mappings as direct translations
+ * or special strings such as a range to alter the input value
+ * returns a single mapped value.
+ */
+const rangeRegex = /([0-9]+)-([0-9]+)/;
 
-export default class Mapper extends EventEmitter {
-  constructor(iterable) {
-    super();
-    this.store = new Map(iterable);
-    this.maps = {};
+export default (map, value) => {
+  if (!map) return value; // No mapping
+  if (Object.hasOwnProperty.call(map, value)) return map[value] || value;  // Direct mapping
+  const ranges = Object.keys(map)
+    .map(mapKey => mapKey.match(rangeRegex))
+    .filter(match => match !== null)
+    .map(([input, inMin, inMax]) => {
+      const [, outMin, outMax] = map[input].match(rangeRegex);
+      return {
+        inMin: Number(inMin),
+        inMax: Number(inMax),
+        outMin: Number(outMin),
+        outMax: Number(outMax),
+      }
+    });
+  const range = ranges.find(({ inMin, inMax }) => value >= inMin && value <= inMax);
+  if (range) { // Range mapping
+    const { inMin, inMax, outMin, outMax } = range;
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
   }
-
-  map(key, maps) {
-    this.maps[key] = maps;
-  }
-
-  mapped(key, value) {
-    const map = this.maps[key];
-    if (map) {
-      return map[value] || value;
-    }
-    return value;
-  }
-
-  clear() {
-    this.store.clear();
-  }
-
-  delete(key) {
-    return this.store.delete(key);
-  }
-
-  get(key) {
-    return this.mapped(key, this.store.get(key));
-  }
-
-  has(key) {
-    return this.store.has(key);
-  }
-
-  keys() {
-    return this.store.keys();
-  }
-
-  set(key, value) {
-    const stringValue = String(value);
-    this.emit(key, this.mapped(key, stringValue));
-    return this.store.set(key, stringValue);
-  }
-
-  values() {
-    return this.store.values(); // perform mapping here?
-  }
-
-  [Symbol.iterator]() {
-    return this.store[Symbol.iterator];
-  }
-
-  // set raw values, get back mapped values
-  // emit events when values are set, returning their mapped value
-
-
-
+  return value;
 }
