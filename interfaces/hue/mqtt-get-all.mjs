@@ -48,6 +48,6 @@ const stateCharacteristics = Object.keys(characteristics).filter(characteristic 
       
     });
     // Slow down polling if data is coming from elsewhere
-  }, 3000).unref();
+  }, 300).unref();
 
 })();

@@ -8,6 +8,8 @@ import listen from './git-hook-listen';
 import nat from '../nat';
 import shutdown from '../shutdown';
 
+// TODO handle ipChange and portChange events
+
 (async () => {
 
   const { port, ip } = await nat;

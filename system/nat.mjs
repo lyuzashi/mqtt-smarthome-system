@@ -2,7 +2,7 @@ import natUpnp from 'nat-upnp';
 import { promisify } from 'util';
 import EventEmitter from 'events';
 import randomId from './common/random-id';
-import shutdown, { ignore } from './shutdown';
+import shutdown from './shutdown';
 import { repo as descriptionPrefix } from './git/repository';
 
 const current = { ip: undefined, port: undefined };
@@ -14,7 +14,6 @@ const randomPort = () => portRange.splice(Math.floor(Math.random() * portRange.l
 
 export const client = natUpnp.createClient();
 client.timeout = 3000;
-client.ssdp.sockets.forEach(ignore);
 
 const externalIp = promisify(client.externalIp.bind(client));
 const getMappings = promisify(client.getMappings.bind(client, { local: true }));
@@ -71,7 +70,9 @@ const getExternalIp = () =>
     return getExternalIp();
   });
 
-setInterval(getExternalIp, 300000);
+const refreshIp = setInterval(getExternalIp, 300000);
+
+shutdown.on('exit', () => clearInterval(refreshIp));
 
 export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
 

@@ -1,11 +1,8 @@
 import Mosca from 'mosca';
 import mDNS from './mdns';
-import shutdown, { ignore } from './shutdown';
+import shutdown from './shutdown';
 
 const server = new Mosca.Server();
-server.servers.forEach(ignore);
-ignore(server.logger.stream);
-// There is also a socket and maybe a timer that is keeping the app alive
 
 // server.on('clientConnected', function(client) {
 //     console.log('client connected', client.id);
