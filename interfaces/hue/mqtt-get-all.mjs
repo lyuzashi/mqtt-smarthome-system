@@ -6,7 +6,6 @@ const states = new Map();
 
 const createState = (id) => {
   if(states.has(id)) return states.get(id);
-  console.log('creating state', id);
   const state = {};
   states.set(id, state);
   return state;
@@ -38,14 +37,6 @@ const stateCharacteristics = Object.keys(characteristics).filter(characteristic 
           state[characteristic] = after;
         }
       });
-      // TODO store all values and publish if changed?
-      // console.log(light.name, light.brightness, light.colorTemp, light.hue)
-       // Assign to existing light.state, identifing by id
-      // light.state.replace(newState);
-      // go through all characteristics and for each that are different, publish
-      // subscribe to status to keep in-memory up to date
-
-      
     });
     // Slow down polling if data is coming from elsewhere
   }, 300).unref();

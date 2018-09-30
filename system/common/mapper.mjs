@@ -22,7 +22,7 @@ export default (map, value) => {
   const range = ranges.find(({ inMin, inMax }) => value >= inMin && value <= inMax);
   if (range) { // Range mapping
     const { inMin, inMax, outMin, outMax } = range;
-    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    return Math.round((value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin);
   }
   return value;
 }

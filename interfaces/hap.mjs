@@ -55,7 +55,6 @@ Object.keys(config).forEach(namespace => {
             subscriptions.map(event.topic, event.map);
             mqtt.subscribe(event.topic, (topic, value) => {
               subscriptions.set(event.topic, value);
-              console.log('Updating HAP value', event.topic, subscriptions.get(event.topic));
               characteristic.updateValue(subscriptions.get(event.topic));
             });
             characteristic.on(eventName, callback => {

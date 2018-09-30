@@ -9,9 +9,9 @@ const server = new Mosca.Server();
 // });
 
 // fired when a message is received
-server.on('published', function(packet, client) {
-  console.log('Published', packet);
-});
+// server.on('published', function(packet, client) {
+//   console.log('Published', packet);
+// });
 
 server.on('ready', () => {
   console.log('Mosca server is up and running');
