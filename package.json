@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node --experimental-modules --experimental-repl-await main.mjs"
+    "start": "node --no-warnings --experimental-modules --experimental-repl-await main.mjs"
   },
   "dependencies": {
     "@octokit/rest": "^15.9.4",

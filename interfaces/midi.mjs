@@ -11,12 +11,13 @@ export const input = new midi.input();
 
 input.ignoreTypes(false, false, false); 
 
-shutdown.on('exit', input.closePort.bind(input));
-
 const port = [...Array(input.getPortCount()).keys()].map(port =>input.getPortName(port))
   .findIndex(name => name.includes(config.controller));
 
-if(port >= 0) input.openPort(port);
+if(port >= 0) {
+  input.openPort(port);
+  shutdown.on('exit', input.closePort.bind(input));
+}
 
 let bank = undefined;
 
