@@ -1,4 +1,3 @@
-import storage from 'node-persist';
 import hap from 'hap-nodejs';
 import YAML from 'yamljs';
 import path from 'path';
@@ -9,11 +8,10 @@ import mqtt from '../system/mqtt';
 import shutdown from '../system/shutdown';
 
 const config = YAML.load(path.resolve(root, 'config/hap.yml'));
-const { uuid, Bridge, Accessory, Service, Characteristic } = hap;
+const { init, uuid, Bridge, Accessory, Service, Characteristic } = hap;
 const subscriptions = new EventedMap();
 
-storage.initSync(); // forced to use this by node-hap... how can it be hacked
-// to use web dav fs or similar?
+init();
 
 const bridge = new Bridge('HAL9000', uuid.generate('HAL9000'));
 

@@ -1,10 +1,7 @@
-import WebDavFS from 'webdav-fs';
 import { promisify } from 'util';
+import fs from '../system/common/webdav-fs';
 
-const url = 'https://kryten.grid.robotjamie.com/config/';
 const filename = 'mqtt-smarthome-system.json';
-
-const fs = WebDavFS(url);
 
 const read = promisify(fs.readFile);
 const write = promisify(fs.writeFile);

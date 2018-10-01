@@ -16,6 +16,7 @@
     "nat-upnp": "^1.1.1",
     "node-upnp-utils": "^0.0.5",
     "parcel-bundler": "^1.9.7",
+    "proxyquire": "^2.1.0",
     "react": "^16.5.1",
     "react-dom": "^16.5.1",
     "react-observe-size": "^0.3.0",
@@ -23,7 +24,7 @@
     "simple-git": "^1.96.0",
     "styled-components": "^4.0.0-beta.7",
     "truthy": "^0.0.1",
-    "webdav-fs": "^1.10.2",
+    "webdav-fs": "^1.11.0",
     "websocket-stream": "^5.1.2",
     "xterm": "^3.7.0",
     "yamljs": "^0.3.0"
