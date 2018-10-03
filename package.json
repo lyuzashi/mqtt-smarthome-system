@@ -5,6 +5,7 @@
   "dependencies": {
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",
+    "auto-sni": "^2.3.2",
     "bonjour": "^3.5.0",
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
