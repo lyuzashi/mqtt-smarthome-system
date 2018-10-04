@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-su - hal -c "cd /home/hal/mqtt-smarthome-system && \
+su - hal -c "\
+export NODE_ENV=production
+cd /home/hal/mqtt-smarthome-system && \
 git pull && \
 yarn install --ignore-engines && \
-authbind --deep yarn start"
+authbind --deep yarn start
+"
