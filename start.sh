@@ -3,4 +3,4 @@
 su - hal -c "cd /home/hal/mqtt-smarthome-system && \
 git pull && \
 yarn install --ignore-engines && \
-yarn start"
+authbind yarn start"
