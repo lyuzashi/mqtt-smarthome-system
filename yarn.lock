@@ -4021,6 +4021,14 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
   integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
 
+le-acme-core@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/le-acme-core/-/le-acme-core-2.1.3.tgz#cfc67f72db81e818a4ffdc75ceb9cc17d5a5c5d4"
+  integrity sha512-GFl4rfhn8XIrw5dJDJe/xcGcTkYrluc3kcxIhpa6TXrkOlOCrYlv+s1wqoDM6cn2ainxg+PM/6F/XXMxnn9WTQ==
+  dependencies:
+    request "^2.74.0"
+    rsa-compat "^1.3.2"
+
 le-challenge-fs@^2.0.2, le-challenge-fs@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/le-challenge-fs/-/le-challenge-fs-2.0.8.tgz#b6d458a37f097e87df3d8b5ff67013737ab9d5a2"
@@ -6413,7 +6421,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@2, request@^2.79.0, request@^2.87.0:
+request@2, request@^2.74.0, request@^2.79.0, request@^2.87.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==
@@ -6527,7 +6535,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rsa-compat@^1.5.0, rsa-compat@^1.5.1:
+rsa-compat@^1.3.2, rsa-compat@^1.5.0, rsa-compat@^1.5.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/rsa-compat/-/rsa-compat-1.6.0.tgz#7d232399031b6f90a8ba7b36c1f1337d0a99a475"
   integrity sha512-Eoqx0e9mcVpRQZ9IaVhZ0Su0WZ9CN6XKC1qWoyvueEloq2+kApZqmtueva/SHEo1mmB80sowZsyWU7TFcCvlzg==
@@ -7516,6 +7524,13 @@ ursa-optional@^0.9.6:
     bindings "^1.3.0"
     nan "^2.10.0"
     which "^1.3.1"
+
+ursa@jkuri/ursa#node10:
+  version "0.9.4"
+  resolved "https://codeload.github.com/jkuri/ursa/tar.gz/02fd45862fa6f99705b35fd1b66865bf22588c13"
+  dependencies:
+    bindings "^1.2.1"
+    nan "^2.3.3"
 
 use@^3.1.0:
   version "3.1.1"
