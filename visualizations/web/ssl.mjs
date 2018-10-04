@@ -1,4 +1,5 @@
 import createServer from 'auto-sni';
+import app from './app';
 
 const options = {
   email: ..., // Emailed when certificates expire.

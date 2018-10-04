@@ -1,5 +1,5 @@
 import REPL from 'repl';
-import app from '../visualizations/web';
+import app from './app';
 import expressWebSocket from 'express-ws';
 import websocket from 'websocket-stream/stream';
 
