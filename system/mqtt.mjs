@@ -1,4 +1,5 @@
 import Mosca from 'mosca';
+import os from 'os';
 import mDNS from './mdns';
 import shutdown from './shutdown';
 
@@ -16,7 +17,7 @@ const server = new Mosca.Server();
 server.on('ready', () => {
   console.log('Mosca server is up and running');
    // advertise an HTTP server on port 3000
-  const service = mDNS.publish({ name: 'HAL9000', type: 'mqtt', port: 1883 });
+  const service = mDNS.publish({ name: os.hostname(), type: 'mqtt', port: 1883 });
   server.on('closed', () => {
     // Register this for mqtt termination
     service.stop();

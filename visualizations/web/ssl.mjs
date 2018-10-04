@@ -7,7 +7,7 @@ const options = {
   domains: ['hal9000.grid.robotjamie.com'],
 };
 
-export default createServer(options, app);
-
-// Switch to this when not running on hal9000
-// export default app.listen(8080);
+export default (process.env.NODE_ENV === 'production' ?
+  createServer(options, app) :
+  app.listen(8080)
+);
