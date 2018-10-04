@@ -1,11 +1,12 @@
 import REPL from 'repl';
 import app from './app';
+import server from './ssl';
 import expressWebSocket from 'express-ws';
 import websocket from 'websocket-stream/stream';
 
 const context = {};
 
-expressWebSocket(app, null, {
+expressWebSocket(app, server, {
   perMessageDeflate: false,
 });
 
