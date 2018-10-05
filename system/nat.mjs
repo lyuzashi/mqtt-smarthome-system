@@ -74,6 +74,11 @@ const refreshIp = setInterval(getExternalIp, 300000);
 
 shutdown.on('exit', () => clearInterval(refreshIp));
 
+export const customPort = (getPort) => {
+  // If called, await getPort function before mapPort()
+  
+}
+
 export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
 
 export const portChange = (...args) => reconfigure.on('port', ...args);
