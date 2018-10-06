@@ -1,6 +1,6 @@
 import Bundler from 'parcel-bundler';
 import path from 'path';
-import app from './app';
+import app from '../../system/web';
 import root from '../../root';
 
 const bundler = new Bundler(

@@ -1,5 +1,5 @@
 import createServer from 'auto-sni';
-import app from './app';
+import app from '../../system/web';
 
 const options = {
   email: 'ben@robotjamie.com',
