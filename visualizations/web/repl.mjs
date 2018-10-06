@@ -1,5 +1,5 @@
 import REPL from 'repl';
-import app from './app';
+import app from '../../system/web';
 import server from './ssl';
 import expressWebSocket from 'express-ws';
 import websocket from 'websocket-stream/stream';
