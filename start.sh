@@ -5,5 +5,5 @@ export NODE_ENV=production
 cd /home/hal/mqtt-smarthome-system && \
 git pull && \
 yarn install --ignore-engines && \
-authbind --deep yarn start
+yarn start
 "

@@ -6,6 +6,7 @@ import shutdown from './shutdown';
 import { repo as descriptionPrefix } from './git/repository';
 
 const current = { ip: undefined, port: undefined };
+const getCustomPort = new Array();
 const reconfigure = new EventEmitter();
 
 const portRange = ((start = 29170, end = 29998) =>
@@ -29,13 +30,16 @@ const getPrefixedMappings = ({ port: searchPort, description: searchDescription 
     ));
 
 const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${randomId()}`) =>
-  portMapping({
-    public: port,
-    private: port,
+  new Promise(resolve => process.nextTick(resolve))
+  .then(() => Promise.all(getCustomPort))
+  .then(ports => ports.find(p => p))
+  .then(customPort => (portMapping({
+    public: customPort || port,
+    private: customPort || port,
     description,
     ttl: 300,
-  })
-  .then(() => getPrefixedMappings({ port, description }))
+  }), customPort))
+  .then(customPort => getPrefixedMappings({ port: customPort || port, description }))
   .then(([successfulMapping]) => successfulMapping || Promise.reject(`Did not map ${description} to ${port}`))
   .then(({ ttl, public: { port }, description }) => {
     let tidy;
@@ -74,13 +78,12 @@ const refreshIp = setInterval(getExternalIp, 300000);
 
 shutdown.on('exit', () => clearInterval(refreshIp));
 
-export const customPort = (getPort) => {
-  // If called, await getPort function before mapPort()
-  
-}
+// export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
 
-export default Promise.all([ getExternalIp(), mapPort() ]).then(([ip, port]) => ({ ip, port }))
+export const getPort = mapPort();
+export const getIp = getExternalIp();
 
 export const portChange = (...args) => reconfigure.on('port', ...args);
 export const ipChange = (...args) => reconfigure.on('port', ...args);
+export const customPort = (getPort) => getCustomPort.push(getPort);
 // What about when port changes or IP changes? Has to trigger a re-bind somehow

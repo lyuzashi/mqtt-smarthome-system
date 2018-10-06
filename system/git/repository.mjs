@@ -1,10 +1,11 @@
 import url from 'url';
-import path from 'path';
+import { basename, dirname } from 'path';
 import project from '../../package.json';
 
 const { repository: { url: repositoryUrl } } = project;
 const { path: repositoryPath } = url.parse(repositoryUrl);
-const repo = path.basename(repositoryPath, '.git');
-const owner = path.basename(path.dirname(repositoryPath));
+const repo = basename(repositoryPath, '.git');
+const owner = basename(dirname(repositoryPath));
+const path = `/${repo}`;
 
-export { repo, owner };
+export { repo, owner, path };

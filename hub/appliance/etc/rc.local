@@ -30,7 +30,7 @@ apt update
 apt full-upgrade -y
 
 # Install binary deps 
-apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin authbind -y
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
 apt install --no-install-recommends yarn -y
 
 # Setup user
@@ -53,18 +53,11 @@ chmod -R 755 node*/bin/*
 cp -r node*/{bin,lib,share} /usr/local
 rm -r node*
 
-# Provide BTL permissions to node binary
-setcap cap_net_raw+eip $(eval readlink -f `which node`)
+# Provide bind to lower ports and BTL permissions to node binary
+setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
 # Provide audio permissions to user
 usermod -a -G audio hal
 # Provide access to web ports
-# No use until Node 10 supports this again
-sudo touch /etc/authbind/byport/80
-sudo touch /etc/authbind/byport/443
-sudo chown hal /etc/authbind/byport/80
-sudo chown hal /etc/authbind/byport/443
-sudo chmod u+x /etc/authbind/byport/80
-sudo chmod u+x /etc/authbind/byport/443
 
 # Setup global modules directory
 mkdir "${NEWHOME}/.npm-packages"
