@@ -21,10 +21,7 @@ import Deferred from '../common/deferred';
   octokit.authenticate({ type: 'token', token });
 
   const { data: hooks } = await octokit.repos.getHooks({ owner, repo });
-  const existingHook = hooks.find(({config: { url: existingUrl }}) => existingUrl.match(path));
-
-  const existingPort = existingHook && parse(existingHook.config.url).port; //existingHook
-  getExistingPort.resolve(existingPort);
+  const existingHook = hooks.find(({config: { url: existingUrl }}) => url === existingUrl);
 
   if (existingHook) return;
 
