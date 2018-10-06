@@ -39,7 +39,7 @@ const mapPort = (port = randomPort(), description = `${descriptionPrefix} ${rand
     description,
     ttl: 300,
   }), customPort))
-  .then(customPort => getPrefixedMappings({ port: customPort || port, description }))
+  .then(customPort => getPrefixedMappings({ port: customPort || port }))
   .then(([successfulMapping]) => successfulMapping || Promise.reject(`Did not map ${description} to ${port}`))
   .then(({ ttl, public: { port }, description }) => {
     let tidy;
