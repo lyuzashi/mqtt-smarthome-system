@@ -1,15 +1,10 @@
 /* Update system automatically by watching GitHub repository
  */
 import Octokit from '@octokit/rest';
-import { parse } from 'url';
 import { owner, repo } from './repository';
 import { get, set } from '../../config/keys';
 import secret from './git-hook-secret';
 import listen from './git-hook-listen';
-import shutdown from '../shutdown';
-import Deferred from '../common/deferred';
-
-// TODO handle ipChange and portChange events
 
 (async () => {
 
@@ -35,19 +30,10 @@ import Deferred from '../common/deferred';
       url, 
       content_type: 'json',
       secret: await secret,
-      insecure_ssl: true,
       events: ['push'],
     }
   });
 
   await set('github-hook-id', hook_id);
-
-  // shutdown.on('exit', () => 
-  //   octokit.repos.deleteHook({
-  //     owner,
-  //     repo,
-  //     hook_id,
-  //   })
-  // );
 
 })();
