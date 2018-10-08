@@ -24,6 +24,7 @@
     "react-dom": "^16.5.1",
     "react-observe-size": "^0.3.0",
     "react-panelgroup": "^1.0.7",
+    "react-ui-tree": "^4.0.0",
     "simple-git": "^1.96.0",
     "styled-components": "^4.0.0-beta.7",
     "truthy": "^0.0.1",
