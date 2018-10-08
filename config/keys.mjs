@@ -11,7 +11,8 @@ export const get = (key) => read(filename)
   .then(keys => key ? keys[key] : keys);
 
 export const set = (key, value) => get()
-  .then(document => Object.assign(document || {}, { [key]: value }))
+  .then(document => Object.assign(document || {},
+    'object' === typeof key ? key : { [key]: value }))
   .then(JSON.stringify)
   .then(document => write(filename, document));
 
