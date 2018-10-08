@@ -30,6 +30,7 @@ import listen from './git-hook-listen';
       url, 
       content_type: 'json',
       secret: await secret,
+      insecure_ssl: true,
       events: ['push'],
     }
   });
