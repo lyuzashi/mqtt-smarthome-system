@@ -1,13 +1,11 @@
 import Hook from '@octokit/webhooks';
-import http from 'http';
+import app from '../web';
 import secret from './git-hook-secret';
-import { get } from '../../config/keys';
 import update from './git-update';
 import { now } from '../shutdown';
 import { owner } from './repository';
 
-export default (async () => {
-  
+const hook = (async () => {
   const hook = new Hook({ secret: await secret, path: '/github' });
   
   hook.on('push', async ({ payload }) => {
@@ -19,12 +17,9 @@ export default (async () => {
     }
   })
 
-  // const { port } = await nat;
-  // const server = http.createServer(hook.middleware);
-  // server.listen(port);
-  // portChange(newPort => {
-  //   server.close();
-  //   server.listen(newPort);
-  // })
   return hook;
 })();
+
+app.use((...request) => hook.then(({ middleware }) => middleware(...request)));
+
+export default hook;
