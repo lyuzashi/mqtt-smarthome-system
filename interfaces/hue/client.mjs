@@ -1,6 +1,6 @@
 import hue from 'huejay';
 import keys, { set } from '../../config/keys';
-import repl from '../../visualizations/web/repl';
+import { context } from '../../system/shell';
 
 const client = (async () => {
   const { 'hue-username': username, 'hue-ip': lastKnownIP } = await keys;
@@ -29,6 +29,6 @@ const client = (async () => {
   return client;
 })();
 
-client.then(hue => repl.hue = hue);
+client.then(hue => context.hue = hue);
 
 export default client;

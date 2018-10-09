@@ -1,25 +1,12 @@
-import REPL from 'repl';
-import app from '../../system/web';
-import server from './ssl';
 import expressWebSocket from 'express-ws';
 import websocket from 'websocket-stream/stream';
+import { start } from '../../system/shell';
+import app from '../../system/web';
+import server from './ssl';
 
-const context = {};
-
-expressWebSocket(app, server, {
-  perMessageDeflate: false,
-});
+expressWebSocket(app, server, { perMessageDeflate: false });
 
 app.ws('/repl', function(ws, req) {
   const stream = websocket(ws, { binary: true });
-  const repl = REPL.start({
-    prompt: '> ',
-    input: stream,
-    output: stream,
-    terminal: true,
-  });
-  Object.assign(repl.context, context);
-  // TODO close on close
+  const repl = start({ input: stream, output: stream });
 });
-
-export default context;
