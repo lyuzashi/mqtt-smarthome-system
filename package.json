@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "start": "node --no-warnings --experimental-modules --experimental-repl-await main.mjs"
+    "mnode": "node --no-warnings --experimental-modules --experimental-repl-await",
+    "start": "yarn mnode main.mjs",
+    "shell": "yarn mnode system/cli.mjs"
   },
   "dependencies": {
     "@octokit/rest": "^15.9.4",
