@@ -1,4 +1,5 @@
 import WebDavFS from 'webdav-fs';
+import { context } from '../shell';
 
 const url = 'https://kryten.grid.robotjamie.com/config/';
 
@@ -15,5 +16,7 @@ Object.assign(fs, {
     })
   }
 });
+
+context.fs = fs;
 
 export default fs;
