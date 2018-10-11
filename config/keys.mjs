@@ -13,7 +13,7 @@ export const get = (key) => read(filename)
 export const set = (key, value) => get()
   .then(document => Object.assign(document || {},
     'object' === typeof key ? key : { [key]: value }))
-  .then(JSON.stringify)
+  .then(document => JSON.stringify(document, null, 2))
   .then(document => write(filename, document));
 
 export default get();

@@ -1,9 +1,12 @@
 import WebDavFS from 'webdav-fs';
+import promisify from 'util.promisify';
 import { context } from '../shell';
 
 const url = 'https://kryten.grid.robotjamie.com/config/';
 
 const fs = WebDavFS(url);
+
+const asyncMethods = ['mkdir', 'readdir', 'readFile', 'rename', 'rmdir', 'stat', 'unlink', 'writeFile', 'exists' ];
 
 Object.assign(fs, {
   exists(path, callback) {
@@ -16,6 +19,8 @@ Object.assign(fs, {
     })
   }
 });
+
+asyncMethods.forEach(method => Object.assign(fs, { [`${method}Await`]: promisify(fs[method])}));
 
 context.fs = fs;
 
