@@ -1,9 +1,10 @@
-import Mosca from 'mosca';
+import Server from './mosca-server';
 import os from 'os';
 import mDNS from './mdns';
 import shutdown from './shutdown';
+import { context } from './shell';
 
-const server = new Mosca.Server();
+const server = new Server();
 
 // server.on('clientConnected', function(client) {
 //     console.log('client connected', client.id);
@@ -27,4 +28,7 @@ server.on('ready', () => {
   })
 });
 
+// Stub .connect function
+
+context.mqtt = server;
 export default server;
