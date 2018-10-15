@@ -5,10 +5,17 @@ import mqtt from '../system/mqtt';
 import fs from '../system/common/webdav-fs';
 import require from '../system/common/require';
 
+function start() {
+  sandboxModules.push(sandboxStdlib);
+  loadDir(config.dir);
+}
+
 const main = require.resolve('mqtt-scripts');
+const sandboxStdlib = require('mqtt-scripts/sandbox/stdlib.js');
 const __dirname = dirname(main);
 const mqttScriptsSrc = readFileSync(main).toString().replace(/^#.*/, '');
 const script = new vm.Script(mqttScriptsSrc);
+const overrideStart = new vm.Script(start.toString());
 
 const context = vm.createContext({
   require: require({
@@ -18,56 +25,18 @@ const context = vm.createContext({
       dir: 'logic',
       disableWatch: true,
       name: 'logic',
+      verbosity: 'error',
     },
     './package.json': {}
   }),
-  process: {
-    on() {}
-  },
+  process: { on() {} },
   setTimeout,
   setInterval,
   clearTimeout,
   clearInterval,
   Buffer,
-  sandboxStdlib: require('mqtt-scripts/sandbox/stdlib.js'),
+  sandboxStdlib,
 });
 
 script.runInContext(context);
-
-(new vm.Script('sandboxModules.push(sandboxStdlib); loadDir("logic")')).runInContext(context);
-
-
-// const proxyquire = require('proxyquire');
-
-// module.exports = ({ fs, mqtt, config }) => proxyquire('mqtt-scripts', {
-//   fs, mqtt, './config.js': config
-// })
-
-// proxquire 'mqtt-scripts' with custom 
-// config.js
-/*
-        c: 'config',
-        d: 'dir',
-        h: 'help',
-        s: 'variable-prefix',
-        t: 'disable-variables',
-        l: 'latitude',
-        m: 'longitude',
-        n: 'name',
-        u: 'url',
-        v: 'verbosity',
-        w: 'disable-watch'
-*/
-// mqtt
-/*
-  .connect returns the local server
-  .on('connect') needs to be fired
-*/
-// fs
-/*
-  must support 
-  - existsSync (only for sandboxed require - could override/disable?)
-  - readFile
-  - readdir
-*/
-
+overrideStart.runInContext(context);

@@ -10,10 +10,11 @@ const server = new Server();
 //     console.log('client connected', client.id);
 // });
 
-// fired when a message is received
-// server.on('published', function(packet, client) {
-//   console.log('Published', packet);
-// });
+// Translate publishing to message events for client usage
+server.on('published', packet => {
+  const { topic, payload, ...msg } = packet;
+  server.emit('message', topic, payload, msg);
+});
 
 server.on('ready', () => {
   console.log('Mosca server is up and running');
