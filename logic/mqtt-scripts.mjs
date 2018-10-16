@@ -5,6 +5,7 @@ import mqtt from '../system/mqtt';
 import fs from '../system/common/webdav-fs';
 import require from '../system/common/require';
 
+  // Run only once
 function start() {
   sandboxModules.push(sandboxStdlib);
   loadDir(config.dir);

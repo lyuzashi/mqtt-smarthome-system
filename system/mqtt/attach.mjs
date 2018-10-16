@@ -4,6 +4,7 @@ const onMessage = message => {
   if (message.system !== 'mqtt') return;
   switch (message.method) {
     case 'publish':
+      console.log('🐠', message);
       mqtt.publish(...message.args);
     break;
   }

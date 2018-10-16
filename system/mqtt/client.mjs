@@ -20,6 +20,7 @@ export default class Client extends EventEmitter {
   }
 
   publish(topic, payload, options) {
+    console.log(!!process.send, '🐬 process calling publish', arguments);
     return process.send({ system: 'mqtt', method: 'publish', args: [topic, payload, options] })
   }
 }
