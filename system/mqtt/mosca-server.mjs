@@ -1,6 +1,17 @@
 import Mosca from 'mosca';
 
-export default class Server extends Mosca.Server {
+let mqtt;
+
+export default class Server {
+  constructor({ client, ...opts}, callback) {
+    if (client) {
+
+    } else {
+      if (!mqtt) mqtt = new Mosca.Server(opts, callback);
+      return mqtt;
+    }
+  }
+
   connect() {
     this.emit('connect');
     return this;
@@ -11,8 +22,8 @@ export default class Server extends Mosca.Server {
       const topic = packet;
       const payload = client;
       const options = callback;
-      return super.publish({ topic, payload, ...options });
+      return mqtt.publish({ topic, payload, ...options });
     }
-    return super.publish(packet, client, callback);
+    return mqtt.publish(packet, client, callback);
   }
 }

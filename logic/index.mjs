@@ -1,18 +1,8 @@
-// import loadScripts from './mqtt-scripts';
-// import mqtt from '../system/mqtt';
-// import fs from '../system/common/webdav-fs';
+import { resolve } from 'path';
+import root from '../root';
+import fork from '../system/fork';
+import Client from '../system/mqtt/client';
 
-// const sandbox = {
-//   require() {
-//     // override built-in sandbox require
-//   }
-// };
+const mqttScripts = resolve(root, 'logic/mqtt-scripts.mjs');
 
-// loadScripts({ fs, mqtt, config: {
-//   dir: './logic',
-//   disableWatch: true,
-// } });
-
-// mqtt.emit('connect');
-
-// export default sandbox;
+new Client(fork(mqttScripts));
