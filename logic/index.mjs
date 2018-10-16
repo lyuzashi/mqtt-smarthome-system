@@ -1,8 +1,6 @@
 import { resolve } from 'path';
 import root from '../root';
 import fork from '../system/fork';
-import Client from '../system/mqtt/client';
+import attach from '../system/mqtt/attach';
 
-const mqttScripts = resolve(root, 'logic/mqtt-scripts.mjs');
-
-new Client(fork(mqttScripts));
+attach(fork(resolve(root, 'logic/mqtt-scripts.mjs')));
