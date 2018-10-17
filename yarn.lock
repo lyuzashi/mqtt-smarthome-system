@@ -1657,7 +1657,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@^2.2.0, classnames@^2.2.5:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -6329,7 +6329,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.2:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   integrity sha512-3pboPvLiWD7dkI3qf3KbUe6hKFKa52w+AE0VCqECtf+QHAKgOL37tTaNCnuX1nAAQ4ZhyP+kYVKf8rLmJ/feDQ==
@@ -6639,6 +6639,14 @@ react-panelgroup@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/react-panelgroup/-/react-panelgroup-1.0.7.tgz#20304b0bd2bba0a58f85f673903e449cd5e5993b"
   integrity sha512-APNVfoWkPknFDKdR07poVsbqJ3SN3jQQym7WZtSVIlnLBIt3eoRqYBsJmDqvEqH4UkUI64oO3sT9+14a1qaYvg==
+
+react-tabs@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-tabs/-/react-tabs-2.3.0.tgz#0c37e786f288d369824acd06a96bd1818ab8b0dc"
+  integrity sha512-pYaefgVy76/36AMEP+B8YuVVzDHa3C5UFZ3REU78zolk0qMxEhKvUFofvDCXyLZwf0RZjxIfiwok1BEb18nHyA==
+  dependencies:
+    classnames "^2.2.0"
+    prop-types "^15.5.0"
 
 react-ui-tree@^4.0.0:
   version "4.0.0"

@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import PanelGroup from 'react-panelgroup';
 import Body from './components/body';
 import Config from './components/config';
@@ -9,12 +10,23 @@ export default class App extends Component {
     return (
       <Fragment>
         <Body />
-        <PanelGroup direction="column" borderColor="grey">
-          <Config />
-          <div style={{width: '100%', height: '100%'}}>
-            <XTerm />
-          </div>
-        </PanelGroup>
+        <Tabs>
+          <TabList>
+            <Tab>🎛</Tab>
+            <Tab>⌨️</Tab>
+          </TabList>
+          <TabPanel>
+            Direct controls
+          </TabPanel>
+          <TabPanel forceRender>
+            <PanelGroup direction="column" borderColor="grey">
+              <Config />
+              <div style={{width: '100%', height: '100%'}}>
+                <XTerm />
+              </div>
+            </PanelGroup>
+          </TabPanel>
+        </Tabs>
       </Fragment>
     );
   }
