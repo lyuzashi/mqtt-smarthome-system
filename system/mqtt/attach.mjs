@@ -19,4 +19,5 @@ export default (childProcess) => {
   mqtt.on('published', publish);
   childProcess.on('message', onMessage);
   childProcess.on('exit', () => mqtt.off('published', publish));
+  return childProcess;
 }

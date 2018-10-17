@@ -43,7 +43,7 @@ export default class Editor extends Component {
   save() {
     const { loadedFile, code } = this.state;
     if (!loadedFile) return;
-    fs.writeFileAwait(loadedFile, code);
+    return fs.writeFileAwait(loadedFile, code);
   }
 
   render() {
