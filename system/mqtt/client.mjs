@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import deserialise from './deserialise';
 
 export default class Client extends EventEmitter {
 
@@ -8,19 +9,18 @@ export default class Client extends EventEmitter {
       if (message.system !== 'mqtt') return;
       switch (message.method) {
         case 'message':
-          this.emit('message', ...message.args);
+          const { topic, payload, msg } = message;
+          this.emit('message', topic, deserialise(payload), msg);
         break;
       }
     });
   }
 
   connect() {
-    this.emit('connect');
     return this;
   }
 
   publish(topic, payload, options) {
-    console.log(!!process.send, '🐬 process calling publish', arguments);
-    return process.send({ system: 'mqtt', method: 'publish', args: [topic, payload, options] })
+    return process.send({ system: 'mqtt', method: 'publish', topic, payload, options })
   }
 }

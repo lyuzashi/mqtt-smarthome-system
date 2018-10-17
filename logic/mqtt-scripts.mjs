@@ -7,6 +7,7 @@ import require from '../system/common/require';
 
   // Run only once
 function start() {
+  firstConnect = false;
   sandboxModules.push(sandboxStdlib);
   loadDir(config.dir);
 }

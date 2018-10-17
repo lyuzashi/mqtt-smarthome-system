@@ -1,11 +1,12 @@
 import mqtt from './';
+import deserialise from './deserialise';
 
 const onMessage = message => {
   if (message.system !== 'mqtt') return;
   switch (message.method) {
     case 'publish':
-      console.log('🐠', message);
-      mqtt.publish(...message.args);
+      const { topic, payload, options } = message;
+      mqtt.publish(topic, deserialise(payload), options);
     break;
   }
 }
@@ -13,7 +14,7 @@ const onMessage = message => {
 export default (childProcess) => {
   const publish = (packet) => {
     const { topic, payload, ...msg } = packet;
-    childProcess.send({ system: 'mqtt', method: 'message', args: [topic, payload, msg] });
+    childProcess.send({ system: 'mqtt', method: 'message', topic, payload, msg });
   };
   mqtt.on('published', publish);
   childProcess.on('message', onMessage);
