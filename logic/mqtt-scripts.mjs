@@ -30,6 +30,12 @@ const context = vm.createContext({
       verbosity: 'error',
     },
     './package.json': {}
+    // log: {
+      // handle errors etc
+      // for script errors:
+      // scrape stack from error with [] around it. 
+      // log.error([name + ' ' + stack.join('\n')]);
+    // }
   }),
   process: { on() {} },
   setTimeout,
