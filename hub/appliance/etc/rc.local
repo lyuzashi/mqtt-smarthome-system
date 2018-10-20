@@ -55,9 +55,8 @@ rm -r node*
 
 # Provide bind to lower ports and BTL permissions to node binary
 setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
-# Provide audio permissions to user
-usermod -a -G audio hal
-# Provide access to web ports
+usermod -a -G audio hal # Provide audio permissions to user
+usermod -a -G gpio hal # Provide gpio permissions to user
 
 # Setup global modules directory
 mkdir "${NEWHOME}/.npm-packages"

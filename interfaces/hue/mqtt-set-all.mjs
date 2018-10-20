@@ -9,7 +9,7 @@ import characteristics from './characteristics';
 
   Object.keys(characteristics).forEach(characteristicName => {
     const characteristic = characteristics[characteristicName];
-    mqtt.subscribe(`lights/set/hue/${characteristicName}`,
+    mqtt.subscribe(`lights/set/all/${characteristicName}`,
       (topic, value) => {
         all[characteristicName] = characteristic.map(value);
         requestSave(client.groups, all);
