@@ -4,4 +4,5 @@ import './logic';
 import './interfaces/midi';
 import './interfaces/hap';
 import './interfaces/hue';
+import './interfaces/gpio';
 import './visualizations/web';
