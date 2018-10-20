@@ -28,6 +28,7 @@ export default class Button extends Component {
 
   handleClick(event) {
     const { onClick } = this.props;
+    if (typeof onClick !== 'function') return;
     const clickResponse = onClick(event);
     if (clickResponse instanceof Promise) {
       this.setState({ busy: true });

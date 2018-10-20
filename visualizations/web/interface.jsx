@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { Tab, Tabs, TabList, TabPanel, PersistentTabPanel } from './components/tabs';
 import PanelGroup from 'react-panelgroup';
 import Body from './components/body';
 import Config from './components/config';
@@ -10,7 +10,7 @@ export default class App extends Component {
     return (
       <Fragment>
         <Body />
-        <Tabs>
+        <Tabs onSelect={(id) => console.log('selected', id)}>
           <TabList>
             <Tab>🎛</Tab>
             <Tab>⌨️</Tab>
@@ -18,14 +18,14 @@ export default class App extends Component {
           <TabPanel>
             Direct controls
           </TabPanel>
-          <TabPanel forceRender>
+          <PersistentTabPanel>
             <PanelGroup direction="column" borderColor="grey">
               <Config />
               <div style={{width: '100%', height: '100%'}}>
                 <XTerm />
               </div>
             </PanelGroup>
-          </TabPanel>
+          </PersistentTabPanel>
         </Tabs>
       </Fragment>
     );

@@ -1,6 +1,19 @@
 import Mosca from 'mosca';
 
 export default class Server extends Mosca.Server {
+
+  constructor(...opts) {
+    super({
+      backend: {
+        type: 'redis',
+      },
+      persistence: {
+        factory: Mosca.persistence.Redis
+      }
+    })
+    // TODO merge ...opts
+  }
+
   connect() {
     this.emit('connect');
     return this;

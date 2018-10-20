@@ -6,6 +6,7 @@ const filename = 'mqtt-smarthome-system.json';
 const read = promisify(fs.readFile);
 const write = promisify(fs.writeFile);
 
+// If these cannot be accessed (network down), then it needs to throw
 export const get = (key) => read(filename)
   .then(JSON.parse)
   .then(keys => key ? keys[key] : keys);

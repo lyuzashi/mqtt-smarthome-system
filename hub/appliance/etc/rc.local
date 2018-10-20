@@ -30,7 +30,7 @@ apt update
 apt full-upgrade -y
 
 # Install binary deps 
-apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin -y
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin redis-server -y
 apt install --no-install-recommends yarn -y
 
 # Setup user
