@@ -1,6 +1,11 @@
+# Array of GPIO accessories
+# topic - the status topic to publish to for IN or set topic to OUTput
+# request - topic to request status from (IN)
+# pin - bcm pin number
+# direction - 'in' or 'out'
+# edge - INput listen for rising or falling default: both
 -
   topic: motion/status/dining
   request: motion/get/dining
   pin: 7
   direction: in
-  edge: rising
