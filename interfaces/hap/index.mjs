@@ -24,11 +24,13 @@ import shutdown from '../../system/shutdown';
       .setCharacteristic(Characteristic.Manufacturer, device.manufacturer)
       .setCharacteristic(Characteristic.Model, device.model)
       .setCharacteristic(Characteristic.SerialNumber, device.serial);
-    accessory.on('identify', (paired, callback) => {
-      mqtt.publish({
-        topic: device.identify,
-      }, callback);
-    });
+    if(device.identify) {
+      accessory.on('identify', (paired, callback) => {
+        mqtt.publish({
+          topic: device.identify,
+        }, callback);
+      });
+    }
   
     device.services.forEach(({ service: serviceName, characteristics }) => {
       // Only one of each service can be added unless subtypes are created.
