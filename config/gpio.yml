@@ -3,3 +3,4 @@
   request: motion/get/dining
   pin: 7
   direction: in
+  edge: rising

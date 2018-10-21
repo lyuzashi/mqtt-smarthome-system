@@ -17,10 +17,10 @@ gpio.on('change', (channel, value) => {
   mqtt.publish({topic, payload: String(value)});
 })
 
-config.forEach(async ({ topic, request, pin, direction }) => {
+config.forEach(async ({ topic, request, pin, direction, edge = 'both' }) => {
   switch(direction) {
     case 'in':
-      await gpio.promise.setup(pin, gpio.DIR_IN, gpio.EDGE_BOTH);
+      await gpio.promise.setup(pin, gpio.DIR_IN, edge);
       mqtt.subscribe(request, async () => {
         const value = await gpio.promise.read(pin);
         mqtt.publish({topic, payload: String(value)});
