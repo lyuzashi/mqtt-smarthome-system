@@ -66,4 +66,20 @@ desk-right:
           get:
             topic: lights/status/Desk right/colorTemp
             request: lights/get/Desk right/colorTemp
+dining-motion:
+  name: Dining Motion Sensor
+  manufactuer: RobotJamie
+  model: 1
+  serial: 1
+  services:
+    - service: MotionSensor
+      characteristics:
+        MotionDetected:
+          get:
+            topic: motion/status/dining
+            request: motion/get/dining
+            map:
+              true: true
+              false: false
+
 
