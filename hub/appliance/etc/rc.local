@@ -26,12 +26,24 @@ sudo netselect-apt
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 apt-get remove cmdtest yarn -y
+
+# Prepare install influx
+curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add - 
+source /etc/os-release
+test $VERSION_ID = "7" && echo "deb https://repos.influxdata.com/debian wheezy stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+test $VERSION_ID = "8" && echo "deb https://repos.influxdata.com/debian jessie stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+test $VERSION_ID = "9" && echo "deb https://repos.influxdata.com/debian stretch stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+
+# Update sources and packages
 apt update
 apt full-upgrade -y
 
-# Install binary deps 
-apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin redis-server -y
+# Install binary deps and support software
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin redis-server influxdb chronograf telegraf kapacitor -y
 apt install --no-install-recommends yarn -y
+
+# Start influx - might happen automatically
+sudo systemctl start influxdb chronograf telegraf kapacitor
 
 # Setup user
 USERNAME=hal
