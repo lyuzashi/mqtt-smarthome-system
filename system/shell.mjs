@@ -17,7 +17,7 @@ class Context extends EventEmitter{
 export const context = new Context();
 
 export const start = ({ input = process.stdin, output = process.stdout } = {}) => {
-  const repl = REPL.start({ prompt: '> ', input, output, terminal: true, useGlobal: true });
+  const repl = REPL.start({ prompt: '> ', input, output, terminal: true });
   Object.assign(repl.context, context);
   context.on('set', additionalContext => Object.assign(repl.context, additionalContext));
   return repl;
