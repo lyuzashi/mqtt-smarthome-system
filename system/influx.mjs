@@ -1,5 +1,5 @@
 import Influx from 'influx';
-import mqtt from 'mqtt';
+import mqtt from './mqtt';
 
 const influx = new Influx.InfluxDB();
 const database = 'mqtt-smarthome-system';
