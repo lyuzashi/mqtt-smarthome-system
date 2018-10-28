@@ -1,0 +1,20 @@
+database: mqtt-smarthome-system
+smarthomeTopic: +toplevelname/+method/+item/#interfaces
+map:
+  - from: 
+      toplevelname: lights
+      method: status
+      interfaces: [ on ]
+      value: 'false'
+    to:
+      interfaces: [ brightness ]
+      value: 0
+      override: true
+  - from: 
+      toplevelname: lights
+      method: status
+      interfaces: [ on ]
+      value: 'true'
+    to:
+      interfaces: [ brightness ]
+      restore: true

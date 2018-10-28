@@ -25,16 +25,16 @@ const stateCharacteristics = Object.keys(characteristics).filter(characteristic 
     const lights = await client.lights.getAll();
     lights.forEach(light => {
       const state = createState(light.id);
-      stateCharacteristics.forEach(characteristic => {
-        const before = state[characteristic];
-        const after = light[characteristic];
+      stateCharacteristics.forEach(characteristicName => {
+        const before = state[characteristicName];
+        const after = light[characteristicName];
         if (before !== after) {
           mqtt.publish({
-            topic: `lights/status/${light.name}/${characteristic}`,
+            topic: `lights/status/${light.name}/${characteristicName}`,
             payload: String(after),
             retain: true,
           });
-          state[characteristic] = after;
+          state[characteristicName] = after;
         }
       });
     });

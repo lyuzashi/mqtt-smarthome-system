@@ -10,7 +10,7 @@ export default class Client extends EventEmitter {
       switch (message.method) {
         case 'message':
           const { topic, payload, msg } = message;
-          this.emit('message', topic, deserialise(payload), msg);
+          this.emit('message', topic, `${deserialise(payload)}`, msg);
         break;
       }
     });
