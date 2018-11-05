@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Tab, Tabs, TabList, TabPanel, PersistentTabPanel } from './components/tabs';
 import PanelGroup from 'react-panelgroup';
+import Controls from './components/controls';
 import Body from './components/body';
 import Config from './components/config';
 import XTerm from './components/xterm';
@@ -16,7 +17,7 @@ export default class App extends Component {
             <Tab>⌨️</Tab>
           </TabList>
           <TabPanel>
-            Direct controls
+            <Controls />
           </TabPanel>
           <PersistentTabPanel>
             <PanelGroup direction="column" borderColor="grey">
