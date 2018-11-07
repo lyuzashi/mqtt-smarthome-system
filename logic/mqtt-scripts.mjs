@@ -28,6 +28,8 @@ const context = vm.createContext({
       disableWatch: true,
       name: 'logic',
       verbosity: 'error',
+      latitude: -33.831680,
+      longitude: 151.222360,
     },
     './package.json': {}
     // log: {
