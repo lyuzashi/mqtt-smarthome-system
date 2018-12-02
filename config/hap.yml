@@ -93,6 +93,7 @@ garden-lights:
         On:
           set:
             topic: relays/set/GardenLights/on
+            map:
               true: 1 
               false: 0
           get:
