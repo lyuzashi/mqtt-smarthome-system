@@ -81,5 +81,24 @@ dining-motion:
             map:
               true: true
               false: false
-
+garden-lights:
+  name: Garden Lights
+  manufactuer: RobotJamie
+  model: 1
+  serial: 1
+  identify: relays/set/GardenLights/led
+  services:
+    - service: Outlet
+      characteristics:
+        On:
+          set:
+            topic: relays/set/GardenLights/on
+              true: 1 
+              false: 0
+          get:
+            topic: relays/status/GardenLights/on
+            request: relays/get/GardenLights/on
+            map:
+              1: true
+              0: false
 
