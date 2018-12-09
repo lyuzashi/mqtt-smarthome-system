@@ -53,6 +53,7 @@
     "mosca/leveldown/nan": "^2.11.0",
     "mosca/ascoltatori/kerberos/nan": "^2.11.0",
     "mosca/ascoltatori/zmq/nan": "^2.11.0",
-    "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0"
+    "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0",
+    "mosca/leveldown": "^4.0.1"
   }
 }
