@@ -22,7 +22,7 @@
     "mosca": "^2.8.3",
     "mqtt-pattern": "^1.2.0",
     "mqtt-scripts": "^1.1.0",
-    "nan": "^2.10.0",
+    "nan": "^2.11.0",
     "nat-upnp": "^1.1.1",
     "node-upnp-utils": "^0.0.5",
     "parcel-bundler": "^1.10.2",
@@ -48,5 +48,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/lyuzashi/mqtt-smarthome-system.git"
+  },
+  "resolutions": {
+    "mosca/leveldown/nan": "^2.11.0",
+    "mosca/ascoltatori/kerberos/nan": "^2.11.0",
+    "mosca/ascoltatori/zmq/nan": "^2.11.0",
+    "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0"
   }
 }
