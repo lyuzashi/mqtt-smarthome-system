@@ -4599,6 +4599,14 @@ mdn-data@~1.1.0:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-1.1.4.tgz#50b5d4ffc4575276573c4eedb8780812a8419f01"
   integrity sha512-FSYbp3lyKjyj3E7fMl6rYvUdX0FBXaluGqlFoYESWQlyUTq8R+wp0rkFxoYFqZlHCvsUXGjyJmLQSnXToYhOSA==
 
+mdns@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/mdns/-/mdns-2.4.0.tgz#dc9d7152086a2ca8f1ed81eb451a7ee4cb456940"
+  integrity sha512-t58BWOyagGpATg8LlALpnqjfT7VHBq6/HCLfU/SK0Ox+enx3Cut7voWB9DPwjrdoccql6Z6ZY1rwuBX93t0Vpw==
+  dependencies:
+    bindings "~1.2.1"
+    nan "^2.10.0"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
