@@ -102,4 +102,34 @@ garden-lights:
             map:
               1: true
               0: false
-
+lounge-lanterns:
+  name: Lounge Lanterns
+  manufactuer: RobotJamie
+  model: 1
+  serial: 1
+  identify: lights/set/Lanterns/led
+  services:
+    - service: Lightbulb
+      characteristics:
+        On:
+          set:
+            topic: lights/set/Lanterns 1/on
+            map:
+              true: 1 
+              false: 0
+          get:
+            topic: lights/status/Lanterns 1/on
+            request: lights/get/Lanterns 1/on
+            map:
+              1: true
+              0: false
+        Brightness:
+          set:
+            topic: lights/set/Lanterns 1/brightness
+            map:
+              0-100: 0-1024
+          get:
+            topic: lights/status/Lanterns 1/brightness
+            request: lights/get/Lanterns 1/brightness
+            map:
+              0-1024: 0-100
