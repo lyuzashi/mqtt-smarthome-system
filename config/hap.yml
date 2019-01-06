@@ -127,9 +127,9 @@ lounge-lanterns:
           set:
             topic: lights/set/Lanterns 1/brightness
             map:
-              0-100: 0-1024
+              0-100: 0-1023
           get:
             topic: lights/status/Lanterns 1/brightness
             request: lights/get/Lanterns 1/brightness
             map:
-              0-1024: 0-100
+              0-1023: 0-100

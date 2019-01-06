@@ -14,7 +14,6 @@ export default (() => {
     return new Client();
   } else {
     const server = new Server();
-    server.attachHttpServer(app, '/mqtt');
     server.on('ready', () => {
       console.log('Mosca server is up and running');
       service.start();

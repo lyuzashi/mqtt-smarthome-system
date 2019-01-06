@@ -1,10 +1,6 @@
-import expressWebSocket from 'express-ws';
 import websocket from 'websocket-stream/stream';
 import { start } from '../../system/shell';
-import app from '../../system/web';
-import server from './ssl';
-
-expressWebSocket(app, server, { perMessageDeflate: false });
+import { app } from './ws';
 
 app.ws('/repl', function(ws, req) {
   const stream = websocket(ws, { binary: true });

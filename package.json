@@ -38,7 +38,6 @@
     "simple-git": "^1.96.0",
     "styled-components": "^4.0.0-beta.7",
     "truthy": "^0.0.1",
-    "ursa": "jkuri/ursa#node10",
     "util": "^0.11.0",
     "webdav-fs": "^1.11.0",
     "websocket-stream": "^5.1.2",
