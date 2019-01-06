@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 
 const subscriptions = new Map();
 const url = new URL('/mqtt', window.location.href);
-url.protocol = 'ws';
+url.protocol = url.protocol.match(/s$/) ? 'wss' : 'ws';
 
 export const client = mqtt.connect(url.href);
 
