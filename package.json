@@ -24,6 +24,7 @@
     "mqtt-scripts": "^1.1.0",
     "nan": "^2.11.0",
     "nat-upnp": "^1.1.1",
+    "noble": "^1.9.1",
     "node-upnp-utils": "^0.0.5",
     "parcel-bundler": "^1.10.2",
     "proxyquire": "^2.1.0",
@@ -42,7 +43,8 @@
     "webdav-fs": "^1.11.0",
     "websocket-stream": "^5.1.2",
     "xterm": "^3.7.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "xpc-connection": "sandeepmistry/node-xpc-connection#26/head"
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,7 @@
     "mosca/ascoltatori/kerberos/nan": "^2.11.0",
     "mosca/ascoltatori/zmq/nan": "^2.11.0",
     "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0",
-    "mosca/leveldown": "^4.0.1"
+    "mosca/leveldown": "^4.0.1",
+    "xpc-connection": "sandeepmistry/node-xpc-connection#26/head"
   }
 }
