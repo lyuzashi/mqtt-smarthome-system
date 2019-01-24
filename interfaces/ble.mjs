@@ -34,11 +34,15 @@ noble.on('discover', async function(peripheral) {
 });
 
 const explore = async peripheral => {
-  console.log('connecting to', peripheral.uuid);
-  await peripheral.connect();
-  console.log(peripheral);
-  const services = await peripheral.discoverServices();
-  console.log(services);
+  try {
+    console.log('connecting to', peripheral.uuid, peripheral);
+    await peripheral.connect();
+    console.log(peripheral);
+    const services = await peripheral.discoverServices();
+    console.log(services);
+  } catch (e) {
+    console.log(e);
+  }
 };
     //     var serviceIndex = 0;
 
