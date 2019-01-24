@@ -681,7 +681,7 @@
     buffer-equal-constant-time "^1.0.1"
     debug "^3.1.0"
 
-"@s524797336/noble-mac@^0.0.3":
+"@s524797336/noble-mac@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@s524797336/noble-mac/-/noble-mac-0.1.0.tgz#0341232cb33cbe4d9539ceae6c78bc0d01b814dc"
   integrity sha512-2fhawrXyt+Qg02fSL7k4A+VV+ztrDY+Y4RhG9DUbrQHpgrJjsNmajxnDQUcHQcYn196LR2P27R4iojKnAbflLw==
