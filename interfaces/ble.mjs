@@ -1,9 +1,9 @@
-import noble from 'noble';
-import Peripheral from 'noble/lib/peripheral';
-import { promisify } from 'util';
+import noble from '@s524797336/noble-mac';
+// import Peripheral from 'noble/lib/peripheral';
+// import { promisify } from 'util';
 
-Peripheral.prototype.connect = promisify(Peripheral.prototype.connect);
-Peripheral.prototype.discoverServices = promisify(Peripheral.prototype.discoverServices);
+// Peripheral.prototype.connect = promisify(Peripheral.prototype.connect);
+// Peripheral.prototype.discoverServices = promisify(Peripheral.prototype.discoverServices);
 // noble.discoverCharacteristics = promisify(noble.discoverCharacteristics);
 
 noble.on('stateChange', function(state) {
@@ -36,10 +36,10 @@ noble.on('discover', async function(peripheral) {
 const explore = async peripheral => {
   try {
     console.log('connecting to', peripheral.uuid, peripheral);
-    await peripheral.connect();
-    console.log(peripheral);
-    const services = await peripheral.discoverServices();
-    console.log(services);
+    // await peripheral.connect();
+    // console.log(peripheral);
+    // const services = await peripheral.discoverServices();
+    // console.log(services);
   } catch (e) {
     console.log(e);
   }
