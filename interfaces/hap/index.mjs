@@ -63,7 +63,12 @@ import shutdown from '../../system/shutdown';
                   return callback(null, subscriptions.get(event.topic));
                 }
                 mqtt.publish({ topic: event.request });
-                return subscriptions.once(event.topic, value => callback(null, value));
+                const getCallback = value => callback(null, value);
+                const timeout = setTimeout(() => {
+                  callback(`Timeout waiting for ${event.topic}`);
+                  subscriptions.off(event.topic, getCallback);
+                }, 5000);
+                return subscriptions.once(event.topic, getCallback);
               })
             break;
           }

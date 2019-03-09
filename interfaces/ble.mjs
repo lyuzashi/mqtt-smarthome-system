@@ -35,8 +35,19 @@ noble.on('discover', async function(peripheral) {
 
 const explore = async peripheral => {
   try {
-    console.log('connecting to', peripheral.uuid, peripheral);
+    console.log('connecting to', peripheral.uuid);
     // await peripheral.connect();
+    peripheral.connect((err) => {
+      console.log('connected.', err, peripheral);
+      // peripheral.discoverAllServicesAndCharacteristics((err, services, characteristics) => {
+      //   services.find(({ type }) => type == 'org.bluetooth.characteristic.model_number_string').read((err, data) => {
+      //     console.log('discovered.', err)
+          peripheral.disconnect(() => {
+            console.log('Disconnected.', /*services, characteristics, data*/);
+          });
+      //   })
+      // });
+    });
     // console.log(peripheral);
     // const services = await peripheral.discoverServices();
     // console.log(services);
