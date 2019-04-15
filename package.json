@@ -7,6 +7,7 @@
   "dependencies": {
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",
+    "@s524797336/noble-mac": "^0.1.0",
     "auto-sni": "^2.3.2",
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
@@ -24,8 +25,8 @@
     "mqtt-scripts": "^1.1.0",
     "nan": "^2.11.0",
     "nat-upnp": "^1.1.1",
-    "@s524797336/noble-mac": "^0.1.0",
     "node-upnp-utils": "^0.0.5",
+    "osc": "^2.2.4",
     "parcel-bundler": "^1.10.2",
     "proxyquire": "^2.1.0",
     "react": "^16.5.1",
