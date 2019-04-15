@@ -1,6 +1,7 @@
 import hap from './hap-nodejs-webfs';
 import YAML from 'yamljs';
 import path from 'path';
+import os from 'os';
 import EventedMap from '../../system/common/evented-map';
 import mapper from '../../system/common/mapper';
 import root from '../../root';
@@ -14,7 +15,7 @@ import shutdown from '../../system/shutdown';
 
   const { uuid, Bridge, Accessory, Service, Characteristic } = await hap;
   
-  const bridge = new Bridge('HAL9000', uuid.generate('HAL9000'));
+  const bridge = new Bridge(os.hostname(), uuid.generate(os.hostname()));
   
   Object.keys(config).forEach(namespace => {
     const device = config[namespace];

@@ -39,7 +39,7 @@ apt update
 apt full-upgrade -y
 
 # Install binary deps and support software
-apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin redis-server influxdb libavahi-compat-libdnssd-dev -y
+apt install libasound2-dev alsa-base alsa-utils bluetooth libbluetooth-dev libudev-dev git libcap2-bin redis-server influxdb libavahi-compat-libdnssd-dev vlan -y
 apt install --no-install-recommends yarn -y
 
 # Start influx - might happen automatically
@@ -93,6 +93,12 @@ FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
 cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
 $FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --script $NEWHOME/mqtt-smarthome-system/start.sh --foreverOptions  " -c '$NEWHOME/mqtt-smarthome-system/start.sh'" 
 
+# Setup VLAN
+echo '8021q' | tee -a /etc/modules > /dev/null
+modprobe 8021q
+ip link add link eth0 name eth0.6 type vlan id 6
+
+# Flag script as done
 touch /boot/pi-install.done
 
 # Modules for node won't be available until reboot. Can they be installed though?
