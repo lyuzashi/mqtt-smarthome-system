@@ -28,8 +28,8 @@ const context = vm.createContext({
       disableWatch: true,
       name: 'logic',
       verbosity: 'error',
-      latitude: -33.831680,
-      longitude: 151.222360,
+      l: -33.831680,
+      m: 151.222360,
     },
     './package.json': {}
     // log: {
@@ -39,6 +39,7 @@ const context = vm.createContext({
       // log.error([name + ' ' + stack.join('\n')]);
     // }
   }),
+  Date,
   process: { on() {} },
   setTimeout,
   setInterval,
