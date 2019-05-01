@@ -22,7 +22,7 @@ export const subscribe = topic => {
 export const unsubscribe = (topic, ...callbacks) => {
   if (!subscriptions.has(topic)) return;
   const subscription = subscriptions.get(topic);
-  callbacks.forEach(callback => subscription.off(topic, callback));
+  callbacks.forEach(callback => subscription.removeListener(topic, callback));
   if (subscription.listenerCount() === 0) {
     subscriptions.delete(topic);
     client.unsubscribe(topic);
