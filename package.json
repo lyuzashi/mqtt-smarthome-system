@@ -22,7 +22,7 @@
     "monaco-editor": "^0.14.3",
     "mosca": "^2.8.3",
     "mqtt-pattern": "^1.2.0",
-    "mqtt-scripts": "^1.1.0",
+    "mqtt-scripts": "^1.2.2",
     "nan": "^2.11.0",
     "nat-upnp": "^1.1.1",
     "node-upnp-utils": "^0.0.5",

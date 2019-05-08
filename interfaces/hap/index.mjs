@@ -42,7 +42,9 @@ import shutdown from '../../system/shutdown';
         Object.keys(characteristicDefinition).forEach(eventName => {
           const event = characteristicDefinition[eventName];
           // Might need to create a characteristic if it's not part of the service defaults
+          service.addOptionalCharacteristic(Characteristic.StatusFault);
           const characteristic = service.getCharacteristic(Characteristic[characteristicName]);
+          const active = service.getCharacteristic(Characteristic.StatusFault);
           const map = event.map || {};
           switch(eventName) {
             case 'set':
@@ -54,21 +56,59 @@ import shutdown from '../../system/shutdown';
               });
             break;
             case 'get':
+              /* TODO
+              It appears Apple HAP does not support setting characteristics with an error state 
+              at the protocol level. This means it is not possible to switch unavailable devices to
+              "not responding" unless they time out during a "get" request. The response waits for
+              all requested values; at which time those with an Error value are deemed "not responding".
+              Waiting for a timeout while preventing other devices from being used makes for a bad
+              experience.
+
+              The concept now is to use the internal cache for all values returned by the get request.
+              This will make it instantly responsive. At the same time, sending a get message to 
+              each device will trigger a cache update when they respond with status.
+              The last step would be to time the period between the last status response and a get 
+              message, allowing the cache to update itself with an error value for non responsive
+              devices.
+              */
               subscriptions.map(event.topic, event.map);
               mqtt.subscribe(event.topic, (topic, value) => {
                 subscriptions.set(event.topic, value);
                 characteristic.updateValue(subscriptions.get(event.topic));
               });
               characteristic.on(eventName, callback => {
+                console.log(new Date().toLocaleTimeString(), '🥑requesting', event.topic, 'in cache:', subscriptions.has(event.topic));
+                // Short circuit response if state fresh in system cache
                 if (subscriptions.has(event.topic)) {
+                  console.log(new Date().toLocaleTimeString(), '🦄 Retrieved cached value for', event.topic, subscriptions.get(event.topic));
                   return callback(null, subscriptions.get(event.topic));
                 }
+                // Respond immediately with default value to keep HAP responsive while value is retrieved
+                // callback(null, characteristic.getDefaultValue());
+                // callback('Waiting to retrieve value');
+                // While waiting, callback with characteristic.getDefaultValue()
+                // and then update with characteristic.updateValue() which also works with an Error 
                 mqtt.publish({ topic: event.request });
-                const getCallback = value => callback(null, value);
                 const timeout = setTimeout(() => {
-                  callback(`Timeout waiting for ${event.topic}`);
+                  console.warn(new Date().toLocaleTimeString(), `Timeout waiting for ${event.topic}`);
+                  // callback(`Timeout waiting for ${event.topic}`);
+                  // characteristic.updateValue(Error(`Timeout waiting for ${event.topic}`));
+                  callback(null, characteristic.getDefaultValue());
+                  active.setValue(1);
+                  console.log(service, characteristic, active);
+                  // accessory.updateReachability(false);
                   subscriptions.off(event.topic, getCallback);
+                  // HAPServer.Status.SERVICE_COMMUNICATION_FAILURE
+
+                  characteristic.updateValue(new Error("Not Responding"));
                 }, 5000);
+                const getCallback = value => {
+                  clearTimeout(timeout);
+                  console.log(new Date().toLocaleTimeString(), '💐 Retrieved value for', event.topic, value);
+                  // subscriptions.set(event.topic, value);
+                  // characteristic.updateValue(subscriptions.get(event.topic));
+                  callback(null, value);
+                }
                 return subscriptions.once(event.topic, getCallback);
               })
             break;

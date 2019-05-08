@@ -1,9 +1,10 @@
+const os = require('os');
 const proxyquire = require('proxyquire');
 const { fs: memfs, vol } = require('memfs');
 
 module.exports = (fs) => new Promise((resolve, reject) => {
 
-  const filename = 'hap.json';
+  const filename = `${os.hostname()}-hap.json`;
   const storage = proxyquire('node-persist', { fs: Object.assign(memfs, { '@global': true }) });
   const persistSync = storage.persistSync;
   
