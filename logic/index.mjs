@@ -4,6 +4,7 @@ import fork from '../system/fork';
 import attach from '../system/mqtt/attach';
 import app from '../system/web';
 import shutdown from '../system/shutdown';
+import fs from '../system/common/webdav-fs';
 
 let child;
 
@@ -18,7 +19,6 @@ const terminate = () => {
   child.kill();
 }
 
-start();
 shutdown.on('exit', terminate);
 
 app.post('/restart-logic', (req, res) => {
@@ -26,3 +26,11 @@ app.post('/restart-logic', (req, res) => {
   res.end();
 });
 
+(async () => {
+  try {
+    await fs.statAwait('logic');
+  } catch (error) {
+    fs.mkdirAwait('logic');
+  }
+  start();
+})();

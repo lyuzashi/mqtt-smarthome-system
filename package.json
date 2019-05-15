@@ -1,7 +1,7 @@
 {
   "scripts": {
     "mjs": "node --no-warnings --experimental-modules --experimental-repl-await",
-    "start": "yarn mjs main.mjs",
+    "start": "DEBUG=smarthome* yarn mjs main.mjs",
     "shell": "yarn mjs system/cli.mjs"
   },
   "dependencies": {
@@ -9,6 +9,7 @@
     "@octokit/webhooks": "^4.0.0",
     "@s524797336/noble-mac": "^0.1.0",
     "auto-sni": "^2.3.2",
+    "debug": "^4.1.1",
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
     "hap-nodejs": "^0.4.47",
