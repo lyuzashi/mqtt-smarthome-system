@@ -12,12 +12,19 @@ const write = promisify(fs.writeFile);
 export const get = (key) => read(filename)
   .then(JSON.parse)
   .then(keys => key ? keys[key] : keys)
-  .catch(error => { debug('Failed to get key %s, %o', key, error.message); throw error });
+  .catch(error => {
+    debug('Failed to get key %s, %s', key, error.message);
+    throw error
+  });
 
 export const set = (key, value) => get()
   .then(document => Object.assign(document || {},
     'object' === typeof key ? key : { [key]: value }))
   .then(document => JSON.stringify(document, null, 2))
-  .then(document => write(filename, document));
+  .then(document => write(filename, document))
+  .catch(error => {
+    debug('Failed to set key %s, %s', key, error.message);
+    throw error
+  });
 
 export default get();

@@ -1,12 +1,17 @@
 import vm from 'vm';
 import { readFileSync } from 'fs';
 import { dirname } from 'path';
+import bug from 'debug';
 import mqtt from '../system/mqtt';
 import fs from '../system/common/webdav-fs';
 import require from '../system/common/require';
 
+const debug = bug('smarthome:logic:scripts');
+
   // Run only once
 function start() {
+  log.stdout = (file, message) => debug(message);
+  log.setLevel('info');
   firstConnect = false;
   sandboxModules.push(sandboxStdlib);
   loadDir(config.dir);
@@ -31,13 +36,7 @@ const context = vm.createContext({
       latitude: -33.831680,
       longitude: 151.222360,
     },
-    './package.json': {}
-    // log: {
-      // handle errors etc
-      // for script errors:
-      // scrape stack from error with [] around it. 
-      // log.error([name + ' ' + stack.join('\n')]);
-    // }
+    './package.json': {},
   }),
   console,
   Date,
@@ -48,6 +47,7 @@ const context = vm.createContext({
   clearInterval,
   Buffer,
   sandboxStdlib,
+  debug,
 });
 
 script.runInContext(context);

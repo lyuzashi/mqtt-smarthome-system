@@ -1,38 +1,40 @@
+const debug = require('debug')('smarthome:interfaces:gpio');
+
 const mock = {
   setup(channel, direction, edge, callback) {
     if (typeof direction === 'function') callback = direction;
     if (typeof edge === 'function') callback = edge;
-    console.log('GPIO setup', channel, direction, edge);
+    debug('Mock GPIO setup %d %s %s', channel, direction, edge);
     if (typeof callback === 'function') callback(null);
   },
   read(channel, callback) {
-    console.log('GPIO read', channel);
+    debug('Mock GPIO read %d', channel);
     callback(false);
   },
   write(channel, value, callback) {
-    console.log('GPIO write', channel, value);
+    debug('Mock GPIO write %d %o', channel, value);
     if (typeof callback === 'function') callback(null);
   },
   setMode(mode) {
-    console.log('GPIO set mode', mode);
+    debug('Mock GPIO set mode %o', mode);
   },
   destroy() {} ,
   input(...args) { return mock.read(...args); },
   output(...args) { return mock.write(...args); },
   on(event, callback) {
-    console.log('GPIO listening', event);
+    debug('Mock GPIO listening %s', event);
   },
   promise: {
     setup(channel, direction, edge) {
-      console.log('GPIO setup', channel, direction, edge);
+      debug('Mock GPIO setup %d %s %s', channel, direction, edge);
       return Promise.resolve();
     },
     read(channel) {
-      console.log('GPIO read', channel);
+      debug('Mock GPIO read %d', channel);
       return Promise.resolve(false);
     },
     write(channel, value) {
-      console.log('GPIO write', channel, value);
+      debug('Mock GPIO write %d %o', channel, value);
       return Promise.resolve();
     },
     input(...args) { return mock.promise.read(...args); },

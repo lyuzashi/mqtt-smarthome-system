@@ -1,4 +1,5 @@
 {
+  "license": "ISC",
   "scripts": {
     "mjs": "node --no-warnings --experimental-modules --experimental-repl-await",
     "start": "DEBUG=smarthome* yarn mjs main.mjs",

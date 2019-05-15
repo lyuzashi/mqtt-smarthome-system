@@ -10,14 +10,12 @@ import listen from './git-hook-listen';
 const debug = bug('smarthome:system:git');
 
 (async () => {
-  console.log('Getting settings');
   const { 'github-hook-token': token, domain  } = await get();
   const url = `https://${domain}/github`;
-  console.log('got', token, domain);
   const octokit = new Octokit();
 
   octokit.authenticate({ type: 'token', token });
-  console.log(octokit);
+
   const { data: hooks } = await octokit.repos.getHooks({ owner, repo });
   const existingHook = hooks.find(({config: { url: existingUrl }}) => url === existingUrl);
 
@@ -39,8 +37,7 @@ const debug = bug('smarthome:system:git');
   });
 
   await set('github-hook-id', hook_id);
-  console.log('finished hook');
 })().catch(error => {
-  debug('Failed to create GitHub webhook %o', error);
+  debug('Failed to create GitHub webhook %s', error.message);
 });
 
