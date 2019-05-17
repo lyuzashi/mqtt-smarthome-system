@@ -71,44 +71,30 @@ import shutdown from '../../system/shutdown';
               message, allowing the cache to update itself with an error value for non responsive
               devices.
               */
+              // Use topic mapping in subscriptions EventedMap
               subscriptions.map(event.topic, event.map);
-              mqtt.subscribe(event.topic, (topic, value) => {
-                subscriptions.set(event.topic, value);
-                characteristic.updateValue(subscriptions.get(event.topic));
-              });
+              // Listen to MQTT topic and update subscriptions EventedMap value
+              mqtt.subscribe(event.topic, (topic, value) => subscriptions.set(event.topic, value));
+              // Listen to changes in subscriptions EventedMap and send to HAP characteristic
+              subscriptions.on(event.topic, value => characteristic.updateValue(value));
+              // On startup, request current value
+              mqtt.publish({ topic: event.request });
+
               characteristic.on(eventName, callback => {
-                console.log(new Date().toLocaleTimeString(), '🥑requesting', event.topic, 'in cache:', subscriptions.has(event.topic));
-                // Short circuit response if state fresh in system cache
-                if (subscriptions.has(event.topic)) {
-                  console.log(new Date().toLocaleTimeString(), '🦄 Retrieved cached value for', event.topic, subscriptions.get(event.topic));
-                  return callback(null, subscriptions.get(event.topic));
-                }
                 // Respond immediately with default value to keep HAP responsive while value is retrieved
-                // callback(null, characteristic.getDefaultValue());
-                // callback('Waiting to retrieve value');
-                // While waiting, callback with characteristic.getDefaultValue()
-                // and then update with characteristic.updateValue() which also works with an Error 
+                if (subscriptions.has(event.topic)) {
+                  callback(null, subscriptions.get(event.topic));
+                } else {
+                  callback(null, characteristic.getDefaultValue());
+                }
+                // Send another get message and provide a timeout before setting to error state
                 mqtt.publish({ topic: event.request });
                 const timeout = setTimeout(() => {
                   console.warn(new Date().toLocaleTimeString(), `Timeout waiting for ${event.topic}`);
-                  // callback(`Timeout waiting for ${event.topic}`);
-                  // characteristic.updateValue(Error(`Timeout waiting for ${event.topic}`));
-                  callback(null, characteristic.getDefaultValue());
-                  active.setValue(1);
-                  console.log(service, characteristic, active);
-                  // accessory.updateReachability(false);
                   subscriptions.off(event.topic, getCallback);
-                  // HAPServer.Status.SERVICE_COMMUNICATION_FAILURE
-
-                  characteristic.updateValue(new Error("Not Responding"));
+                  subscriptions.set(event.topic, new Error('Not Responding'));
                 }, 5000);
-                const getCallback = value => {
-                  clearTimeout(timeout);
-                  console.log(new Date().toLocaleTimeString(), '💐 Retrieved value for', event.topic, value);
-                  // subscriptions.set(event.topic, value);
-                  // characteristic.updateValue(subscriptions.get(event.topic));
-                  callback(null, value);
-                }
+                const getCallback = () => clearTimeout(timeout);
                 return subscriptions.once(event.topic, getCallback);
               })
             break;
