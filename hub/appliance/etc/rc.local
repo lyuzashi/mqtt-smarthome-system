@@ -53,6 +53,10 @@ useradd -m $USERNAME
 usermod -s /bin/bash hal
 NEWHOME=$(eval echo ~$USERNAME)
 
+# Turn off login warnings
+rm /etc/profile.d/sshpwd.sh 
+rm /etc/profile.d/wifi-country.sh 
+
 # Download current codebase
 su - hal -c "git clone https://github.com/lyuzashi/mqtt-smarthome-system.git"
 
@@ -87,7 +91,7 @@ chown hal:hal $NEWHOME/.profile
 chown hal:hal $NEWHOME/.npm-packages
 
 # Install dependencies
-sudo su - hal -c "yarn --cwd $NEWHOME/mqtt-smarthome-system"
+sudo su - hal -c "yarn install --cwd $NEWHOME/mqtt-smarthome-system"
 
 # Install service manager
 su - hal -c "npm install -g forever forever-service"
@@ -96,7 +100,7 @@ su - hal -c "npm install -g forever forever-service"
 FOREVER_SERVICE=$NEWHOME/.npm-packages/lib/node_modules/forever-service/bin/forever-service
 FOREVER=$NEWHOME/.npm-packages/lib/node_modules/forever/bin
 cd $NEWHOME/mqtt-smarthome-system # Required to set Forever Service to start in correct directory
-$FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --runAsUser hal --envVars "NODE_ENV=production DEBUG=smarthome*" --start --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions  " -c 'node --no-warnings --experimental-modules --experimental-repl-await'" 
+$FOREVER_SERVICE install mqtt-smarthome-system --foreverPath $FOREVER --runAsUser hal --envVars "NODE_ENV=production DEBUG=smarthome*" --start --script $NEWHOME/mqtt-smarthome-system/main.mjs --foreverOptions  " -c 'node --no-warnings --experimental-modules --experimental-repl-await' --workingDir $NEWHOME/mqtt-smarthome-system" 
 
 # Setup VLAN
 echo '8021q' | tee -a /etc/modules > /dev/null
