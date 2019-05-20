@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Pattern from 'mqtt-pattern';
 import truthy from 'truthy';
 import PushButton from './push-button';
@@ -30,7 +30,10 @@ export default class DeviceSwitch extends Component {
 
   update(payload) {
     const { interfaces } = this.props;
-    this.setState({ [this.interface]: this.map(payload) });
+    this.setState({
+      [this.interface]: this.map(payload),
+      [`${this.interface}-target`]: this.map(payload),
+    });
   }
 
   map(payload) {
@@ -58,6 +61,7 @@ export default class DeviceSwitch extends Component {
           publish(this.setTopic, event.target.value);
         break;
       } 
+      this.setState({ [`${this.interface}-target`]: event.target.value });
     }
   }
 
@@ -71,7 +75,10 @@ export default class DeviceSwitch extends Component {
       break;
       case 'range': 
         return (
-          <input type="range" onChange={set} value={this.state[this.interface]} />
+          <Fragment>
+            <input type="range" onChange={set} value={this.state[`${this.interface}-target`]} />
+            <progress max="100" value={this.state[this.interface]} />
+          </Fragment>
         );
       break;
     }

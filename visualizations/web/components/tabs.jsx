@@ -39,6 +39,7 @@ export const TabList = styled(ReactTabList)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(0, 0, 0, 0.7);
 `;
 
 export const TabPanel = styled(ReactTabPanel)`

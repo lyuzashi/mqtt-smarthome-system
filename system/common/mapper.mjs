@@ -6,7 +6,6 @@ const rangeRegex = /([0-9]+)-([0-9]+)/;
 
 export default (map, value) => {
   if (!map) return value; // No mapping
-  console.log('🌟 mapping', value, typeof value);
   if (typeof value === 'object') return value; // Special handling
   if (Object.hasOwnProperty.call(map, value)) return map[value] || value;  // Direct mapping
   const ranges = Object.keys(map)

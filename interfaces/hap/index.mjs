@@ -90,9 +90,7 @@ const NOT_RESPONDING = Symbol('not responding');
                 // Respond immediately with default value to keep HAP responsive while value is retrieved
                 if (subscriptions.has(event.topic)) {
                   const value = subscriptions.get(event.topic);
-                  debug('Sending %s to characteristic %s %s %s', value, eventName, device.name, value instanceof Error);
                   if (value instanceof Error) {
-                    debug('It is an error');
                     callback(value);
                   } else {
                     callback(null, value);
@@ -103,7 +101,7 @@ const NOT_RESPONDING = Symbol('not responding');
                 // Send another get message and provide a timeout before setting to error state
                 mqtt.publish({ topic: event.request });
                 const timeout = setTimeout(() => {
-                  console.warn(new Date().toLocaleTimeString(), `Timeout waiting for ${event.topic}`);
+                  debug('Timeout waiting for %s', event.topic);
                   subscriptions.off(event.topic, getCallback);
                   subscriptions.set(event.topic, new Error('Not Responding'));
                 }, 5000);

@@ -6,7 +6,6 @@ export default class Controls extends Component {
   render() {
     return (
       <Fragment>
-        <Slider />
         <DeviceSwitch top="lights" item="Desk Left" interfaces="on" />
         <DeviceSwitch top="lights" item="Desk Left" interfaces="brightness" style="range" />
       </Fragment>

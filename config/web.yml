@@ -1,0 +1,5 @@
+lights:
+  - name: Desk Left
+  - name: Desk Lamp
+    capabilities:
+      - color
