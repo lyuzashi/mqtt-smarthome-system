@@ -2,11 +2,17 @@ import hap from './hap-nodejs-webfs';
 import YAML from 'yamljs';
 import path from 'path';
 import os from 'os';
+import bug from 'debug';
 import EventedMap from '../../system/common/evented-map';
 import mapper from '../../system/common/mapper';
 import root from '../../root';
 import mqtt from '../../system/mqtt';
 import shutdown from '../../system/shutdown';
+import { context } from '../../system/shell';
+
+const debug = bug('smarthome:interfaces:hap');
+
+const NOT_RESPONDING = Symbol('not responding');
 
 (async () => {
 
@@ -83,7 +89,14 @@ import shutdown from '../../system/shutdown';
               characteristic.on(eventName, callback => {
                 // Respond immediately with default value to keep HAP responsive while value is retrieved
                 if (subscriptions.has(event.topic)) {
-                  callback(null, subscriptions.get(event.topic));
+                  const value = subscriptions.get(event.topic);
+                  debug('Sending %s to characteristic %s %s %s', value, eventName, device.name, value instanceof Error);
+                  if (value instanceof Error) {
+                    debug('It is an error');
+                    callback(value);
+                  } else {
+                    callback(null, value);
+                  }
                 } else {
                   callback(null, characteristic.getDefaultValue());
                 }
@@ -113,7 +126,11 @@ import shutdown from '../../system/shutdown';
     pincode: "111-11-111",
     category: Accessory.Categories.BRIDGE
   });
-  
+
+  context.bridge = bridge;
+
+  debug('Published HAP bridge');
+
   shutdown.on('exit', () => bridge.unpublish());
   
 

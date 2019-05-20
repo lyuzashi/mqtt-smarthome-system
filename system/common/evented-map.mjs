@@ -38,7 +38,7 @@ export default class EventedMap extends EventEmitter {
   }
 
   set(key, value) {
-    const stringValue = String(value);
+    const stringValue = typeof value === 'object' ? value : String(value); // HERE!
     this.emit(key, this.mapped(key, stringValue));
     return this.store.set(key, stringValue);
   }

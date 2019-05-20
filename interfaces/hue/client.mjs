@@ -1,6 +1,9 @@
 import hue from 'huejay';
+import bug from 'debug';
 import keys, { set } from '../../config/keys';
 import { context } from '../../system/shell';
+
+const debug = bug('smarthome:interfaces:hue');
 
 const client = (async () => {
   const { 'hue-username': username, 'hue-ip': lastKnownIP } = await keys;
@@ -18,11 +21,13 @@ const client = (async () => {
     const newUser = new client.users.User({ deviceType: 'mqtt-smarthome-system' });
     let user;
     do {
+      debug('Creating new user on Hue Hub. Please press button');
       user = await client.users.create(newUser).catch(error =>
         (error instanceof hue.Error && error.type === 101) ? false : Promise.reject(error));
       await new Promise(resolve => setTimeout(resolve, 5000));
     } while(!user);
     client.username = user.username;
+    debug('Authenticated with Hue Hub');
     await set('hue-username', user.username);
   }
 
