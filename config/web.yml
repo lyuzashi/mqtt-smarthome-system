@@ -1,5 +1,8 @@
 lights:
   - name: Desk Left
+    capabilities:
+      - temperature
   - name: Desk Lamp
     capabilities:
       - color
+      - temperature

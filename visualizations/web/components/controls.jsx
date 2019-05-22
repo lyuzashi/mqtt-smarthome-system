@@ -1,14 +1,27 @@
 import React, { Component, Fragment } from 'react';
-import Slider from './slider';
-import DeviceSwitch from './device-switch';
+import Device from './device';
+
+const devices = {
+  lights: [{
+    name: 'Desk Left',
+    capabilities: ['brightness', 'temperature'],
+  }, {
+    name: 'Desk lamp',
+    capabilities: ['brightness', 'color', 'temperature']
+  }]
+}
 
 export default class Controls extends Component {
+  // Should read web interface YML of devices
   render() {
     return (
-      <Fragment>
-        <DeviceSwitch top="lights" item="Desk Left" interfaces="on" />
-        <DeviceSwitch top="lights" item="Desk Left" interfaces="brightness" style="range" />
-      </Fragment>
+      Object.keys(devices).map(top => (
+        <Fragment key={top}>
+          {devices[top].map(({ name, capabilities }) => (
+            <Device key={`${top}/${name}`} top={top} item={name} capabilities={['on', ...capabilities]} />
+          ))}
+        </Fragment>
+      ))
     )
   }
 }

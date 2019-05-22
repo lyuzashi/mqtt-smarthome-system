@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Pattern from 'mqtt-pattern';
 import truthy from 'truthy';
 import PushButton from './push-button';
+import Slider from './slider';
 import { publish, subscribe, unsubscribe } from '../mqtt-client';
 
 const smarthomeTopic = '+toplevelname/+method/+item/#interfaces';
@@ -39,10 +40,10 @@ export default class DeviceSwitch extends Component {
   map(payload) {
     switch(this.props.style) {
       case 'checkbox':
-        return truthy(String(payload));
+        return truthy(payload);
       break;
       case 'range':
-        return payload;
+        return parseInt(payload, 10);
       break;
     } 
   }
@@ -58,7 +59,7 @@ export default class DeviceSwitch extends Component {
           }
         break;
         case 'range':
-          publish(this.setTopic, event.target.value);
+          publish(this.setTopic, String(parseInt(event.target.value, 10)));
         break;
       } 
       this.setState({ [`${this.interface}-target`]: event.target.value });
@@ -67,18 +68,17 @@ export default class DeviceSwitch extends Component {
 
   render() {
     const { props: { style }, set } = this;
+    const actualValue = this.state[this.interface];
+    const targetValue = this.state[`${this.interface}-target`];
     switch (style) {
       case 'checkbox':
         return (
-          <PushButton on={this.state[this.interface]} onClick={set} />
+          <PushButton on={actualValue} onClick={set} />
         );
       break;
       case 'range': 
         return (
-          <Fragment>
-            <input type="range" onChange={set} value={this.state[`${this.interface}-target`]} />
-            <progress max="100" value={this.state[this.interface]} />
-          </Fragment>
+          <Slider showValue={Number(actualValue)} value={targetValue} onChange={set} />
         );
       break;
     }

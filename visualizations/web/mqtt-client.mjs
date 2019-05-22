@@ -8,20 +8,24 @@ url.protocol = url.protocol.match(/s:$/) ? 'wss' : 'ws';
 export const client = mqtt.connect(url.href);
 
 client.on('message', (topic, payload) => {
-  if (subscriptions.has(topic)) subscriptions.get(topic).emit('change', payload);
+  if (subscriptions.has(topic)) {
+    const { subscription } = subscriptions.get(topic);
+    subscription.emit('change', Buffer.from(payload).toString());
+  }
 });
 
 export const subscribe = topic => {
-  if (subscriptions.has(topic)) return subscriptions.get(topic);
+  if (subscriptions.has(topic)) return subscriptions.get(topic).onChange;
   client.subscribe(topic);
   const subscription = new EventEmitter();
-  subscriptions.set(topic, subscription);
-  return callback => subscription.on('change', callback);
+  const onChange = callback => subscription.on('change', callback);
+  subscriptions.set(topic, { subscription, onChange});
+  return onChange;
 }
 
 export const unsubscribe = (topic, ...callbacks) => {
   if (!subscriptions.has(topic)) return;
-  const subscription = subscriptions.get(topic);
+  const { subscription } = subscriptions.get(topic);
   callbacks.forEach(callback => subscription.removeListener(topic, callback));
   if (subscription.listenerCount() === 0) {
     subscriptions.delete(topic);

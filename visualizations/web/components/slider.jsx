@@ -1,20 +1,20 @@
-import React, { Component, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import styled from 'styled-components';
+import { useSpring, animated } from 'react-spring'
 
 // Use CSS vars for better performance
 const Input = styled.input.attrs({
-  style: props => ({ color: `hsl(${props.value}, 100%, 50%)` })
+  style: props => ({ color: `hsl(${props.value * 360/255}, 100%, 50%)` })
 })`
+  width: 240px;
   position: relative;
   z-index: 1;
   appearance: none;
   border-radius: 0.5em;
   background-color: rgba(0,0,0,0.1);
   height: 0.5em;
-  width: 66%;
   display: block;
   outline: none;
-  margin: 4rem auto;
   transition: color 0.05s linear;
   background: linear-gradient(to right, rgb(255,0,0), rgb(255,255,0), rgb(0,255,0),rgb(0,255,255),rgb(0,0,255),rgb(255,0,255),rgb(255,0,0));
   &:focus{
@@ -41,7 +41,7 @@ const Input = styled.input.attrs({
     width: 3em;
     border-radius: 2em;
     appearance: none;
-    background: white;
+    background: rgba(255, 255, 255, 0.65);
     cursor: pointer;
     cursor: move;
     cursor: grab;
@@ -67,7 +67,7 @@ const Input = styled.input.attrs({
     width: 3em;
     border-radius: 2em;
     appearance: none;
-    background: white;
+    background: rgba(255, 255, 255, 0.65);;
     border: 0.4em solid currentColor;
     cursor: pointer;
     cursor: move;
@@ -89,30 +89,60 @@ const Input = styled.input.attrs({
   }
 `;
 
-export default class Slider extends Component {
-  constructor() {
-    super();
-    this.setValue = this.setValue.bind(this);
-    this.state = {
-      value: 0,
-      hue: 0,
-      rgb: [0, 0, 0],
-    };
-  }
+const Progress = styled(animated.progress)`
+  width: 240px;
+`;
 
-  setValue({ target: { value } }) {
-    // const hue = Slider.calculateHue(value);
-    this.setState({ value });
-  }
+// export default class Slider extends Component {
+//   constructor() {
+//     super();
+//     this.setValue = this.setValue.bind(this);
+//     this.state = {
+//       value: 0,
+//       hue: 0,
+//       rgb: [0, 0, 0],
+//     };
+//   }
 
-  render() {
-    const { setValue, state, props } = this;
-    const { value } = state;
-    // const { } = props;
-    return (
-      <Input type="range" min="0" max="360" step="0.001" value={value} title="Drag me, baby." onChange={setValue} />
-    )
-  }
+//   setValue({ target: { value } }) {
+//     // const hue = Slider.calculateHue(value);
+//     this.setState({ value });
+//     if (this.props.onChange) this.props.onChange({target: { value: value }});
+//   }
+
+//   render() {
+//     const { setValue, state, props } = this;
+//     const { value } = state;
+//     const { showValue } = props;
+
+//     // const [value, setValue] = useState(0);
+//     // const updateValue = event => setValue(event.target.value);
+//     const spring = useSpring({ value: parseInt(showValue, 10) })
+
+//     // const { } = props;
+//     return (
+//       <Fragment>
+//         <Input type="range" min="0" max="254" step="0.001" value={value} onChange={setValue} />
+//         <animated.progress max="254" value={spring.value} />
+//       </Fragment>
+//     )
+//   }
+// }
+
+export default ({ value, showValue, onChange }) => {
+  const [target, setTarget] = useState(value);
+  const updateTarget = event => {
+    setTarget(event.target.value);
+    onChange(event);
+  };
+  const { currentValue } = useSpring({ currentValue: showValue })
+  // When not being manipulated, target can follow showValue, otherwise follow value
+  return (
+    <Fragment>
+      <Input type="range" min="0" max="254" step="0.001" value={target} onChange={updateTarget} />
+      <Progress max="254" value={currentValue} />
+    </Fragment>
+  );
 }
 
 // Slider.calculateHue = value => (( value / 100 ) * 360).toFixed(0);

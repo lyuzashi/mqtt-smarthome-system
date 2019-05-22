@@ -57,11 +57,9 @@ export class PersistentTabPanel extends ReactTabPanel {
     this.state = {
       openedOnce: false,
     }
-    console.log(this);
   }
 
   render(...args) {
-    console.log('render', args, this.state, this.props.selected);
     const { openedOnce } = this.state;
     return (<TabPanel {...this.props} forceRender={openedOnce} />)
   }
