@@ -12,6 +12,7 @@ import characteristics from './characteristics';
       const characteristic = characteristics[characteristicName];
       mqtt.subscribe(`lights/set/${light.name}/${characteristicName}`,
         (topic, value) => {
+          console.log(topic, value.toString());
           light[characteristicName] = characteristic.map(value);
           if (characteristic.fix) characteristic.fix(light, client.lights);
           requestSave(client.lights, light);

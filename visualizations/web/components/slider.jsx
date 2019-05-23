@@ -1,12 +1,9 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
 import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring'
 
 // Use CSS vars for better performance
-const Input = styled(animated.input).attrs({
-  type: 'range',
-  style: props => ({ color: `hsl(${props.value * 360 / (props.max - props.min)}, 100%, 50%)` }),
-})`
+const Input = styled(animated.input)`
   width: 240px;
   position: relative;
   z-index: 1;
@@ -14,6 +11,7 @@ const Input = styled(animated.input).attrs({
   border-radius: 0.5em;
   background-color: rgba(0,0,0,0.1);
   height: 0.5em;
+  margin:1.5em 0;
   display: block;
   outline: none;
   transition: color 0.05s linear;
@@ -90,71 +88,32 @@ const Input = styled(animated.input).attrs({
   }
 `;
 
-const Progress = styled(animated.progress)`
-  width: 240px;
-`;
-
-// export default class Slider extends Component {
-//   constructor() {
-//     super();
-//     this.setValue = this.setValue.bind(this);
-//     this.state = {
-//       value: 0,
-//       hue: 0,
-//       rgb: [0, 0, 0],
-//     };
-//   }
-
-//   setValue({ target: { value } }) {
-//     // const hue = Slider.calculateHue(value);
-//     this.setState({ value });
-//     if (this.props.onChange) this.props.onChange({target: { value: value }});
-//   }
-
-//   render() {
-//     const { setValue, state, props } = this;
-//     const { value } = state;
-//     const { showValue } = props;
-
-//     // const [value, setValue] = useState(0);
-//     // const updateValue = event => setValue(event.target.value);
-//     const spring = useSpring({ value: parseInt(showValue, 10) })
-
-//     // const { } = props;
-//     return (
-//       <Fragment>
-//         <Input type="range" min="0" max="254" step="0.001" value={value} onChange={setValue} />
-//         <animated.progress max="254" value={spring.value} />
-//       </Fragment>
-//     )
-//   }
-// }
-
-export default ({ value, showValue, onChange, min, max }) => {
+export default ({ value = 0, onChange, min, max }) => {
   const [target, setTarget] = useState(value);
   const [editing, setEditing] = useState(false);
+  const input = useRef();
+  const { displayValue } = useSpring({
+    displayValue: editing ? parseInt(target, 10): value,
+    onFrame({ displayValue: forceValue }) { if (!editing) input.current.value = forceValue }
+  });
   const updateTarget = event => {
     setTarget(event.target.value);
     onChange(event);
   };
-  const { currentValue } = useSpring({ currentValue: showValue });
-  const { displayValue } = useSpring({ displayValue:  showValue });  // editing ? target :
-  // When not being manipulated, target can follow showValue, otherwise follow value
+  // Time delay to allow device to respond before updating current value. This prevents visual jumping.
+  // Could the spring avoid switching to value until a new value is received?
+  const ping = 400;
   return (
-    <Fragment>
-      <Input
-        type="range"
-        min={min}
-        max={max}
-        value={currentValue}
-        onChange={updateTarget}
-        onMouseDown={() => setEditing(true)}
-        onMouseUp={() => setEditing(false)}
-      />
-      <Progress min={min} max={max} value={currentValue} />
-    </Fragment>
+    <Input
+      type="range"
+      min={min}
+      max={max}
+      value={editing ? target : displayValue}
+      onChange={updateTarget}
+      ref={input}
+      style={{ color: displayValue.interpolate(v => `hsl(${(v - min) * 360 / (max - min)}, 100%, 50%)` )}}
+      onMouseDown={() => setEditing(true)}
+      onMouseUp={() => {console.log(target); setTimeout(() => setEditing(false), ping)}}
+    />
   );
 }
-
-// Slider.calculateHue = value => (( value / 100 ) * 360).toFixed(0);
-

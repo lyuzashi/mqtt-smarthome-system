@@ -33,7 +33,7 @@ export default class DeviceSwitch extends Component {
     const { interfaces } = this.props;
     this.setState({
       [this.interface]: this.map(payload),
-      [`${this.interface}-target`]: this.map(payload),
+      // [`${this.interface}-target`]: this.map(payload),
     });
   }
 
@@ -59,17 +59,18 @@ export default class DeviceSwitch extends Component {
           }
         break;
         case 'range':
+          console.log('publishing', event.target.value);
           publish(this.setTopic, String(parseInt(event.target.value, 10)));
         break;
       } 
-      this.setState({ [`${this.interface}-target`]: event.target.value });
+      // this.setState({ [`${this.interface}-target`]: event.target.value });
     }
   }
 
   render() {
     const { props: { style, range: [min, max] = [0, 254] }, set } = this;
     const actualValue = this.state[this.interface];
-    const targetValue = this.state[`${this.interface}-target`];
+    // const targetValue = this.state[`${this.interface}-target`];
     switch (style) {
       case 'checkbox':
         return (
@@ -78,7 +79,7 @@ export default class DeviceSwitch extends Component {
       break;
       case 'range': 
         return (
-          <Slider showValue={Number(actualValue)} value={targetValue} onChange={set} min={min} max={max} />
+          <Slider value={Number(actualValue)} onChange={set} min={min} max={max} />
         );
       break;
     }
