@@ -67,7 +67,7 @@ export default class DeviceSwitch extends Component {
   }
 
   render() {
-    const { props: { style }, set } = this;
+    const { props: { style, range: [min, max] = [0, 254] }, set } = this;
     const actualValue = this.state[this.interface];
     const targetValue = this.state[`${this.interface}-target`];
     switch (style) {
@@ -78,7 +78,7 @@ export default class DeviceSwitch extends Component {
       break;
       case 'range': 
         return (
-          <Slider showValue={Number(actualValue)} value={targetValue} onChange={set} />
+          <Slider showValue={Number(actualValue)} value={targetValue} onChange={set} min={min} max={max} />
         );
       break;
     }

@@ -2,7 +2,7 @@ import WebDavFS from 'webdav-fs';
 import promisify from 'util.promisify';
 import { context } from '../shell';
 
-const url = 'http://memory.grid.robotjamie.com/';
+const url = 'https://memory.grid.robotjamie.com/';
 
 const fs = WebDavFS(url);
 

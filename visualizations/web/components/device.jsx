@@ -5,8 +5,8 @@ import DeviceSwitch from './device-switch';
 const styles = {
   on: 'checkbox',
   brightness: 'range',
-  temperature: 'range',
-  color: 'range',
+  colorTemp: 'range',
+  hue: 'range',
 }
 
 const Title = styled.h2`
@@ -21,12 +21,19 @@ const Title = styled.h2`
 
 export default class Device extends Component {
   render() {
-    const { top, item, capabilities } = this.props;
+    const { top, item, capabilities, ranges } = this.props;
     return (
       <Fragment>
         <Title>{item}</Title>
         {capabilities.map(capability => (
-          <DeviceSwitch key={capability} top={top} item={item} interfaces={capability} style={styles[capability]} />
+          <DeviceSwitch
+            key={capability}
+            top={top}
+            item={item}
+            interfaces={capability}
+            range={ranges[capability]}
+            style={styles[capability]}
+          />
         ))}
       </Fragment>
     );

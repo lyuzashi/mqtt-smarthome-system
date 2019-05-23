@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring'
 
 // Use CSS vars for better performance
-const Input = styled.input.attrs({
-  style: props => ({ color: `hsl(${props.value * 360/255}, 100%, 50%)` })
+const Input = styled(animated.input).attrs({
+  type: 'range',
+  style: props => ({ color: `hsl(${props.value * 360 / (props.max - props.min)}, 100%, 50%)` }),
 })`
   width: 240px;
   position: relative;
@@ -129,18 +130,28 @@ const Progress = styled(animated.progress)`
 //   }
 // }
 
-export default ({ value, showValue, onChange }) => {
+export default ({ value, showValue, onChange, min, max }) => {
   const [target, setTarget] = useState(value);
+  const [editing, setEditing] = useState(false);
   const updateTarget = event => {
     setTarget(event.target.value);
     onChange(event);
   };
-  const { currentValue } = useSpring({ currentValue: showValue })
+  const { currentValue } = useSpring({ currentValue: showValue });
+  const { displayValue } = useSpring({ displayValue:  showValue });  // editing ? target :
   // When not being manipulated, target can follow showValue, otherwise follow value
   return (
     <Fragment>
-      <Input type="range" min="0" max="254" step="0.001" value={target} onChange={updateTarget} />
-      <Progress max="254" value={currentValue} />
+      <Input
+        type="range"
+        min={min}
+        max={max}
+        value={currentValue}
+        onChange={updateTarget}
+        onMouseDown={() => setEditing(true)}
+        onMouseUp={() => setEditing(false)}
+      />
+      <Progress min={min} max={max} value={currentValue} />
     </Fragment>
   );
 }
