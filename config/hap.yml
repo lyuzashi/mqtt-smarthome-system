@@ -66,6 +66,34 @@ desk-right:
           get:
             topic: lights/status/Desk right/colorTemp
             request: lights/get/Desk right/colorTemp
+kitchen-accent:
+  name: Kitchen accent light
+  manufactuer: IKEA of Sweden
+  model: TRADFRI bulb E14 W
+  serial: 1
+  identify: lights/set/Kitchen accent light/alert
+  services:
+    - service: Lightbulb
+      characteristics:
+        On:
+          set:
+            topic: lights/set/Kitchen accent light/on
+          get:
+            topic: lights/status/Kitchen accent light/on
+            request: lights/get/Kitchen accent light/on
+            map:
+              true: true
+              false: false
+        Brightness:
+          set:
+            topic: lights/set/Kitchen accent light/brightness
+            map:
+              0-100: 0-255
+          get:
+            topic: lights/status/Kitchen accent light/brightness
+            request: lights/get/Kitchen accent light/brightness
+            map:
+              0-255: 0-100
 dining-motion:
   name: Dining Motion Sensor
   manufactuer: RobotJamie
