@@ -1,5 +1,3 @@
-import assign from 'assign-deep';
-
 const pendingUpdates = new WeakMap();
 const latestState = new Map();
 
@@ -30,6 +28,7 @@ const shallowState = light => Object.keys(light.state.changed).reduce((attribute
 
 const updateAttributes = light => {
   const attributes = latestState.get(light);
+  if (!attributes) return false;
   return Object.keys(attributes).reduce((changed, attribute) => {
     const value = attributes[attribute];
     if (light[attribute] !== value) {
@@ -40,11 +39,30 @@ const updateAttributes = light => {
   }, false);
 }
 
+// This still manages to not update at the end?
+/*
+
+running final update { brightness: 215 }
+lights/set/Desk lamp/brightness 216
+lights/set/Desk lamp/brightness 217
+lights/set/Desk lamp/brightness 219
+running final update { brightness: 219 }
+lights/set/Desk lamp/brightness 222
+lights/set/Desk lamp/brightness 224
+lights/set/Desk lamp/brightness 226
+lights/set/Desk lamp/brightness 227
+lights/set/Desk lamp/brightness 227
+lights/set/Desk lamp/brightness 146
+
+*/
+
 export default (device, fixture) => {
   // Device is the entire hue.lights object which is required to send the .save command to
   // Fixture is an individual light with changed attributes.
   const queue = createQueue(device);
-  latestState.set(fixture, shallowState(fixture)); // Only necessary if queue is enqueued?
+  if (queue[ENQUEUED]) {
+    latestState.set(fixture, shallowState(fixture)); // Only necessary if queue is enqueued?
+  }
   queue.add(fixture);
   enqueueSave(device);
 }
@@ -84,6 +102,7 @@ const enqueueSave = (device) => {
         } else {
           queue.delete(fixture);
         }
+        latestState.delete(fixture);
       })
     )).then(() => {
       queue[ENQUEUED] = false

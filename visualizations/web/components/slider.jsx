@@ -102,6 +102,15 @@ export default ({ value = 0, onChange, min, max }) => {
   };
   // Time delay to allow device to respond before updating current value. This prevents visual jumping.
   // Could the spring avoid switching to value until a new value is received?
+  /*
+  Ping needs to wait until new value after editing set to false.
+  onMouseUp must publish last target too.
+    publishing 162
+    device-switch.jsx:62 publishing 160
+    device-switch.jsx:62 publishing 159
+    slider.jsx:121 159
+    device-switch.jsx:62 publishing 254
+  */
   const ping = 400;
   return (
     <Input
