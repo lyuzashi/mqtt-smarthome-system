@@ -9,6 +9,7 @@ import characteristics from './characteristics';
 
   Object.keys(characteristics).forEach(characteristicName => {
     const characteristic = characteristics[characteristicName];
+    if (characteristic.immutable) return;
     mqtt.subscribe(`lights/set/all/${characteristicName}`,
       (topic, value) => {
         all[characteristicName] = characteristic.map(value);

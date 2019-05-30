@@ -114,7 +114,7 @@ const NOT_RESPONDING = Symbol('not responding');
       });
     });
   
-  
+    // TODO run this accessory adder after Hue has been discovered and attributes extrapolated from there
     bridge.addBridgedAccessory(accessory);
   });
   

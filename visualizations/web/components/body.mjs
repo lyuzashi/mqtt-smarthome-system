@@ -8,5 +8,6 @@ export default createGlobalStyle`
   body {
     margin: 0;
     height: 100%;
+    background: #252526;
   }
 `;

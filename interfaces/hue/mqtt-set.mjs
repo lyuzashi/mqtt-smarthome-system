@@ -10,6 +10,7 @@ import characteristics from './characteristics';
   lights.forEach(light => {
     Object.keys(characteristics).forEach(characteristicName => {
       const characteristic = characteristics[characteristicName];
+      if (characteristic.immutable) return;
       mqtt.subscribe(`lights/set/${light.name}/${characteristicName}`,
         (topic, value) => {
           console.log(topic, value.toString());

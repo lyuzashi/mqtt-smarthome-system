@@ -72,6 +72,7 @@ kitchen-accent:
   model: TRADFRI bulb E14 W
   serial: 1
   identify: lights/set/Kitchen accent light/alert
+  colorTemperature: 2700 K # 370 mired
   services:
     - service: Lightbulb
       characteristics:

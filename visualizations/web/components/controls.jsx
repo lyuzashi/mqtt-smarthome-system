@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import Device from './device';
 
+// TODO load devices directly from Hue. These could be published on MQTT with config tree. 
+// TODO add metadata such as display position
+// TODO Color temp details can come from https://github.com/sqmk/huejay/blob/master/lib/LightModel/LCT010.js#L10
 const devices = {
   lights: [{
     name: 'Desk Left',

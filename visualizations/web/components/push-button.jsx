@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 const Button = styled.button`
   appearance: none;
-  border: 2px solid rgb(30,20,20);
+  border: 2px solid rgb(70,60,70);
   border-radius: 3px;
   display: block;
   padding: 0;
@@ -12,8 +12,8 @@ const Button = styled.button`
   height: 56px;
   background: linear-gradient(rgb(80,80,80), rgb(50,50,50));
   box-shadow:
-    3px 1px 26px -1px rgba(100,100,100,0.9), 
-    inset -3px 5px 16px 1px rgba(0,0,0,0.4),
+    3px 1px 26px -1px rgba(15,15,15,0.9), 
+    inset -3px 5px 16px 1px rgba(50,50,50,0.4),
     inset 0px 20px 1px -5px rgba(30,30,30,0.9),
     inset 0px -2px 6px 0px rgba(0,0,0,0),
     inset 0px 19px 1px -2px rgba(255,255,255,0.08),
@@ -26,8 +26,8 @@ const Button = styled.button`
   :active {
     transition-duration: 0.01s;
     background: linear-gradient(rgb(50,50,50), rgb(60,60,60));
-    box-shadow: 3px 1px 26px -1px rgba(100,100,100,0.9), 
-      inset -3px 5px 16px 1px rgba(0,0,0,0.4),
+    box-shadow: 3px 1px 26px -1px rgba(15,15,15,0.9), 
+      inset -3px 5px 16px 1px rgba(50,50,50,0.4),
       inset 0px 20px 1px -5px rgba(30,30,30,0.9),
       inset 0px -2px 6px 3px rgba(0,0,0,0.7),
       inset 0px 20px 1px -2px rgba(255,255,255,0.1),

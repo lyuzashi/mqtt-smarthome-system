@@ -1,6 +1,24 @@
 import React, { useState, useRef, Fragment } from 'react';
 import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring'
+import { divided_A, divided_B, divided_C, miredRange } from '../../../interfaces/hue/color';
+
+const brightness = [0, 100].map(l => `hsl(0,0%,${l}%)`).join(); // TODO CSS variable of current hue or CT could be used
+const spectrum = divided_B.map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+
+// TODO add these as marks on slider
+// Relax = 2237K
+// Read = 2890K
+// Concentrate = 4291K
+// Energize = 6410K
+
+const capabilityGradient = ({ capability, min, max }) => {
+  switch (capability) {
+    case 'brightness': return brightness;
+    case 'hue': return spectrum; // based on light capabilities
+    case 'colorTemp': return miredRange([min, max]).map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+  }
+}
 
 // Use CSS vars for better performance
 const Input = styled(animated.input)`
@@ -8,6 +26,7 @@ const Input = styled(animated.input)`
   position: relative;
   z-index: 1;
   appearance: none;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
   border-radius: 0.5em;
   background-color: rgba(0,0,0,0.1);
   height: 0.5em;
@@ -15,7 +34,7 @@ const Input = styled(animated.input)`
   display: block;
   outline: none;
   transition: color 0.05s linear;
-  background: linear-gradient(to right, rgb(255,0,0), rgb(255,255,0), rgb(0,255,0),rgb(0,255,255),rgb(0,0,255),rgb(255,0,255),rgb(255,0,0));
+  background: linear-gradient(to right, ${props => props.gradient});
   &:focus{
     outline: none;
   }
@@ -88,7 +107,7 @@ const Input = styled(animated.input)`
   }
 `;
 
-export default ({ value = 0, onChange, min, max }) => {
+export default ({ value = 0, onChange, min, max, capability }) => {
   const [target, setTarget] = useState(value);
   const [editing, setEditing] = useState(false);
   const input = useRef();
@@ -100,6 +119,7 @@ export default ({ value = 0, onChange, min, max }) => {
     setTarget(event.target.value);
     onChange(event);
   };
+  const gradient = capabilityGradient({ capability, min, max });
   // Time delay to allow device to respond before updating current value. This prevents visual jumping.
   // Could the spring avoid switching to value until a new value is received?
   /*
@@ -121,6 +141,7 @@ export default ({ value = 0, onChange, min, max }) => {
       onChange={updateTarget}
       ref={input}
       style={{ color: displayValue.interpolate(v => `hsl(${(v - min) * 360 / (max - min)}, 100%, 50%)` )}}
+      gradient={gradient}
       onMouseDown={() => setEditing(true)}
       onMouseUp={() => {console.log(target); setTimeout(() => setEditing(false), ping)}}
     />
