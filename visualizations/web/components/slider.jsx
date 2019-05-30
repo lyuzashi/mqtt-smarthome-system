@@ -115,6 +115,7 @@ export default ({ value = 0, onChange, min, max, capability }) => {
     displayValue: editing ? parseInt(target, 10): value,
     onFrame({ displayValue: forceValue }) { if (!editing) input.current.value = forceValue }
   });
+  const activeValue = editing ? target : displayValue;
   const updateTarget = event => {
     setTarget(event.target.value);
     onChange(event);
@@ -131,13 +132,14 @@ export default ({ value = 0, onChange, min, max, capability }) => {
     slider.jsx:121 159
     device-switch.jsx:62 publishing 254
   */
+ // TODO style should use activeValue otherwise it always springs while being manipulated
   const ping = 400;
   return (
     <Input
       type="range"
       min={min}
       max={max}
-      value={editing ? target : displayValue}
+      value={activeValue}
       onChange={updateTarget}
       ref={input}
       style={{ color: displayValue.interpolate(v => `hsl(${(v - min) * 360 / (max - min)}, 100%, 50%)` )}}
