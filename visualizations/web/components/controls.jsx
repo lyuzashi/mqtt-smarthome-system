@@ -13,7 +13,7 @@ const devices = {
     }
   }, {
     name: 'Desk lamp',
-    capabilities: ['brightness', 'hue', 'colorTemp'],
+    capabilities: ['brightness', 'hue', 'colorTemp', 'saturation'],
     ranges: {
       colorTemp: [153, 500],
       hue: [0, 65535]

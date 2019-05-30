@@ -17,6 +17,7 @@ const capabilityGradient = ({ capability, min, max }) => {
     case 'brightness': return brightness;
     case 'hue': return spectrum; // based on light capabilities
     case 'colorTemp': return miredRange([min, max]).map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+    // TODO case 'saturation': return brightness;
   }
 }
 

@@ -7,6 +7,7 @@ const styles = {
   brightness: 'range',
   colorTemp: 'range',
   hue: 'range',
+  saturation: 'range',
 }
 
 const Title = styled.h2`
