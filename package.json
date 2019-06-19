@@ -3,6 +3,7 @@
   "scripts": {
     "mjs": "node --no-warnings --experimental-modules --experimental-repl-await",
     "start": "DEBUG=smarthome* yarn mjs main.mjs",
+    "storybook": "DEBUG=smarthome* yarn mjs visualizations/web/storybook",
     "shell": "yarn mjs system/cli.mjs"
   },
   "dependencies": {
@@ -11,6 +12,7 @@
     "@s524797336/noble-mac": "^0.1.0",
     "auto-sni": "^2.3.2",
     "c0lor": "^0.1.0",
+    "circle-enclose": "^1.0.0",
     "color-space": "^1.16.0",
     "color-temperature": "^0.2.7",
     "debug": "^4.1.1",
@@ -64,5 +66,8 @@
     "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0",
     "mosca/leveldown": "^4.0.1",
     "@s524797336/noble-mac/noble": "abandonware/noble"
+  },
+  "devDependencies": {
+    "story-router": "^1.0.1"
   }
 }

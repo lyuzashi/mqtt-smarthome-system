@@ -1,4 +1,4 @@
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import styled from 'styled-components';
 import { useSpring, animated } from 'react-spring'
 import { divided_A, divided_B, divided_C, miredRange } from '../../../interfaces/hue/color';
@@ -108,9 +108,19 @@ const Input = styled(animated.input)`
   }
 `;
 
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 export default ({ value = 0, onChange, min, max, capability }) => {
   const [target, setTarget] = useState(value);
   const [editing, setEditing] = useState(false);
+  const prevValue = usePrevious(value);
+  console.log(value, prevValue);
   const input = useRef();
   const { displayValue } = useSpring({
     displayValue: editing ? parseInt(target, 10): value,
@@ -127,6 +137,7 @@ export default ({ value = 0, onChange, min, max, capability }) => {
   // Could the spring avoid switching to value until a new value is received?
   /*
   Ping needs to wait until new value after editing set to false.
+  https://stackoverflow.com/questions/53446020/how-to-compare-oldvalues-and-newvalues-on-react-hooks-useeffect
   onMouseUp must publish last target too.
     publishing 162
     device-switch.jsx:62 publishing 160
