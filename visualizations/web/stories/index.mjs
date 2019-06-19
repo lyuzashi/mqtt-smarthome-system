@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../components/Button';
 import Chromacity from '../components/chromacity';
+import Dial from '../components/dial';
 import { Centred } from 'story-router';
 
 // const storyProps = { text: 'Parcel Storybook' };
@@ -18,6 +19,11 @@ export default [
   {
     name: 'chromacity',
     component: Centred(Chromacity),
+    // props: {}, // storyProps // adding props
+  },
+  {
+    name: 'dial',
+    component: Centred(Dial),
     // props: {}, // storyProps // adding props
   },
 ];
