@@ -1,20 +1,56 @@
 import React from 'react';
 import styled from 'styled-components';
+import Chromacity from './chromacity';
 import { divided_A, divided_B, divided_C, miredRange } from '../../../interfaces/hue/color';
 
-const spectrum = divided_B.map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
-
+const spectrumA = divided_A.map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+const spectrumB = divided_B.map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+const spectrumC = divided_C.map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+const spectrumMired = miredRange([153, 500]).map(([R,G,B]) => `rgb(${R},${G},${B})`).join();
+const brightness = [0, 100].map(l => `hsl(0,0%,${l}%)`).join();
 
 const Wheel = styled.div`
-  width: calc(10em - 10px * 2);
-  height: calc(10em - 10px * 2);
-  background: conic-gradient(${spectrum}); /* gold 40%, #f06 60%); */
-  border-radius: 50%; /* make it round */
-  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 10px), black calc(100% - 9.5px));
+  width: calc(100% - (${props => props.width} * ${props => props.index} * 2));
+  height: calc(100% - (${props => props.width} * ${props => props.index} * 2));
+  position: absolute;
+  background: conic-gradient(${props => props.spectrum});
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(
+    closest-side, 
+    transparent calc(100% - ${props => props.width}), 
+    black calc(100% - ${props => props.width} - 0.5px)
+  );
+  transform: rotate(180deg);
+  /* opacity: 0.1; */
 `;
 
+Wheel.defaultProps = {
+  index: 0,
+  spectrumA,
+  width: '10px',
+};
 
+const Container = styled.div`
+  width: ${props => props.width};
+  height: ${props => props.height};
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
-export default () => (
-  <Wheel></Wheel>
+const Chroma = styled(Chromacity)`
+  width: calc(100% - 3 * 2 * 10px);
+  height: calc(100% - 3 * 2 * 10px);
+  border-radius: 50%;
+  overflow: hidden;
+`;
+
+export default (props) => (
+  <Container {...props}>
+    <Wheel index="0" spectrum={spectrumMired}/>
+    <Wheel index="1" spectrum={spectrumB} />
+    <Wheel index="2" spectrum={brightness}/>
+    <Chroma/>
+  </Container>
 )

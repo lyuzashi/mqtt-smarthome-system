@@ -232,11 +232,20 @@ class ChromaticityDiagram {
   }
 }
 
-export default () => {
+// TODO prop for space coordinates
+// calculate circle around coordinates (default to CIE curve)
+// Base calculations on circle center, scale to circle size
+// Grey out outside of CIE curve
+// Provide crosshair interface, snapping to inside of space
+export default ({ width, height, className }) => {
   const canvas = useRef();
   useEffect(() => {
     drawChromaticityDiagram(canvas.current);
   }, [canvas]);
-  return <canvas width='1000' height='1000' style={{ width:'500px', height: '500px' }} ref={canvas} />;
+  return (
+    <div style={{width, height}} className={className}>
+      <canvas width="200%" height="200%" style={{ width: '100%', height: '100%' }} ref={canvas} />
+    </div>
+  );
 }
 

@@ -30,6 +30,9 @@ export default [
   {
     name: 'dial',
     component: Centred(Dial),
-    props: {}, // storyProps // adding props
+    props: {
+      width: '200px',
+      height: '200px',
+    }, // storyProps // adding props
   },
 ];
