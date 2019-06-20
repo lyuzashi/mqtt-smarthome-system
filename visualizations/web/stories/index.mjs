@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import Button from '../components/Button';
 import Chromacity from '../components/chromacity';
 import Dial from '../components/dial';
@@ -15,6 +16,11 @@ import { Centred } from 'story-router';
 //   }
 // };
 
+const SizedContainer = styled.div`
+  width: 300px;
+  height: 300px;
+`;
+
 export default [
   {
     name: 'chromacity',
@@ -24,6 +30,6 @@ export default [
   {
     name: 'dial',
     component: Centred(Dial),
-    // props: {}, // storyProps // adding props
+    props: {}, // storyProps // adding props
   },
 ];
