@@ -9,6 +9,8 @@ import { context } from '../../system/shell';
 
 const config = YAML.load(path.resolve(root, 'config/gpio.yml'));
 
+// TODO add layer for pigpio network interface
+
 gpio.on('change', (channel, value) => {
   const conf = config.find(({ pin, direction }) =>
     pin === channel && direction === 'in');

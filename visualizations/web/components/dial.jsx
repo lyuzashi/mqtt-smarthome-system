@@ -27,7 +27,7 @@ const Wheel = styled.div`
 Wheel.defaultProps = {
   index: 0,
   spectrumA,
-  width: '12px',
+  width: '13px',
 };
 
 const Container = styled.div`
@@ -40,8 +40,8 @@ const Container = styled.div`
 `
 
 const Chroma = styled(Chromacity)`
-  width: calc(100% - 3 * 2 * 10px);
-  height: calc(100% - 3 * 2 * 10px);
+  width: calc(100% - 3 * 2 * 13px);
+  height: calc(100% - 3 * 2 * 13px);
   border-radius: 50%;
   overflow: hidden;
 `;

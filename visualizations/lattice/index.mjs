@@ -1,3 +1,6 @@
+// Use OLED screen on NeoTrellis to visualize state
+// https://memory.grid.robotjamie.com/pixil-frame-0.png
+
 const fixtureControl = (column, nextControl, valueTopic, upTopic, downTopic, toggleTopic) => {
   // Display an interface on column
   // ⃞ current value - button triggers "next"
