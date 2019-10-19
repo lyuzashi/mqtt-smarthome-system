@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import circle from 'circle-enclose';
 import multipoint from '../utils/multipoint';
+import { A, B, C } from '../../../interfaces/hue/color';
 import { throws } from 'assert';
 
 var color_spectrum = [
@@ -211,13 +212,10 @@ class ChromaticityDiagram {
       0.4
     );
 
-    const wrap = circle( scaledPoints.map(([x,y])=>({ x,y,r:0 })));
-    console.log(wrap);
-    this.ctx.beginPath();
-    this.ctx.arc(wrap.x, wrap.y, wrap.r, 0, Math.PI * 2, true); 
-    this.ctx.stroke();
 
-    const BCoords = [[0.675, 0.322], [0.409, 0.518], [0.167, 0.04]].map(([x, y]) => [
+    const space = A;
+
+    const BCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]].map(([x, y]) => [
       x * this.width,
       this.height - y * this.height
     ]);
@@ -228,6 +226,13 @@ class ChromaticityDiagram {
     this.ctx.lineTo(...BCoords[2]);
     this.ctx.closePath();
     this.ctx.stroke();
+
+    const wrap = circle( BCoords.map(([x,y])=>({ x,y,r:0 })));
+    console.log(wrap);
+    this.ctx.beginPath();
+    this.ctx.arc(wrap.x, wrap.y, wrap.r, 0, Math.PI * 2, true); 
+    this.ctx.stroke();
+
 
   }
 }
@@ -240,6 +245,7 @@ class ChromaticityDiagram {
 export default ({ width, height, className }) => {
   const canvas = useRef();
   useEffect(() => {
+    // Does this cache the drawing?
     drawChromaticityDiagram(canvas.current);
   }, [canvas]);
   return (

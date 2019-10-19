@@ -10,13 +10,18 @@ const options = {
   domains: ['hal9000.grid.robotjamie.com'],
 };
 
-const server = (process.env.NODE_ENV === 'production' ?
-  createServer(options, app) :
-  app.listen(process.env.PORT || 8080)
-);
+const server = (() => {
+  if (!process.env.NO_WEB_SERVER) {
+    const server = (process.env.NODE_ENV === 'production' ?
+      createServer(options, app) :
+      app.listen(process.env.PORT || 8080)
+    );
 
-server.once('listening', () => {
-  debug('Web server listening on %d', server.address().port);
-})
+    server.once('listening', () => {
+      debug('Web server listening on %d', server.address().port);
+    })
+    return server;
+  }
+})();
 
 export default server;

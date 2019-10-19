@@ -27,7 +27,7 @@ const Wheel = styled.div`
 Wheel.defaultProps = {
   index: 0,
   spectrumA,
-  width: '10px',
+  width: '12px',
 };
 
 const Container = styled.div`
@@ -49,8 +49,8 @@ const Chroma = styled(Chromacity)`
 export default (props) => (
   <Container {...props}>
     <Wheel index="0" spectrum={spectrumMired}/>
-    <Wheel index="1" spectrum={spectrumB} />
-    <Wheel index="2" spectrum={brightness}/>
+    <Wheel index="1" spectrum={brightness} />
+    <Wheel index="2" spectrum={spectrumB}/>
     <Chroma/>
   </Container>
 )

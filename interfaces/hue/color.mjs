@@ -6,9 +6,9 @@ import mired from 'mired';
 const gamma = 2.1;
 
 // Color space values documented at https://homeautotechs.com/philips-hue-light-models-full-list/
-const A = Color.space.rgb(Color.xyY(0.704, 0.296), Color.xyY(0.2151, 0.7106), Color.xyY(0.138, 0.08), Color.white.A, gamma);
-const B = Color.space.rgb(Color.xyY(0.675, 0.322), Color.xyY(0.409, 0.518), Color.xyY(0.167, 0.04), Color.white.B, gamma);
-const C = Color.space.rgb(Color.xyY(0.692, 0.308), Color.xyY(0.17, 0.7), Color.xyY(0.153, 0.048), Color.white.C, gamma);
+export const A = Color.space.rgb(Color.xyY(0.704, 0.296), Color.xyY(0.2151, 0.7106), Color.xyY(0.138, 0.08), Color.white.A, gamma);
+export const B = Color.space.rgb(Color.xyY(0.675, 0.322), Color.xyY(0.409, 0.518), Color.xyY(0.167, 0.04), Color.white.B, gamma);
+export const C = Color.space.rgb(Color.xyY(0.692, 0.308), Color.xyY(0.17, 0.7), Color.xyY(0.153, 0.048), Color.white.C, gamma);
 
 const divisions = 6; // 6 matches primary and secondary colors, 12 is tertiary.
 

@@ -4,7 +4,7 @@
     "mjs": "node --no-warnings --experimental-modules --experimental-repl-await",
     "start": "DEBUG=smarthome* yarn mjs main.mjs",
     "storybook": "DEBUG=smarthome* yarn mjs visualizations/web/storybook",
-    "shell": "yarn mjs system/cli.mjs"
+    "shell": "NO_WEB_SERVER=true yarn mjs system/cli.mjs"
   },
   "dependencies": {
     "@octokit/rest": "^15.9.4",
