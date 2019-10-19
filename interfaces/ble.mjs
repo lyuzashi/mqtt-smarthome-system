@@ -6,6 +6,8 @@ import noble from '@s524797336/noble-mac';
 // Peripheral.prototype.discoverServices = promisify(Peripheral.prototype.discoverServices);
 // noble.discoverCharacteristics = promisify(noble.discoverCharacteristics);
 
+// TODO add layer to find multiple interfaces and select whichever has highest signal
+
 noble.on('stateChange', function(state) {
   if (state === 'poweredOn') {
     console.log('Scanning');

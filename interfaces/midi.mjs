@@ -2,7 +2,7 @@ import midi from 'midi';
 import path from 'path';
 import YAML from 'yamljs';
 import root from '../root';
-import mqtt from '../system/mqtt';
+// import mqtt from '../system/mqtt';
 import shutdown from '../system/shutdown';
 
 const config = YAML.load(path.resolve(root, 'config/midi.yml'));
@@ -45,21 +45,24 @@ input.on('message', (deltaTime, [statusNumber, ...data]) => {
   const { dataValue, id, type } = status[statusNumber];
   const value = data[dataValue];
   const key = data[id];
+  // console.log(key, value, data, id, type);
   switch(type) {
     case 'bank':
       bank = banks[value];
+      console.log('bank', bank)
     break;
     case 'note':
       if (!bank) return;
       const note = bank.notes[key];
+      
       if (!note) return console.log('hit undefined note', key, value, data);
       if(note.topic) {
-        mqtt.publish({
-          topic: note.topic,
-          payload: String(value),
-          qos: 0, // 0, 1, or 2
-          retain: false // or true
-        });
+        // mqtt.publish({
+        //   topic: note.topic,
+        //   payload: String(value),
+        //   qos: 0, // 0, 1, or 2
+        //   retain: false // or true
+        // });
       }
     break;
   }
