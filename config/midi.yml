@@ -18,6 +18,9 @@ keys:
   - name: Slider 3
     type: slider
     value: 5
+  - name: Button 1
+    type: button
+    value: 23
 banks:
   - value: 0
     name: Lighting
@@ -26,10 +29,12 @@ banks:
         map:
           from: [0, 125]
           to: [0, 512]
-        topic: hue/lounge lamp/brightness
+        topic: lights/set/Desk lamp/brightness
         modifier:
           name: Button 1
           value: 125
+      - key: Button 1
+        topic: lights/set/Desk lamp/brightness
       - key: Slider 2
         map:
           from: [0, 125]
