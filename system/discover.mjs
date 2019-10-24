@@ -6,43 +6,39 @@ const sequence = [
   mdns.rst.makeAddressesUnique()
 ];
 
-export default (protocol) => {
-  const browser = mdns.createBrowser(mdns.tcp(protocol), { resolverSequence: sequence });
+// export default (protocol) => {
+//   const browser = mdns.createBrowser(mdns.tcp(protocol), { resolverSequence: sequence });
 
-  browser.on('serviceUp', ({ name, host, prototype, addresses }) => {});
-  browser.on('serviceDown', ({ name, host, prototype, addresses }) => {});
+//   browser.on('serviceUp', ({ name, host, prototype, addresses }) => {});
+//   browser.on('serviceDown', ({ name, host, prototype, addresses }) => {});
   
-  browser.start();
-  return browser;
+//   browser.start();
+//   return browser;
+// }
+
+
+function* listen() {
+  yield (function* () {
+    let resolve;
+    let promise = new Promise(r => resolve = r); // The defer
+
+    socket.on('messages created', message => {
+      console.log('Someone created a message', message);
+      resolve(message); // Resolving the defer
+
+      promise = new Promise(r => resolve = r); // Recreate the defer for the next cycle
+    });
+
+    while (true) {
+      const message = yield promise; // Once the defer is resolved, message has some value
+      yield put({ type: 'SOCKET_MESSAGE', payload: [message] });
+    }
+  })();
 }
 
-
-
-
-// import { call, put } from 'redux-saga/effects';
-
-// function* listen() {
-//   yield (function* () {
-//     let resolve;
-//     let promise = new Promise(r => resolve = r); // The defer
-
-//     socket.on('messages created', message => {
-//       console.log('Someone created a message', message);
-//       resolve(message); // Resolving the defer
-
-//       promise = new Promise(r => resolve = r); // Recreate the defer for the next cycle
-//     });
-
-//     while (true) {
-//       const message = yield promise; // Once the defer is resolved, message has some value
-//       yield put({ type: 'SOCKET_MESSAGE', payload: [message] });
-//     }
-//   })();
-// }
-
-// export default function* root() {
-//     yield call(listen);
-// }
+export default function* root() {
+    yield call(listen);
+}
 
 // for await (variable of iterable) {
 //   statement
