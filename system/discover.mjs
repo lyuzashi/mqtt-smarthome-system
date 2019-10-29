@@ -1,45 +1,62 @@
 import mdns from 'mdns';
 
-const sequence = [
+class Deferred {
+  constructor (queue) {
+    this.resolved = false;
+    this.rejected = false;
+    this.settled = false;
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve = resolve;
+      this.reject = reject;
+    });
+    this.promise
+      .then(() => this.resolved = true)
+      .catch(() => this.rejected = true)
+      .then(() => this.settled = true);
+    queue.add(this);
+  }
+}
+
+class Discover {
+  constructor (protocol) {
+    this.queue = new Set();
+    this.protocol = protocol;
+    this.browser = mdns.createBrowser(mdns.tcp(this.protocol), {
+      resolverSequence: Discover.sequence
+    });
+    this.browser.start();
+
+    this.browser.on('serviceUp', ({ name, host, port, addresses }) => {
+      this.nextMessageSlot().resolve({ name, host, port, addresses });
+    });
+    Discover.protocols.set(this.protocol, this);
+  }
+
+  nextMessageSlot() {
+    for (const [,message] of this.queue.entries()) {
+      if (!message.settled) return message;
+    }
+    return new Deferred(this.queue);
+  }
+}
+
+Discover.protocols = new Map();
+
+Discover.start = protocol => Discover.protocols.get(protocol) || new Discover(protocol);
+
+Discover.sequence = [
   mdns.rst.DNSServiceResolve(),
   'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo({families:[4]}),
   mdns.rst.makeAddressesUnique()
 ];
 
-// export default (protocol) => {
-//   const browser = mdns.createBrowser(mdns.tcp(protocol), { resolverSequence: sequence });
-
-//   browser.on('serviceUp', ({ name, host, prototype, addresses }) => {});
-//   browser.on('serviceDown', ({ name, host, prototype, addresses }) => {});
-  
-//   browser.start();
-//   return browser;
-// }
-
-
-function* listen() {
-  yield (function* () {
-    let resolve;
-    let promise = new Promise(r => resolve = r); // The defer
-
-    socket.on('messages created', message => {
-      console.log('Someone created a message', message);
-      resolve(message); // Resolving the defer
-
-      promise = new Promise(r => resolve = r); // Recreate the defer for the next cycle
-    });
-
-    while (true) {
-      const message = yield promise; // Once the defer is resolved, message has some value
-      yield put({ type: 'SOCKET_MESSAGE', payload: [message] });
+export default async function* (protocol) {
+  const discover = Discover.start(protocol);
+  for (const message of discover.queue.entries()) {
+    if (message.settled) {
+      yield message.promise;
     }
-  })();
-}
+  }
+  yield discover.nextMessageSlot().promise;
+};
 
-export default function* root() {
-    yield call(listen);
-}
-
-// for await (variable of iterable) {
-//   statement
-// }

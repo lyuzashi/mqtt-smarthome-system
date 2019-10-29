@@ -1,8 +1,17 @@
 import repl from 'repl';
-import hue from './interfaces/hue/client';
+// import hue from './interfaces/hue/client';
 import discover from './system/discover';
+
 
 const { context } = repl.start();
 
-context.hue = hue;
+// context.hue = hue;
 context.discover = discover;
+
+
+
+(async () => { 
+  for await (const x of discover('opc')) { 
+    console.log(x) 
+  } 
+})()
