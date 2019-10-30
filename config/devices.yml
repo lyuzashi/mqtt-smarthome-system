@@ -12,8 +12,6 @@
   location: [4500, 2000]
   # topic: motion/status/bedroom
   # request: motion/get/bedroom
-  participent: motion
-  functions: [status, get]
 -
   topic: motion/status/dining
   request: motion/get/dining
@@ -27,13 +25,13 @@
   interface:
     - type: midi
       definition: WORLDE easy control
-  participent: controller
-  functions: [status, get] # Get will only return cached values for checking bank/modifiers in logic
+  participant: controller
+  methods: [status, get] # Get will only return cached values for checking bank/modifiers in logic
 - 
   id: Control Desk Display
   type: display
   interface:
     - type: web
       definition: WORLDE easy control
-  participent: display
-  functions: [set]
+  participant: display
+  methods: [set]

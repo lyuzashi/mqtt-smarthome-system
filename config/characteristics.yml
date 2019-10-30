@@ -1,0 +1,15 @@
+MotionDetected:
+  type: boolean
+  methods: [status, get]
+  logic: raw
+OccupancyDetected:
+  type: boolean
+  methods: [status, get]
+  logic: timeout
+  delay: 1800000
+ContinuousMotion:
+  type: boolean
+  methods: [status, get]
+  logic: retrigger
+  delay: 5000
+

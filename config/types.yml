@@ -1,0 +1,8 @@
+motion sensor:
+  hap: true
+  participant: motion
+  component: motion-sensor
+  service: MotionSensor
+  characteristics:
+    - name: MotionDetected
+    - name: OccupancyDetected

@@ -2,7 +2,7 @@ import YAML from 'yamljs';
 import path from 'path';
 import truthy from 'truthy';
 import root from '../../root';
-import gpio from './gpio.js';
+import gpio from './rpi-gpio.js';
 import mqtt from '../../system/mqtt';
 import shutdown from '../../system/shutdown';
 import { context } from '../../system/shell'; 
