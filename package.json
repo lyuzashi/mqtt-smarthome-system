@@ -1,7 +1,7 @@
 {
   "license": "ISC",
   "scripts": {
-    "mjs": "node --no-warnings --experimental-modules --experimental-repl-await",
+    "mjs": "node --no-warnings --experimental-modules --experimental-repl-await --harmony",
     "start": "DEBUG=smarthome* yarn mjs main.mjs",
     "storybook": "DEBUG=smarthome* yarn mjs visualizations/web/storybook",
     "shell": "NO_WEB_SERVER=true yarn mjs system/cli.mjs"
