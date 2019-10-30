@@ -1,17 +1,23 @@
-import pigpio from 'pigpio-client';
+import PigpioClient from './pigpio-client';
 import GPIO from './gpio';
 import discover from '../../system/discover';
 import devices from '../../system/devices';
 
 class PIGPIO extends GPIO {
-  constructor(...args) {
-    super(...args);
-    const [{ client }] = args;
-    client.once('connected', () => {}); 
+  constructor(options) {
+    super(options);
+    Object.assign(this, options);
+    this.init();
+  }
 
-    this.pin = client.gpio(this.id);
-    this.pin.modeSet(this.mode);
+  async init() {
+    await this.client.ready;
+    console.log(this.client, this.id);
+    this.pin = this.client.gpio(this.id);
+    console.log(this.pin);
+    this.pin.modeSet('input'); // TODO translate this.mode
     this.pin.notify(this.edge);
+    console.log(this);
   }
 
   edge(level, tick) {
@@ -21,13 +27,13 @@ class PIGPIO extends GPIO {
 
 (async () => { 
   for await (const { addresses, port, name } of discover('gpio')) {
-    const client = pigpio({ host: addresses[0], port });
-
+    console.log('Found', name, addresses, port );
+    const client = new PigpioClient({ host: addresses[0], port });
     devices.
       filter(({ hub, protocol }) =>
         hub === name && 
         protocol.find(({ type }) => type === 'pigpio'))
-      .forEach(device => new PIGPIO({ ...device, client }));
+      .map(device => new PIGPIO({ ...device, client }));
   }
-})()
+})().catch(error => console.warn(error));
 

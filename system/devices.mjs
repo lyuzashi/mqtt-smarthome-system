@@ -36,4 +36,4 @@ devices.forEach(device => {
 
 export default devices;
 
-console.dir(devices, { depth: null });
+// console.dir(devices, { depth: null });
