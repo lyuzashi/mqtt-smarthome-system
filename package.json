@@ -36,7 +36,7 @@
     "node-red": "^1.0.2",
     "node-upnp-utils": "^0.0.5",
     "osc": "^2.2.4",
-    "parcel-bundler": "^1.10.2",
+    "parcel-bundler": "^1.12.4",
     "proxyquire": "^2.1.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
