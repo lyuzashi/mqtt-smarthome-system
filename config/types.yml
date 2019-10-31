@@ -6,3 +6,4 @@ motion sensor:
   characteristics:
     - name: MotionDetected
     - name: OccupancyDetected
+    - name: ContinuousMotion

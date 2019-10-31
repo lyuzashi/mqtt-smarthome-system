@@ -1,18 +1,9 @@
 import mdns from 'mdns';
+import Deferred from './common/deferred';
 
-class Deferred {
+class DeferredQueue extends Deferred {
   constructor (queue) {
-    this.resolved = false;
-    this.rejected = false;
-    this.settled = false;
-    this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
-    });
-    this.promise
-      .then(() => this.resolved = true)
-      .catch(() => this.rejected = true)
-      .then(() => this.settled = true);
+    super();
     queue.add(this);
   }
 }
@@ -32,17 +23,19 @@ class Discover {
     Discover.protocols.set(this.protocol, this);
   }
 
+  static start(protocol) {
+    return Discover.protocols.get(protocol) || new Discover(protocol);
+  }
+
   nextMessageSlot() {
     for (const [,message] of this.queue.entries()) {
       if (!message.settled) return message;
     }
-    return new Deferred(this.queue);
+    return new DeferredQueue(this.queue);
   }
 }
 
 Discover.protocols = new Map();
-
-Discover.start = protocol => Discover.protocols.get(protocol) || new Discover(protocol);
 
 Discover.sequence = [
   mdns.rst.DNSServiceResolve(),

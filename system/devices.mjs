@@ -11,6 +11,7 @@ const smarthomeTopic = '+participant/+method/+item/#interfaces';
 
 // TODO allow overrides at every level e.g. device with characteristic properties
 devices.forEach(device => {
+  device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name;
   const type = types[device.type];
   if (type) {
     Object.assign(device, type);
@@ -19,19 +20,24 @@ devices.forEach(device => {
     device.characteristics.forEach(characteristic => {
       const definition = characteristics[characteristic.name];
       if (definition) {
+        if (definition.methods) {
+          definition.methods.forEach((method, index) => {
+            definition.methods[index] = {
+              method,
+              topic: Pattern.fill(smarthomeTopic, {
+                participant: device.participant,
+                item: device.fullName, 
+                method,
+                interfaces: [characteristic.name]
+              })
+            }
+          })
+        }
         Object.assign(characteristic, definition);
       }
     })
   }
-  device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name;
-  if (device.methods) {
-    device.methods.forEach((method, index) => {
-      device.methods[index] = {
-        method,
-        topic: Pattern.fill(smarthomeTopic, { participant: device.participant, item: device.fullName,  method })
-      }
-    })
-  }
+
 });
 
 export default devices;
