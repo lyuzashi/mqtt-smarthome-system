@@ -16,14 +16,17 @@ export default class PIGPIO extends GPIO {
     await this.client.ready;
     this.pin = this.client.gpio(this.id);
     this.pin.modeSet(this.interface.mode);
-    this.pin.notify(this.edge);
+    this.pin.notify(this.edge.bind(this));
     setTimeout(() => {
       this.edge(1, Date.now())
-    }, 2000);
-    console.dir(this, { depth: null})
+    }, 500);
+    setTimeout(() => {
+      this.edge(0, Date.now())
+    }, 1500);
   }
 
   edge(level, tick) {
+    // Any further processing of raw data before it can be handled by GPIO class?
     this.status(level);
   }
 }
