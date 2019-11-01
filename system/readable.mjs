@@ -1,36 +1,18 @@
-import Deferred from './common/deferred';
-
-class DeferredQueue extends Deferred {
-  constructor (queue) {
-    super();
-    queue.add(this);
-  }
-}
+import MessageSlot from './common/message-slot';
 
 export default class Readable {
-  constructor () {
-    this.queue = new Set();
-  }
-
-  nextMessageSlot() {
-    for (const [,message] of this.queue.entries()) {
-      if (!message.settled) return message;
-    }
-    return new DeferredQueue(this.queue);
-  }
+  slots = new Set();
 
   enqueue ({ topic, payload }){
-    console.log('queue', topic, payload, this.queue);
-    this.nextMessageSlot().resolve({ topic, payload });
+    for (const [,slot] of this.slots.entries()) {
+      slot.write({ topic, payload });
+    }
   }
 
-  async *read() {
-    for (const message of this.queue.entries()) {
-      if (message.settled) {
-        yield message.promise;
-      }
-    }
-    yield this.nextMessageSlot().promise;
+  read() {
+    const slot = new MessageSlot;
+    this.slots.add(slot);
+    return slot.read();
   };
 }
 

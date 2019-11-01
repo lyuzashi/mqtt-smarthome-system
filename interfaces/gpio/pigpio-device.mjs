@@ -18,10 +18,13 @@ export default class PIGPIO extends GPIO {
     this.pin.modeSet(this.interface.mode);
     this.pin.notify(this.edge.bind(this));
     setTimeout(() => {
-      this.edge(1, Date.now())
+      this.edge(0, Date.now())
+      // this.edge(1, Date.now())
+      // this.edge(0, Date.now())
+      // this.edge(1, Date.now())
     }, 500);
     setTimeout(() => {
-      this.edge(0, Date.now())
+      this.edge(1, Date.now())
     }, 1500);
   }
 

@@ -6,17 +6,28 @@ import PIGPIO from './pigpio-device';
 (async () => { 
   for await (const { addresses, port, name } of discover('gpio')) {
     try {
-    console.log('Found', name);
-    const client = new PigpioClient({ host: addresses[0], port });
-    devices.
-      filter(({ hub, protocol }) =>
-        hub === name && 
-        protocol.find(({ type }) => type === 'pigpio'))
-      .map(device => new PIGPIO({ ...device, client }))
-      .forEach(async d => {
+      console.log('Found', name);
+      const client = new PigpioClient({ host: addresses[0], port });
+      const pigpioDevices = devices.
+        filter(({ hub, protocol }) =>
+          hub === name && 
+          protocol.find(({ type }) => type === 'pigpio'))
+        .map(device => new PIGPIO({ ...device, client }));
+
+      pigpioDevices.forEach(async d => {
+        console.log('Reading', d.name)
         for await (const { topic, payload } of d.read()) {
-          console.log(topic, payload);
+          console.log('A', topic, payload);
+          await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 100))
         }
+        console.log('done')
+      })
+      pigpioDevices.forEach(async d => {
+        console.log('Reading B', d.name)
+        for await (const { topic, payload } of d.read()) {
+          console.log('B', topic, payload);
+        }
+        console.log('done')
       });
     } catch (e) {
       console.log(e);

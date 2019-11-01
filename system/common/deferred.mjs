@@ -4,12 +4,24 @@ export default class Deferred {
     this.rejected = false;
     this.settled = false;
     this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
+      Object.defineProperties(this, {
+        resolvePromise: { value: resolve },
+        rejectPromise: { value: reject },
+      })
     });
-    this.promise
-      .then(() => this.resolved = true)
-      .catch(() => this.rejected = true)
-      .then(() => this.settled = true);
+    this.resolve = this.resolve.bind(this);
+    this.reject = this.reject.bind(this);
+  }
+
+  resolve(...args) {
+    this.resolved = true;
+    this.settled = true;
+    this.resolvePromise(...args);
+  }
+
+  reject(...args) {
+    this.rejected = true;
+    this.settled = true;
+    this.rejectPromise(...args);
   }
 }

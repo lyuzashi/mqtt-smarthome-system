@@ -45,7 +45,7 @@ Discover.sequence = [
 
 export default async function* (protocol) {
   const discover = Discover.start(protocol);
-  for (const message of discover.queue.entries()) {
+  for (const [,message] of discover.queue.entries()) {
     if (message.settled) {
       yield message.promise;
     }
