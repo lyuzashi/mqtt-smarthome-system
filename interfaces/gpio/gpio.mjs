@@ -1,16 +1,5 @@
 import Readable from '../../system/readable';
-
-const transform = ({     
-       data,
-  options,
-  type,
-  topic,
-  enqueue,
-  previousValue,
-  queueAtEnd}) => {
-  // console.log(data, type, topic, options);
-  return { data };
-}
+import Characteristic from '../../system/common/characteristic';
 
 export default class GPIO extends Readable {
   constructor({ id, mode, characteristics }) {
@@ -30,36 +19,26 @@ export default class GPIO extends Readable {
     // Delegate data to protocol
   }
 
-  get() {
+  // Request current status from protocol
+  get({ live, characteristic }) {
+    // this.methods.find(method => method.type === 'get)
     // Retrieve latest cached value and callback with refresh method
+    // Option (live) to return promise which waits for status with timeout?
+    // const data = await pin.read();
+    // this.status(data);
   }
 
-  // Characteristic handling could be subclassed
+  // Pass data through characteristic and trigger write
+  set({ data, characteristic }) {
+
+  }
+
+
+  // Publish status to MQTT (via pushing message to readable)
   status(data) {
+    console.dir(this.characteristics, { depth: null });
     this.characteristics.forEach(({ logic = [{ name: 'raw' }], methods, type }) => {
-      methods.filter(({ method }) => method === 'status').forEach(({ topic }) => {
-        let transformedQueueAtEnd = true;
-        let transformedData = data;
-        for (const options of logic) {
-          // TODO chain transformers so only the last one sends
-          // Allow modification of data, queueAtEnd
-          ({ 
-            data: transformedData = transformedData, 
-            queueAtEnd: transformedQueueAtEnd = transformedQueueAtEnd 
-          } = transform({
-            options,
-            type,
-            topic,
-            data: transformedData,
-            previousValue: this.previousValue,
-            enqueue: this.enqueue.bind(this),
-            queueAtEnd: transformedQueueAtEnd
-          }));
-        }
-        if (transformedQueueAtEnd) {
-          this.enqueue({ topic, payload: data });
-        }
-      });
+
     });
   }
 }
