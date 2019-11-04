@@ -1,10 +1,12 @@
-import Readable from '../../system/readable';
+import Readable from '../../common/system/readable';
 import Characteristic from '../../system/common/characteristic';
 
+// TODO extend device
 export default class GPIO extends Readable {
-  constructor({ id, mode, characteristics }) {
+  constructor({ id, mode, characteristics, register }) {
     super();
-    Object.assign(this, characteristics);
+    Object.assign(this, { characteristics });
+    register(this);
   }
 
   previousValue = undefined;
@@ -16,25 +18,13 @@ export default class GPIO extends Readable {
 
 
   write() {
-    // Delegate data to protocol
-  }
-
-  // Request current status from protocol
-  get({ live, characteristic }) {
-    // this.methods.find(method => method.type === 'get)
-    // Retrieve latest cached value and callback with refresh method
-    // Option (live) to return promise which waits for status with timeout?
-    // const data = await pin.read();
-    // this.status(data);
-  }
-
-  // Pass data through characteristic and trigger write
-  set({ data, characteristic }) {
-
+    // Delegate data to protocol after passing through characteristic handling
   }
 
 
-  // Publish status to MQTT (via pushing message to readable)
+  // read() streams updates as topic+data... should this be on each characteristic?
+
+  // Publish status to characteristics
   status(data) {
     console.dir(this.characteristics, { depth: null });
     this.characteristics.forEach(({ logic = [{ name: 'raw' }], methods, type }) => {

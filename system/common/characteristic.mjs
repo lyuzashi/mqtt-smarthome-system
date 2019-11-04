@@ -1,19 +1,26 @@
 
 import transform from './characteristic-logic';
+import Readable from './readable';
 
-export default class Characteristic {
+export default class Characteristic extends Readable {
   constructor({ name, type, methods = [], logic = [{ name: 'raw' }], device }) {
     Object.assign(this, { name, type, methods, logic, device });
   }
 
-  // 
+  // read() - inherited for streaming changes 
+
+  // Transforms data and calls device.write
   set(data) {
 
   }
 
-  // Handle retrieving state
-  get() {
-
+  // Request current status from protocol. Might call device.write
+  get({ live, characteristic }) {
+    // this.methods.find(method => method.type === 'get)
+    // Retrieve latest cached value and callback with refresh method
+    // Option (live) to return promise which waits for status with timeout?
+    // const data = await pin.read();
+    // this.status(data);
   }
 
   // Set status of characteristic 
