@@ -346,7 +346,7 @@ export default class HubLocation extends Device {
 
 
 /*
-POST https://www.googleapis.com/geolocation/v1/geolocate?key=***REMOVED***
+POST https://www.googleapis.com/geolocation/v1/geolocate?key=XXXXX
 Content-Type: application/json
 
 {
