@@ -1,4 +1,4 @@
-import MessageSlot from './common/message-slot';
+import MessageSlot from './message-slot';
 
 export default class Readable {
   slots = new Set();

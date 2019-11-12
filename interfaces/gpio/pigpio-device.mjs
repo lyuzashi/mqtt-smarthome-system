@@ -32,4 +32,13 @@ export default class PIGPIO extends GPIO {
     // Any further processing of raw data before it can be handled by GPIO class?
     this.status(level);
   }
+
+  write() {
+    this.pin.write()
+  }
+
+  read() {
+    this.pin.read()
+    // then this.status(data);
+  }
 }

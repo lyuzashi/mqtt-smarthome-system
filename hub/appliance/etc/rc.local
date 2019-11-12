@@ -65,7 +65,7 @@ SOURCE="https://nodejs.org/dist/latest"
 MAJOR="$(sed -En 's/[^0-9]*([0-9]+).*/\1/p' $NEWHOME/mqtt-smarthome-system/.nvmrc)"
 ARM="$(sed -n 's/model name.*(\(\S*\)).*$/\1/p' /proc/cpuinfo | head -1)"
 NODE="$(curl -sL $SOURCE-v$MAJOR.x | grep arm$ARM.tar.xz | cut -d'"' -f2)"
-wget -O node.tar.xz $SOURCE/$NODE
+wget -O node.tar.xz $SOURCE-v$MAJOR.x/$NODE
 tar -xf node.tar.xz
 chmod -R 755 node*/bin/*
 cp -r node*/{bin,lib,share} /usr/local

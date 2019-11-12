@@ -1,6 +1,6 @@
 import PigpioClient from './pigpio-client';
 import discover from '../../system/discover';
-import devices from '../../system/devices';
+import { devices } from '../../system/devices';
 import PIGPIO from './pigpio-device';
 
 (async () => { 
