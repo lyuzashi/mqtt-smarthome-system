@@ -1,4 +1,4 @@
-import Readable from '../system/readable';
+import Readable from '../system/common/readable';
 // import Characteristic from '../../system/common/characteristic';
 
 export default class Device extends Readable {
