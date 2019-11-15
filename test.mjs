@@ -3,8 +3,11 @@ import repl from 'repl';
 // import discover from './system/discover';
 // import Readable from './system/readable';
 // import Deferred from './system/common/deferred';
-import HubLocation, { locations } from './interfaces/location/hub';
+import HubLocation from './interfaces/location/hub';
 import ExpiringList from './system/common/expiring-list';
+import getKey from './config/keys'
+// import './visualizations/web';
+// import RED from './system/red';
 
 
 const { context } = repl.start();
@@ -15,7 +18,8 @@ const { context } = repl.start();
 // context.Deferred = Deferred;
 context.ExpiringList = ExpiringList;
 context.HubLocation = HubLocation;
-context.locations = locations;
+context.getKey = getKey;
+// context.RED = RED;
 
 
 // (async () => { 

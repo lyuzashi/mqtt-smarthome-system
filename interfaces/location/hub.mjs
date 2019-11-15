@@ -10,17 +10,30 @@ Matching refreshes expiry, known locations last for 6 months.
 
 import wifi from 'node-wifi';
 import { promisify } from 'util';
-import getKey from '../../config/keys'
+import { get } from '../../config/keys'
 import Device from '../device';
 import ExpiringList, { sixMonths } from '../../system/common/expiring-list';
 
+/*
+class HubLocation {
+  characteristics = [Longitude, Latitude];
+  constructor() {
+    super();
+    this.characteristic
+  }
+}
+*/
+
 export default class HubLocation extends Device {
-  constructor({ id = null, ...options }) {
+  constructor({ id = null, ...options } = {}) {
     super(options);
     wifi.init({ iface: id });
     this.wifiScan = promisify(wifi.scan);
     this.known = new ExpiringList({ name: 'hub-location' });
+    // this.characteristic[Longitude].update = this.update.then(({ lng }) => lng)
   }
+
+  retain = true;
 
   // Average signal strength difference across all matching networks, with a theoretical maximum of
   // -90dBm, which is an effectively unreachable signal strength. Anything above 70 is close enough
@@ -39,7 +52,7 @@ export default class HubLocation extends Device {
   }
 
   static async getLocation({ wifiAccessPoints }) {
-    const key = await getKey('google-geolocation-key');
+    const key = await get('google-geolocation-key');
     console.log('Looking up location with key', key);
   }
 
@@ -52,7 +65,8 @@ export default class HubLocation extends Device {
     }))
   }
 
-  async get() {
+  async update() {
+    // Memoize for an amount of time
     const wifiAccessPoints = await this.scan();
 
     // Wait for expiring list to load data?
@@ -60,12 +74,15 @@ export default class HubLocation extends Device {
     for (const known of this.known.items()) {
       const signalStrength = HubLocation.significantChange(wifiAccessPoints, known.wifiAccessPoints);
       if (signalStrength < 70) {
+        console.log('found', signalStrength);
         this.known.expire(known, sixMonths());
+        // if no location, then delete and look up again.
         return known.location;
         break;
       }
     }
-    const { location, accuracy } = getLocation({ wifiAccessPoints });
+    console.log('ok')
+    const { location, accuracy } = await HubLocation.getLocation({ wifiAccessPoints });
     this.known.add({ location, accuracy, wifiAccessPoints });
     return location;
   }
