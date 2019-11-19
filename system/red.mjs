@@ -1,10 +1,10 @@
 import RED from 'node-red';
 import debug from 'debug';
-
+import { server } from '../visualizations/web/ws';
 
 
 // Initialise the runtime with a server and settings
-RED.init({
+RED.init(server, {
   httpAdminRoot:"/red",
   httpNodeRoot: "/api",
   userDir:".nodered/",

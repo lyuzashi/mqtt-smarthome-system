@@ -1,35 +1,36 @@
-import web from './system/web'
+import repl from 'repl';
 
 import http from 'http';
 import express from "express";
 import RED from "node-red";
 
 import expressWebSocket from 'express-ws';
+import websocketUrlDefault from 'express-ws/lib/websocket-url';
 
-import { start, context } from './system/shell';
+const websocketUrl = websocketUrlDefault.default;
 
 
-start();
+
+
+const { context } = repl.start();
 
 
 // Create an Express app
 var app = express();
-var app2 = express();
 
 // Add a simple route for static content served from 'public'
 // app.use("/",express.static("public"));
 
 // Create a server
 var server = http.createServer(app);
-var server2 = http.createServer(app2);
 
 
 
-const wsInstance = expressWebSocket(app2, null, {
-  leaveRouterUntouched: true,
+const wsInstance = expressWebSocket(app, null, {
+  // leaveRouterUntouched: true,
   wsOptions: {
     perMessageDeflate: false,
-    noServer: true,
+    // noServer: true,
   }
 });
 
@@ -65,9 +66,39 @@ app.use(settings.httpAdminRoot,RED.httpAdmin);
 app.use(settings.httpNodeRoot,RED.httpNode);
 
 
+
+RED.server.on('upgrade', (request, socket, head) => {
+  const url = websocketUrl(request.url);
+  if (app._router.stack
+    .filter(({ route }) => route && route.path && Object.keys(route.methods).length)
+    .map(({ route }) => route.path)
+    .find(path => path === url)) {
+    wsInstance.getWss().handleUpgrade(request, socket, head, (ws) => {
+      const response = new http.ServerResponse(request);
+      Object.assign(request, { url, ws });
+      app.handle(request, response);
+    })
+  }
+})
+
+app.ws('/echo', function(ws, req) {
+  console.log('Connecting to ws');
+  ws.send('welcome');
+  ws.on('message', function(msg) {
+    console.log('☝️', msg);
+    ws.send(msg);
+  });
+});
+
+
+app.ws('/ya', function(ws, req) {
+  console.log('con');
+  ws.send('ok');
+});
+
 // app.ws(settings.httpAdminRoot,RED.httpAdmin);
 
-
+context.app = app;
 
 
 server.listen(8080);

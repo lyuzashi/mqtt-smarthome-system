@@ -7,6 +7,7 @@ import server from './ssl';
 // Use a self involking function which is exported twice with two options curried
 // and rely on module caching
 
+const useServer = false;
 
 const wsServer = useServer ? server : null;
 
