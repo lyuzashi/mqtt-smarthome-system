@@ -4,7 +4,7 @@ import { server } from '../visualizations/web/ws';
 
 
 // Initialise the runtime with a server and settings
-RED.init(server, {
+RED.init(server, { // This works with interop
   httpAdminRoot:"/red",
   httpNodeRoot: "/api",
   userDir:".nodered/",

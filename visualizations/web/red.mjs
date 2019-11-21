@@ -14,14 +14,20 @@ app.use(RED.settings.httpAdminRoot, RED.httpAdmin);
 
 app.use(RED.settings.httpNodeRoot, RED.httpNode);
 
+
+// Can getWss be patched to trigger useServer = false?
+const wss = wsInstance.getWss();
+
+
 // Patch websocket upgrade handler for express-ws
 RED.server.on('upgrade', (request, socket, head) => {
+  console.log('🌂 upgrade', request.url);
   const url = websocketUrl(request.url);
   if (app._router.stack
     .filter(({ route }) => route && route.path && Object.keys(route.methods).length)
     .map(({ route }) => route.path)
     .find(path => path === url)) {
-    wsInstance.getWss().handleUpgrade(request, socket, head, (ws) => {
+    wss.handleUpgrade(request, socket, head, (ws) => {
       const response = new http.ServerResponse(request);
       Object.assign(request, { url, ws });
       app.handle(request, response);

@@ -17,5 +17,9 @@ const wsInstance = expressWebSocket(app, wsServer, {
   }
 });
 
+const getWss = () => {
+  useServer = false;
+  return wsInstance.getWss();
+}
 
 export { app, server, wsInstance };
