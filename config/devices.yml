@@ -35,3 +35,16 @@
       definition: WORLDE easy control
   participant: display
   methods: [set]
+-
+  hub: ESP_9025BD
+  id: 12
+  type:
+    - light
+    - dimmable
+  protocol:
+    - type: etherport-client
+  interface:
+    - type: firmata
+      mode: out
+  name: TV Lanterns
+  room: Lounge
