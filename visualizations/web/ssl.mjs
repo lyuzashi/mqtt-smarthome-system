@@ -8,6 +8,7 @@ const options = {
   email: 'ben@robotjamie.com',
   agreeTos: true,
   domains: ['hal9000.grid.robotjamie.com'],
+  version: 'v02',
 };
 
 const server = (() => {
