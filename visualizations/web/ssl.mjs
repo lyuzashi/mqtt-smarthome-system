@@ -13,7 +13,7 @@ const options = {
 
 const server = (() => {
   if (!process.env.NO_WEB_SERVER) {
-    const server = (process.env.NODE_ENV === 'production' ?
+    const server = (process.env.NODE_ENV === 'production' && false ?
       createServer(options, app) :
       app.listen(process.env.PORT || 8080)
     );

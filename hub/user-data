@@ -11,13 +11,6 @@ chpasswd:
   - ben:ben
 
 users:
-  - name: ben
-    groups: sudo, ssh, hal
-    ssh_import_id: None
-    shell: /bin/bash
-    sudo: ALL=(ALL) NOPASSWD:ALL
-    ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDl2tKvlnn6rf4iyK7u0mfx58reFNUCr6EEZco5i7OmAKEkNAffko8PpMSyEpmIbvsC8xzmn6S9d5O1w7tfBTalPLfhM5dHkb14F4+x5FUF2aGHRZTpPD0bd+KNweMJuZvSLcKNe1+Eq7ekEHSCq1K64m2ff3kME6r/D9rOnWcHZ3MmvAsVBdwSdzrvEmMfOop2y/ga64FpyojD+ParKPgj0pZ3Ekd5DYR2ku31x34vTc/q4cIpToumF6oZHuSlQbSAHFCyXaal2SZjpNRGF5gVuiqxwjrkz+fUDOcsHIKTddRWYG+Mwn/AKwe8rlOKjKjPiiH9dWXKmEoKmRW8/9WN ben@Number5
   - name: git
     shell: /usr/bin/git-shell
     ssh_import_id: None
@@ -28,6 +21,13 @@ users:
     ssh_import_id: None
     groups: git, audio
     shell: /bin/bash
+  - name: ben
+    groups: sudo, ssh, hal
+    ssh_import_id: None
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDl2tKvlnn6rf4iyK7u0mfx58reFNUCr6EEZco5i7OmAKEkNAffko8PpMSyEpmIbvsC8xzmn6S9d5O1w7tfBTalPLfhM5dHkb14F4+x5FUF2aGHRZTpPD0bd+KNweMJuZvSLcKNe1+Eq7ekEHSCq1K64m2ff3kME6r/D9rOnWcHZ3MmvAsVBdwSdzrvEmMfOop2y/ga64FpyojD+ParKPgj0pZ3Ekd5DYR2ku31x34vTc/q4cIpToumF6oZHuSlQbSAHFCyXaal2SZjpNRGF5gVuiqxwjrkz+fUDOcsHIKTddRWYG+Mwn/AKwe8rlOKjKjPiiH9dWXKmEoKmRW8/9WN ben@Number5
 
 ## Update apt database and upgrade packages on first boot
 package_update: true
@@ -69,6 +69,7 @@ write_files:
     sudo -u hal git --git-dir $DIR/.git --work-tree $DIR clean -fdx
     sudo -u hal git --git-dir $DIR/.git --work-tree $DIR reset --hard HEAD
     sudo -u hal git --git-dir $DIR/.git --work-tree $DIR pull
+    sudo -u hal chmod -R g+w $DIR
 - path: /home/git/mqtt-smarthome-system/config
   permissions: '0644'
   content: |
@@ -145,12 +146,12 @@ runcmd:
   - git init /home/git/mqtt-smarthome-system --bare
   - chown -R hal:hal /home/hal/mqtt-smarthome-system
   - chown -R git:git /home/git/mqtt-smarthome-system
-  - chmod -R g+w /home/hal/mqtt-smarthome-system
   - sudo -u git git -C /home/git/mqtt-smarthome-system fetch -q https://github.com/lyuzashi/mqtt-smarthome-system.git master:master
   - cd /home/git/mqtt-smarthome-system
   - sudo -u git /home/git/mqtt-smarthome-system/hooks/post-update
   - cd /home/hal/mqtt-smarthome-system
   - sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
+  - chmod -R g+w /home/hal/mqtt-smarthome-system
   - cd /tmp
   - git clone --branch V72 --depth 1 https://github.com/joan2937/pigpio.git
   - cd pigpio
