@@ -65,11 +65,11 @@ write_files:
   content: |
     #!/bin/bash
     git update-server-info
-    DIR=/home/hal/mqtt-smarthome-system
-    sudo -u hal git --git-dir $DIR/.git --work-tree $DIR clean -fdx
-    sudo -u hal git --git-dir $DIR/.git --work-tree $DIR reset --hard HEAD
-    sudo -u hal git --git-dir $DIR/.git --work-tree $DIR pull
-    sudo -u hal chmod -R g+w $DIR
+    cd /home/hal/mqtt-smarthome-system
+    sudo -u hal git clean -fdx
+    sudo -u hal git reset --hard HEAD
+    sudo -u hal git pull
+    sudo -u hal chmod -R g+w /home/hal/mqtt-smarthome-system
 - path: /home/git/mqtt-smarthome-system/config
   permissions: '0644'
   content: |
