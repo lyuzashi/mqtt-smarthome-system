@@ -12,10 +12,12 @@ chpasswd:
 
 users:
   - name: ben
-    groups: sudo, ssh
+    groups: sudo, ssh, hal
     ssh_import_id: None
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDl2tKvlnn6rf4iyK7u0mfx58reFNUCr6EEZco5i7OmAKEkNAffko8PpMSyEpmIbvsC8xzmn6S9d5O1w7tfBTalPLfhM5dHkb14F4+x5FUF2aGHRZTpPD0bd+KNweMJuZvSLcKNe1+Eq7ekEHSCq1K64m2ff3kME6r/D9rOnWcHZ3MmvAsVBdwSdzrvEmMfOop2y/ga64FpyojD+ParKPgj0pZ3Ekd5DYR2ku31x34vTc/q4cIpToumF6oZHuSlQbSAHFCyXaal2SZjpNRGF5gVuiqxwjrkz+fUDOcsHIKTddRWYG+Mwn/AKwe8rlOKjKjPiiH9dWXKmEoKmRW8/9WN ben@Number5
   - name: git
     shell: /usr/bin/git-shell
     ssh_import_id: None
@@ -137,13 +139,11 @@ runcmd:
   - apt-get install yarn -y
   - setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
   - modprobe vhci-hcd
-  - chown -R hal /home/hal
+  - chown -R hal:hal /home/hal
   - sudo -u hal yarn global add pm2
-  - echo 'export NODE_ENV=production' | sudo -u hal tee -a /home/hal/.bashrc
-  - echo 'PATH="/home/hal/.yarn/bin:$PATH"' | sudo -u hal tee -a /home/hal/.bashrc
   - git init /home/hal/mqtt-smarthome-system
   - git init /home/git/mqtt-smarthome-system --bare
-  - chown -R hal:git /home/hal/mqtt-smarthome-system
+  - chown -R hal:hal /home/hal/mqtt-smarthome-system
   - chown -R git:git /home/git/mqtt-smarthome-system
   - chmod -R g+w /home/hal/mqtt-smarthome-system
   - sudo -u git git -C /home/git/mqtt-smarthome-system fetch -q https://github.com/lyuzashi/mqtt-smarthome-system.git master:master
