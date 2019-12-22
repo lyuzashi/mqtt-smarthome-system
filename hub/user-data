@@ -138,6 +138,9 @@ runcmd:
   - setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
   - modprobe vhci-hcd
   - chown -R hal /home/hal
+  - sudo -u hal yarn global add pm2
+  - echo 'export NODE_ENV=production' | sudo -u hal tee -a /home/hal/.bashrc
+  - echo 'PATH="/home/hal/.yarn/bin:$PATH"' | sudo -u hal tee -a /home/hal/.bashrc
   - git init /home/hal/mqtt-smarthome-system
   - git init /home/git/mqtt-smarthome-system --bare
   - chown -R hal:git /home/hal/mqtt-smarthome-system
@@ -147,15 +150,13 @@ runcmd:
   - cd /home/git/mqtt-smarthome-system
   - sudo -u git /home/git/mqtt-smarthome-system/hooks/post-update
   - cd /home/hal/mqtt-smarthome-system
-  - sudo -u hal .git/hooks/post-merge
-  - sudo -u hal yarn global add pm2
+  - sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
+  - cd /tmp
   - git clone --branch V72 --depth 1 https://github.com/joan2937/pigpio.git
   - cd pigpio
   - make 
   - make install
   - pigpiod
-  - echo 'NODE_ENV=production' | sudo -u hal tee -a /home/hal/.profile # permission failed
-  - echo 'PATH="/home/hal/.yarn/bin:$PATH"' | sudo -u hal tee -a /home/hal/.profile
   - service mongod start
   - systemctl start pm2
 
