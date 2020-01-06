@@ -1,0 +1,4 @@
+{
+  "manager": "greenlock-manager-fs",
+  "configFile": "./greenlock.json"
+}
