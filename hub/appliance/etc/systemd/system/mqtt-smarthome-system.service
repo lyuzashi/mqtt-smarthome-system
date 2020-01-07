@@ -1,0 +1,13 @@
+[Unit]
+Description=MQTT Smarthome System
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+Type=simple
+User=hal
+ExecStart=/usr/bin/yarn --cwd /home/hal/mqtt-smarthome-system start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

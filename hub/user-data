@@ -99,7 +99,7 @@ write_files:
   permissions: '0744'
   content: |
     #!/bin/bash
-    yarn install
+    yarn install --frozen-lockfile
 - path: /etc/systemd/system/pm2.service
   permissions: '0644'
   content: |
@@ -158,8 +158,12 @@ runcmd:
   - make 
   - make install
   - pigpiod
-  - service mongod start
-  - systemctl start pm2
+  - systemctl enable mongod
+  - systemctl start mongod
+  - systemctl enable mqtt-smarthome-system
+  - systemctl start mqtt-smarthome-system
+  - rm -f /etc/resolv.conf # Disable DNSMasq server which resolves with WAN
+  - ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 apt:
   preserve_sources_list: true
