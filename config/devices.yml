@@ -37,7 +37,9 @@
   methods: [set]
 -
   hub: ESP_9025BD
-  id: 12
+  # id: 12
+  id: 13
+  # id: 5
   type:
     - light
     - dimmable
@@ -45,6 +47,12 @@
     - type: etherport-client
   interface:
     - type: firmata
-      mode: out
   name: TV Lanterns
   room: Lounge
+-
+  id: VID_239a&PID_802f
+  protocol:
+    - type: osc
+  interface:
+    - type: serial
+    
