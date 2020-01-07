@@ -21,6 +21,7 @@ users:
     ssh_import_id: None
     groups: git, audio
     shell: /bin/bash
+    sudo: ALL=(hal) NOPASSWD:/bin/systemctl restart location
   - name: ben
     groups: sudo, ssh, hal
     ssh_import_id: None
@@ -61,12 +62,12 @@ write_files:
     vhci-hcd
     8021q
 - path: /home/git/mqtt-smarthome-system/hooks/post-update
-  permissions: '0744'
+  permissions: '0774'
   content: |
     #!/bin/bash
     git update-server-info
     cd /home/hal/mqtt-smarthome-system
-    sudo -u hal git clean -fdx
+    sudo -u hal git clean -fd
     sudo -u hal git reset --hard HEAD
     sudo -u hal git pull
     sudo -u hal chmod -R g+w /home/hal/mqtt-smarthome-system
@@ -96,22 +97,24 @@ write_files:
       remote = origin
       merge = refs/heads/master
 - path: /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
-  permissions: '0744'
+  permissions: '0774'
   content: |
     #!/bin/bash
     yarn install --frozen-lockfile
-- path: /etc/systemd/system/pm2.service
+- path: /etc/systemd/system/mqtt-smarthome-system.service
   permissions: '0644'
   content: |
     [Unit]
+    Description=MQTT Smarthome System
     After=network.target
+    
     [Service]
+    Environment=NODE_ENV=production
+    Type=simple
     User=hal
-    Group=hal
-    Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/hal/.yarn/bin PM2_HOME=/home/hal/.pm2
-    ExecStart=/home/hal/.yarn/bin/pm2 resurrect --no-daemon
-    ExecReload=/home/hal/.yarn/bin/pm2 reload all
-    ExecStop=/home/hal/.yarn/bin/pm2 kill
+    ExecStart=/usr/bin/yarn --cwd /home/hal/mqtt-smarthome-system start
+    Restart=on-failure
+    
     [Install]
     WantedBy=multi-user.target
 - path: /etc/mongod.conf

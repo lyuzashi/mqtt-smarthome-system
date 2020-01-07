@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import circle from 'circle-enclose';
 import multipoint from '../utils/multipoint';
-import { A, B, C } from '../../../interfaces/hue/color';
+import { A, B, C, miredRange } from '../../../interfaces/hue/color';
 import { throws } from 'assert';
 
 var color_spectrum = [
@@ -163,6 +163,29 @@ function matrix_multiply_vector([
   ];
 }
 
+function rgb_to_cie(red, green, blue)
+{
+	//Apply a gamma correction to the RGB values, which makes the color more vivid and more the like the color displayed on the screen of your device
+	var red 	= (red > 0.04045) ? Math.pow((red + 0.055) / (1.0 + 0.055), 2.4) : (red / 12.92);
+	var green 	= (green > 0.04045) ? Math.pow((green + 0.055) / (1.0 + 0.055), 2.4) : (green / 12.92);
+	var blue 	= (blue > 0.04045) ? Math.pow((blue + 0.055) / (1.0 + 0.055), 2.4) : (blue / 12.92); 
+
+	//RGB values to XYZ using the Wide RGB D65 conversion formula
+	var X 		= red * 0.664511 + green * 0.154324 + blue * 0.162028;
+	var Y 		= red * 0.283881 + green * 0.668433 + blue * 0.047685;
+	var Z 		= red * 0.000088 + green * 0.072310 + blue * 0.986039;
+
+	//Calculate the xy values from the XYZ values
+	var x 		= (X / (X + Y + Z)) //.toFixed(4);
+	var y 		= (Y / (X + Y + Z)) //.toFixed(4);
+
+	if (isNaN(x))
+		x = 0;
+	if (isNaN(y))
+		y = 0;	 
+	return [x, y];
+}
+
 class ChromaticityDiagram {
   constructor(canvas) {
     this.canvas = canvas;
@@ -183,7 +206,7 @@ class ChromaticityDiagram {
     for (let i = 0; i < data.length; i += 4) {
       let x = canvasX/this.width;
       let y = (this.height - canvasY)/this.height;
-      let [r,g,b] = xyY_to_scaledAndGammaCorrectedrgb([x,y,Y]);
+      let [r,g,b] = xyY_to_scaledAndGammaCorrectedrgb([x-1.9,y,Y]);
       data[i] = r;
       data[i+1] = g;
       data[i+2] = b;
@@ -196,6 +219,24 @@ class ChromaticityDiagram {
       }
     }
 
+
+    const space = A;
+
+    const spaceCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]].map(([x, y]) => [
+      x * this.width,
+      this.height - y * this.height
+    ]);
+
+
+
+    const wrap = circle( spaceCoords.map(([x,y])=>({ x,y,r:0 })));
+    
+    // Translate to fit wrap
+    this.ctx.translate(600, 10)
+
+
+
+    // Draw CIE color spectrum
     this.ctx.putImageData(imageData, 0, 0);
 
     this.ctx.strokeStyle = "black";
@@ -206,32 +247,45 @@ class ChromaticityDiagram {
       this.height - y * this.height
     ]);
 
+    // Draw tongue
     multipoint(
       this.ctx,
       scaledPoints,
       0.4
     );
 
-
-    const space = A;
-
-    const BCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]].map(([x, y]) => [
-      x * this.width,
-      this.height - y * this.height
-    ]);
-
+    // Outline space
     this.ctx.beginPath();
-    this.ctx.moveTo(...BCoords[0]);
-    this.ctx.lineTo(...BCoords[1]);
-    this.ctx.lineTo(...BCoords[2]);
+    this.ctx.moveTo(...spaceCoords[0]);
+    this.ctx.lineTo(...spaceCoords[1]);
+    this.ctx.lineTo(...spaceCoords[2]);
     this.ctx.closePath();
     this.ctx.stroke();
-
-    const wrap = circle( BCoords.map(([x,y])=>({ x,y,r:0 })));
-    console.log(wrap);
+    
+      // Circle around space
     this.ctx.beginPath();
     this.ctx.arc(wrap.x, wrap.y, wrap.r, 0, Math.PI * 2, true); 
     this.ctx.stroke();
+    
+    const miredRGB = miredRange([153, 500])
+      .map(([R,G,B]) => rgb_to_cie(R,G,B))
+      .map(([x,y]) => [x * this.width, this.height - y * this.height]);
+
+    this.ctx.beginPath();
+    // Is this an easier version of multipoint?
+    this.ctx.moveTo(miredRGB[0][0], miredRGB[0][1]);
+    for (let i = 1; i < miredRGB.length - 2; i ++)
+    {
+      var xc = (miredRGB[i][0] + miredRGB[i + 1][0]) / 2;
+      var yc = (miredRGB[i][1] + miredRGB[i + 1][1]) / 2;
+      this.ctx.quadraticCurveTo(miredRGB[i][0], miredRGB[i][1], xc, yc);
+    }
+    // curve through the last two points
+    this.ctx.quadraticCurveTo(miredRGB[miredRGB.length -2][0], miredRGB[miredRGB.length -2][1], miredRGB[miredRGB.length -1][0],miredRGB[miredRGB.length -1][1]);
+    this.ctx.stroke();
+
+
+
 
 
   }
@@ -250,7 +304,7 @@ export default ({ width, height, className }) => {
   }, [canvas]);
   return (
     <div style={{width, height}} className={className}>
-      <canvas width="200%" height="200%" style={{ width: '100%', height: '100%' }} ref={canvas} />
+      <canvas width={width ? parseInt(width) * 2 : '200%'} height={height ? parseInt(height) * 2 : '200%'} style={{ width: '100%', height: '100%' }} ref={canvas} />
     </div>
   );
 }

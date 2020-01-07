@@ -25,7 +25,10 @@ export default [
   {
     name: 'chromacity',
     component: Centred(Chromacity),
-    // props: {}, // storyProps // adding props
+    props: {
+      width: '500px',
+      height: '500px',
+    }, // storyProps // adding props
   },
   {
     name: 'dial',
