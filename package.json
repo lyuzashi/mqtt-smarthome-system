@@ -19,6 +19,7 @@
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
     "firmata": "^2.0.0",
+    "greenlock-express": "v3",
     "hap-nodejs": "^0.4.47",
     "huejay": "^1.8.4",
     "influx": "^5.0.7",
