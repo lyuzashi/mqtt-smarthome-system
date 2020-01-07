@@ -1,14 +1,9 @@
-// Communicate with Arduino devices with Johnny-Five.
-// Aim is to use pigpio bitbang serial to remote neptr device 
+import Firmata from './firmata';
+import { devices } from '../../system/devices';
 
-class Micro extends Device {
-
-}
-
-// Dimmable
-// Light
-// Firmata
-// Etherport
-// Micro
-// Device
-// Writable
+const firmataDevices = 
+  devices.
+    filter(({ interface: interfaces }) =>
+      interfaces && interfaces
+      .find(({ type }) => type === 'firmata' ))
+    .map(device => new Firmata( device ));
