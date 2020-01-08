@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '../components/Button';
 import Chromacity from '../components/chromacity';
+import ChromacityGL from '../components/chromacitygl';
 import Dial from '../components/dial';
 import { Centred } from 'story-router';
 
@@ -29,6 +30,14 @@ export default [
       width: '500px',
       height: '500px',
     }, // storyProps // adding props
+  },
+  {
+    name: 'chromacitgl',
+    component: Centred(ChromacityGL),
+    props: {
+      width: 500,
+      height: 500,
+    },
   },
   {
     name: 'dial',

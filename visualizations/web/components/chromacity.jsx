@@ -206,7 +206,7 @@ class ChromaticityDiagram {
     for (let i = 0; i < data.length; i += 4) {
       let x = canvasX/this.width;
       let y = (this.height - canvasY)/this.height;
-      let [r,g,b] = xyY_to_scaledAndGammaCorrectedrgb([x-1.9,y,Y]);
+      let [r,g,b] = xyY_to_scaledAndGammaCorrectedrgb([x,y,Y]);
       data[i] = r;
       data[i+1] = g;
       data[i+2] = b;
