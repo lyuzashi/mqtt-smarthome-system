@@ -33,8 +33,8 @@ const MultiplyMany = ({ children }) => children.length > 2 ?
 
 const scaleCoordinates = ({ x, y, width, height, offset, scale }) => {
   return [
-    (((x * width) + offset.x) * scale.x) + (width / 2 - scale.x * width / 2),
-    (((height - y * height) - offset.y) * scale.y) + (height / 2 - scale.y * height / 2),
+    scale.x * (x * width + offset.x) + (width - width * scale.x) / 2,
+    (height + height * scale.y - 2 * height * scale.y * y - 2 * offset.y * scale.y) / 2,
   ];
 };
 
@@ -65,12 +65,11 @@ const CircularSurface = styled(Surface)`
   border-radius: 100%;
 `;
 
-export default class Chromaticity extends Component {
+class Chromaticity extends Component {
   render() {
-    const { width, height } = this.props;
-    const space = C;
-    const spaceCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]];
-
+    const { width, height, spaceCoords } = this.props;
+    // const space = C;
+    // const spaceCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]];
     const wrap = circle(spaceCoords.map(([x,y])=>({ x, y, r: 0 })));
     const scaleX = 1 / (wrap.r * 2 * width / width);
     const scaleY = 1 / (wrap.r * 2 * height / height);
@@ -137,3 +136,21 @@ export default class Chromaticity extends Component {
     );
   }
 };
+
+const AnimatedChromaticity = animated(Chromaticity);
+
+export default ({ space: spaceName, ...props }) => {
+  const currentSpace = ({ A, B, C })[spaceName || 'C'];
+  const { space } = useSpring({
+    space: [
+      currentSpace.red.x,
+      currentSpace.red.y,
+      currentSpace.green.x,
+      currentSpace.green.y,
+      currentSpace.blue.x,
+      currentSpace.blue.y,
+    ]
+  });
+  const spaceCoords = space.interpolate((rx, ry, gx, gy, bx, by) => [[rx, ry], [gx, gy], [bx, by]] );
+  return <AnimatedChromaticity {...props} spaceCoords={spaceCoords} />
+}

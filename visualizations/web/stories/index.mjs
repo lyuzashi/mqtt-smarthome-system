@@ -37,6 +37,7 @@ export default [
     props: {
       width: 500,
       height: 500,
+      space: 'C',
     },
   },
   {
