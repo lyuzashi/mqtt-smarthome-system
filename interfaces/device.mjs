@@ -1,3 +1,4 @@
+import vm from 'vm';
 import Readable from '../system/common/readable';
 // import Characteristic from '../../system/common/characteristic';
 
@@ -6,7 +7,6 @@ export default class Device extends Readable {
     super();
     Object.assign(this, characteristics);
   }
-
 
   previousValue = undefined;
 
@@ -41,6 +41,23 @@ export default class Device extends Readable {
     this.characteristics.forEach(({ logic = [{ name: 'raw' }], methods, type }) => {
 
     });
+  }
+
+  // Runs aggregate method when characteristic values change, subscribing as required
+  track() {
+    const context = vm.createContext(new Proxy({
+      // Add any required globals here
+    }, {
+      get(target, property, receiver) {
+        if (!Reflect.has(target, property)) {
+          // Subscribe to topic and return last known value
+        }
+        return Reflect.get(target, property, receiver);
+      }
+    }));
+    new vm.Script(this.aggregate.toString()).runInContext(context);
+    // Run this each time something changes
+    new vm.Script(`${this.aggregate.name}()`).runInContext(context);
   }
 
 }
