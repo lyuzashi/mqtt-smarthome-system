@@ -55,6 +55,10 @@ packages:
 - vlan
 - pi-bluetooth
 
+mounts:
+  - [/dev/sda1, /media/backup, auto, "rw,uid=hal,gid=hal,umask=002,dmask=002", "0", "0" ]
+
+
 write_files:
 - path: /etc/modules
   append: true
@@ -132,9 +136,33 @@ write_files:
       bindIp: 192.168.1.86
     processManagement:
       timeZoneInfo: /usr/share/zoneinfo
+- path: /etc/lsync/lsync.conf
+  content: |
+    settings {
+      nodaemon = true,
+      insist = true
+    }
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/greenlock.d",
+      target = "/media/backup/mqtt-smarthome-system/greenlock.d"
+    }
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/.nodered",
+      target = "/media/backup/mqtt-smarthome-system/.nodered"
+    }
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/data",
+      target = "/media/backup/mqtt-smarthome-system/data"
+    }
+
+# Pull each of these on first start, then sync upstream only as backup
 
 bootcmd:
   - ip link add link eth0 name eth0.6 type vlan id 6
+  - mkdir -p /media/backup
 
 runcmd:
   - sed -i 's/obscure//g' /etc/pam.d/common-password
