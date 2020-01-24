@@ -19,9 +19,17 @@ vec3 linearrgb_to_gammaCorrectedrgb(vec3 linear) {
 }
 
 vec3 XYZ_to_linearRGB(vec3 XYZ) {
-  float a =  3.2404542, b = -1.5371385, c = -0.4985314,
-        d = -0.9692660, e =  1.8760108, f =  0.0415560,
-        g =  0.0556434, h = -0.2040259, i =  1.0572252;
+  // mat4 type
+  // This could come from a 9-element array as a uniform
+  // sRGB D65
+  // float a =  3.2404542, b = -1.5371385, c = -0.4985314,
+  //       d = -0.9692660, e =  1.8760108, f =  0.0415560,
+  //       g =  0.0556434, h = -0.2040259, i =  1.0572252;
+
+  // Directly from Philips - Wide Gamut RGB D50
+  float a =  1.4628067, b = -0.1840623, c = -0.2743606,
+        d = -0.5217933, e =  1.4472381, f =  0.0677227,
+        g =  0.0349342, h = -0.0968930, i =  1.2884099;
     
   return vec3(
     a * XYZ.x + b * XYZ.y + c * XYZ.z,
@@ -55,7 +63,7 @@ varying vec2 uv;
 uniform vec2 scale;
 uniform vec2 offset;
 void main() {
-  float Y = 1.0;
+  float Y = 1.0; // Brightness
 
   vec2 scaleCenter = vec2(0.5, 0.5);
   vec2 uvScaled = (uv - scaleCenter) / scale + scaleCenter - offset;

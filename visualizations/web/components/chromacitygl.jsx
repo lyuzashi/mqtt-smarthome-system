@@ -48,7 +48,13 @@ function rgb_to_cie(red, green, blue){
 	//RGB values to XYZ using the Wide RGB D65 conversion formula
 	var X 		= red * 0.664511 + green * 0.154324 + blue * 0.162028;
 	var Y 		= red * 0.283881 + green * 0.668433 + blue * 0.047685;
-	var Z 		= red * 0.000088 + green * 0.072310 + blue * 0.986039;
+  var Z 		= red * 0.000088 + green * 0.072310 + blue * 0.986039;
+  
+  // From Philips directly
+//   Convert the RGB values to XYZ using the Wide RGB D65 conversion formula The formulas used:
+	var X 		= red * 0.649926 + green * 0.103455 + blue * 0.197109;
+	var Y 		= red * 0.234327 + green * 0.743075 + blue * 0.022598;
+  var Z 		= red * 0.0000000 + green * 0.053077 + blue * 1.035763;
 
 	//Calculate the xy values from the XYZ values
 	var x 		= (X / (X + Y + Z)) //.toFixed(4);
@@ -68,8 +74,6 @@ const CircularSurface = styled(Surface)`
 class Chromaticity extends Component {
   render() {
     const { width, height, spaceCoords } = this.props;
-    // const space = C;
-    // const spaceCoords = [[space.red.x, space.red.y], [space.green.x, space.green.y], [space.blue.x, space.blue.y]];
     const wrap = circle(spaceCoords.map(([x,y])=>({ x, y, r: 0 })));
     const scaleX = 1 / (wrap.r * 2 * width / width);
     const scaleY = 1 / (wrap.r * 2 * height / height);

@@ -105,6 +105,7 @@ write_files:
   content: |
     #!/bin/bash
     yarn install --frozen-lockfile
+    sudo systemctl restart location
 - path: /etc/systemd/system/mqtt-smarthome-system.service
   permissions: '0644'
   content: |
