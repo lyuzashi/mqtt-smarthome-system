@@ -21,7 +21,7 @@ users:
     ssh_import_id: None
     groups: git, audio
     shell: /bin/bash
-    sudo: ALL=(hal) NOPASSWD:/bin/systemctl restart location
+    sudo: ALL=(ALL) NOPASSWD:/bin/systemctl restart mqtt-smarthome-system 
   - name: ben
     groups: sudo, ssh, hal
     ssh_import_id: None
@@ -109,7 +109,7 @@ write_files:
   content: |
     #!/bin/bash
     yarn install --frozen-lockfile
-    sudo systemctl restart location
+    sudo systemctl restart mqtt-smarthome-system
 - path: /etc/systemd/system/mqtt-smarthome-system.service
   permissions: '0644'
   content: |
