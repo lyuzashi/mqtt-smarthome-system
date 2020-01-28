@@ -60,6 +60,7 @@
     "truthy": "^0.0.1",
     "util": "^0.11.0",
     "webdav-fs": "^1.11.0",
+    "webdav-server": "^2.6.2",
     "websocket-stream": "^5.1.2",
     "xterm": "^3.7.0",
     "yamljs": "^0.3.0"
