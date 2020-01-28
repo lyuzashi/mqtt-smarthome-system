@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { join, basename } from 'path';
 import styled, { css } from 'styled-components';
-import fs from '../../../system/common/webdav-fs';
+import fs from '../webdav-fs';
 
 const Tree = styled.div`
   ${props => props.root && css`
@@ -37,6 +37,7 @@ const Item = styled.div`
   font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   font-size: 0.8em;
   line-height: 1.5em;
+  color: #ccc;
   ${props => props.isFile && css`
     :active {
       color: #566786;

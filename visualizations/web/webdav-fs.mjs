@@ -1,9 +1,8 @@
 import WebDavFS from 'webdav-fs';
 import promisify from 'util.promisify';
-import { context } from '../shell';
 
-const url = 'https://memory.grid.robotjamie.com/';
-// const url = 'http://localhost:8080/data/';
+// const url = 'https://memory.grid.robotjamie.com/';
+const url = 'http://localhost:8080/data/';
 
 const fs = WebDavFS(url);
 
@@ -22,7 +21,5 @@ Object.assign(fs, {
 });
 
 asyncMethods.forEach(method => Object.assign(fs, { [`${method}Await`]: promisify(fs[method])}));
-
-context.fs = fs;
 
 export default fs;
