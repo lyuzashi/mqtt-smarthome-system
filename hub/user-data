@@ -54,9 +54,13 @@ packages:
 - libavahi-compat-libdnssd-dev
 - vlan
 - pi-bluetooth
+- davfs2
+- lsyncd
+- tmpreaper
 
 mounts:
   - [/dev/sda1, /media/backup, auto, "rw,uid=hal,gid=hal,umask=002,dmask=002", "0", "0" ]
+  - [https://memory.grid.robotjamie.com, /media/memory, "user,uid=hal,gid=hal", "0", "0"]
 
 
 write_files:
@@ -137,10 +141,10 @@ write_files:
       bindIp: 192.168.1.86
     processManagement:
       timeZoneInfo: /usr/share/zoneinfo
-- path: /etc/lsync/lsync.conf
+- path: /etc/lsyncd/lsync.conf.lua
   content: |
     settings {
-      nodaemon = true,
+      nodaemon = false,
       insist = true
     }
     sync {
@@ -158,12 +162,35 @@ write_files:
       source = "/home/hal/mqtt-smarthome-system/data",
       target = "/media/backup/mqtt-smarthome-system/data"
     }
-
-# Pull each of these on first start, then sync upstream only as backup
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/greenlock.d",
+      target = "/media/memory/mqtt-smarthome-system/greenlock.d"
+    }
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/.nodered",
+      target = "/media/memory/mqtt-smarthome-system/.nodered"
+    }
+    sync {
+      default.rsync,
+      source = "/home/hal/mqtt-smarthome-system/data",
+      target = "/media/memory/mqtt-smarthome-system/data"
+    }
+- path: /etc/tmpreaper.conf
+  content: |
+    TMPREAPER_PROTECT_EXTRA=''
+    TMPREAPER_DIRS='/tmp/.'
+    TMPREAPER_DELAY='256'
+    TMPREAPER_ADDITIONALOPTIONS=''
+- path: /etc/davfs2/secrets
+  content: |
+    https://memory.grid.robotjamie.com "" ""
 
 bootcmd:
   - ip link add link eth0 name eth0.6 type vlan id 6
   - mkdir -p /media/backup
+  - mkdir -p /media/memory
 
 runcmd:
   - sed -i 's/obscure//g' /etc/pam.d/common-password
@@ -182,6 +209,7 @@ runcmd:
   - cd /home/git/mqtt-smarthome-system
   - sudo -u git /home/git/mqtt-smarthome-system/hooks/post-update
   - cd /home/hal/mqtt-smarthome-system
+  - mkdir -p greenlock.d; mkdir -p data; mkdir -p .nodered 
   - sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
   - chmod -R g+w /home/hal/mqtt-smarthome-system
   - cd /tmp
@@ -196,6 +224,20 @@ runcmd:
   - systemctl start mqtt-smarthome-system
   - rm -f /etc/resolv.conf # Disable DNSMasq server which resolves with WAN
   - ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+  - mkdir -p /media/{backup,memory}/mqtt-smarthome-system/{greenlock.d,.nodered,data}
+  - lsyncd /etc/lsync/lsync.conf
+  # Copy from Memory to Backup
+  - rsync -rt /media/memory/mqtt-smarthome-system/greenlock.d /home/hal/mqtt-smarthome-system/greenlock.d
+  - rsync -rt /media/memory/mqtt-smarthome-system/.nodered    /home/hal/mqtt-smarthome-system/.nodered
+  - rsync -rt /media/memory/mqtt-smarthome-system/data        /home/hal/mqtt-smarthome-system/data
+  # Copy from Backup to location
+  - rsync -rt /media/backup/mqtt-smarthome-system/greenlock.d /home/hal/mqtt-smarthome-system/greenlock.d
+  - rsync -rt /media/backup/mqtt-smarthome-system/.nodered    /home/hal/mqtt-smarthome-system/.nodered
+  - rsync -rt /media/backup/mqtt-smarthome-system/data        /home/hal/mqtt-smarthome-system/data
+
+power_state:
+  mode: reboot
+  condition: True
 
 apt:
   preserve_sources_list: true
