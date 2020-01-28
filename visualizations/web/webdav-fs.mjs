@@ -2,7 +2,7 @@ import WebDavFS from 'webdav-fs';
 import promisify from 'util.promisify';
 
 // const url = 'https://memory.grid.robotjamie.com/';
-const url = 'http://localhost:8080/data/';
+const url = '/data/';
 
 const fs = WebDavFS(url);
 
