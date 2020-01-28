@@ -227,13 +227,9 @@ runcmd:
   - mkdir -p /media/{backup,memory}/mqtt-smarthome-system/{greenlock.d,.nodered,data}
   - lsyncd /etc/lsync/lsync.conf
   # Copy from Memory to Backup
-  - rsync -rt /media/memory/mqtt-smarthome-system/greenlock.d /home/hal/mqtt-smarthome-system/greenlock.d
-  - rsync -rt /media/memory/mqtt-smarthome-system/.nodered    /home/hal/mqtt-smarthome-system/.nodered
-  - rsync -rt /media/memory/mqtt-smarthome-system/data        /home/hal/mqtt-smarthome-system/data
+  - rsync -rt /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/backup/mqtt-smarthome-system/
   # Copy from Backup to location
-  - rsync -rt /media/backup/mqtt-smarthome-system/greenlock.d /home/hal/mqtt-smarthome-system/greenlock.d
-  - rsync -rt /media/backup/mqtt-smarthome-system/.nodered    /home/hal/mqtt-smarthome-system/.nodered
-  - rsync -rt /media/backup/mqtt-smarthome-system/data        /home/hal/mqtt-smarthome-system/data
+  - rsync -rt /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/hal/mqtt-smarthome-system/
 
 power_state:
   mode: reboot
