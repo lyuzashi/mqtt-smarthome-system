@@ -14,7 +14,7 @@ users:
   - name: git
     shell: /usr/bin/git-shell
     ssh_import_id: None
-    sudo: ALL=(hal) NOPASSWD:/usr/bin/git *
+    sudo: ALL=(hal) NOPASSWD:/usr/bin/git *, /usr/bin/chmod *
     ssh_authorized_keys:
       - no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBJ+EnuY4lXvYnIBBDsbcUjbV/TlO7yhIFxpgsHnOHs/xjQ2mX4oIiHTF1syx4IXkPo6AxuTrhPeM2decqSM+AU70vTkFxABOyrsevuXFYX+/s9jlLsJV+qT+GAloJ9wPlh3lA4CR2ucyTReWekkeW19sjp1QC4+bU24RkDUAHbCqnBUaQDFsKcqPUqNjenQPVtRkX9lYCzF28EplN1wVbd3AcnZFsdZ6WXGlFhSjE4W/jYaww4aTddLnPMb9TMFahQ75xzUCdpAqdQ68Oe1HQDKTWTvKDy6t/erc1uR8a8b4PJ/n9ZXyH0RNWjhD6Y2UtUJsc17mcGBC7ThKtIjPb ben@Number5
   - name: hal
