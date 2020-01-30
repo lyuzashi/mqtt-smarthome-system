@@ -53,6 +53,7 @@ export default class FileBrowser extends Component {
   constructor() {
     super(...arguments);
     const { path, root } = this.props;
+    this.nodes = {};
     this.state = {
       name: basename(path),
       loading: true,
@@ -66,7 +67,7 @@ export default class FileBrowser extends Component {
 
   componentDidMount() {
     const { path } = this.props;
-    fs.statAwait(path).then(stat => {
+    return fs.statAwait(path).then(stat => {
       const { name } = stat;
       const isDir = stat.isDirectory();
       const isFile = stat.isFile();
@@ -78,14 +79,26 @@ export default class FileBrowser extends Component {
     const { path, filter } = this.props;
     const { open, isDir, itemsLoaded } = this.state;
     if (open && isDir && !itemsLoaded) {
-      fs.readdirAwait(path).then(items => {
+      return fs.readdirAwait(path).then(items => {
         this.setState({
           items: items.filter(item => !item.match(filter)),
           itemsLoaded: true,
           loading: false,
         });
       })
+    } else {
+      return Promise.resolve();
     }
+  }
+
+  refresh() {
+    this.setState({ loading: true, itemsLoaded: false });
+    Promise.all([
+      this.componentDidMount(),
+      this.componentDidUpdate()
+    ]).then(() => {
+      Object.values(this.nodes).forEach(node => node && node.refresh());
+    });
   }
 
   toggle() {
@@ -121,6 +134,7 @@ export default class FileBrowser extends Component {
                 path={join(this.props.path, item)}
                 root={false}
                 onClick={onClick}
+                ref={node => this.nodes[item] = node}
               >
                 {item}
               </FileBrowser>

@@ -17,6 +17,9 @@ const PureButton = styled.button`
     opacity: 0.6;
     pointer-events: none;
   `}
+  :active {
+    background-color: #39423D;
+  }
 `;
 
 export default class Button extends Component {
