@@ -26,7 +26,6 @@ export default class Button extends Component {
   constructor(...args) {
     super(...args);
     this.state = { busy: false };
-    console.log(this.props)
   }
 
   handleClick(event) {

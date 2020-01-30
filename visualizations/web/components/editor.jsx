@@ -22,11 +22,16 @@ export default class Editor extends Component {
     }
   }
   editorDidMount(editor, monaco) {
-    console.log('editorDidMount', editor);
     // editor.focus();
   }
   onChange(code) {
     this.setState({ code });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.path !== this.props.path ||
+      nextState.loadedFile !== this.props.loadedFile ||
+      nextState.code !== this.state.code;
   }
 
   componentDidUpdate() {
@@ -71,6 +76,10 @@ export default class Editor extends Component {
     );
   }
 }
+
+Editor.defaultProps = {
+  loadedFile: null,
+};
 
 Editor.getDerivedStateFromProps = (props, state) => { 
   if (props.path !== state.loadedFile) {

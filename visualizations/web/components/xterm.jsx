@@ -43,11 +43,12 @@ export default class XTerm extends Component {
   }
 
   render() {
-    // TODO watch resize of container and call fit
     return (
-      <ObserveSize observerFn={() => this.term && this.term.fit()}>
-        <Container ref={container => (this.container = container)} />
-      </ObserveSize>
+      <div style={{width: '100%', height: '100%'}}>
+        <ObserveSize observerFn={() => this.term && this.term.fit()}>
+          <Container ref={container => (this.container = container)} />
+        </ObserveSize>
+      </div>
     )
   }
 }
