@@ -13,18 +13,18 @@ chpasswd:
 users:
   - name: git
     shell: /usr/bin/git-shell
-    ssh_import_id: None
+    # ssh_import_id: None
     sudo: ALL=(hal) NOPASSWD:/usr/bin/git *, /usr/bin/chmod *
     ssh_authorized_keys:
       - no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBJ+EnuY4lXvYnIBBDsbcUjbV/TlO7yhIFxpgsHnOHs/xjQ2mX4oIiHTF1syx4IXkPo6AxuTrhPeM2decqSM+AU70vTkFxABOyrsevuXFYX+/s9jlLsJV+qT+GAloJ9wPlh3lA4CR2ucyTReWekkeW19sjp1QC4+bU24RkDUAHbCqnBUaQDFsKcqPUqNjenQPVtRkX9lYCzF28EplN1wVbd3AcnZFsdZ6WXGlFhSjE4W/jYaww4aTddLnPMb9TMFahQ75xzUCdpAqdQ68Oe1HQDKTWTvKDy6t/erc1uR8a8b4PJ/n9ZXyH0RNWjhD6Y2UtUJsc17mcGBC7ThKtIjPb ben@Number5
   - name: hal
-    ssh_import_id: None
+    # ssh_import_id: None
     groups: git, audio
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:/bin/systemctl restart mqtt-smarthome-system 
   - name: ben
     groups: sudo, ssh, hal
-    ssh_import_id: None
+    # ssh_import_id: None
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
@@ -60,8 +60,7 @@ packages:
 
 mounts:
   - [/dev/sda1, /media/backup, auto, "rw,uid=hal,gid=hal,umask=002,dmask=002", "0", "0" ]
-  - [https://memory.grid.robotjamie.com, /media/memory, "user,uid=hal,gid=hal", "0", "0"]
-
+  - [https://memory.grid.robotjamie.com, /media/memory, davfs, "user,uid=hal,gid=hal,noauto,x-systemd.automount", "0", "0"]
 
 write_files:
 - path: /etc/modules
@@ -108,6 +107,7 @@ write_files:
   permissions: '0774'
   content: |
     #!/bin/bash
+    cd /home/hal/mqtt-smarthome-system
     yarn install --frozen-lockfile
     sudo systemctl restart mqtt-smarthome-system
 - path: /etc/systemd/system/mqtt-smarthome-system.service
@@ -145,35 +145,41 @@ write_files:
   content: |
     settings {
       nodaemon = false,
-      insist = true
+      insist = true,
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/greenlock.d",
       target = "/media/backup/mqtt-smarthome-system/greenlock.d"
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/.nodered",
       target = "/media/backup/mqtt-smarthome-system/.nodered"
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/data",
       target = "/media/backup/mqtt-smarthome-system/data"
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/greenlock.d",
       target = "/media/memory/mqtt-smarthome-system/greenlock.d"
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/.nodered",
       target = "/media/memory/mqtt-smarthome-system/.nodered"
     }
     sync {
       default.rsync,
+      delete	=	'running',
       source = "/home/hal/mqtt-smarthome-system/data",
       target = "/media/memory/mqtt-smarthome-system/data"
     }
@@ -184,56 +190,61 @@ write_files:
     TMPREAPER_DELAY='256'
     TMPREAPER_ADDITIONALOPTIONS=''
 - path: /etc/davfs2/secrets
+  permissions: '0600'
   content: |
     https://memory.grid.robotjamie.com "" ""
+- path: /home/hal/setup
+  permissions: '0744'
+  content: |
+    #!/bin/bash
+    sed -i 's/obscure//g' /etc/pam.d/common-password
+    apt-get remove cmdtest yarn -y
+    apt-get update
+    apt-get install yarn -y
+    setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
+    modprobe vhci-hcd
+    chown -R hal:hal /home/hal
+    git init /home/hal/mqtt-smarthome-system
+    git init /home/git/mqtt-smarthome-system --bare
+    chown -R hal:hal /home/hal/mqtt-smarthome-system
+    chown -R git:git /home/git/mqtt-smarthome-system
+    sudo -u git git -C /home/git/mqtt-smarthome-system fetch -q https://github.com/lyuzashi/mqtt-smarthome-system.git master:master
+    cd /home/git/mqtt-smarthome-system
+    sudo -u git /home/git/mqtt-smarthome-system/hooks/post-update
+    cd /home/hal/mqtt-smarthome-system
+    mkdir -p {greenlock.d,.nodered,data}
+    mount -a
+    mkdir -p /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data}
+    mkdir -p /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data}
+    lsyncd /etc/lsyncd/lsync.conf.lua
+    # Copy from Memory to Backup
+    rsync -rt /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data} /media/backup/mqtt-smarthome-system/
+    # Copy from Backup to location
+    rsync -rt /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/hal/mqtt-smarthome-system/
+    sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
+    chown -R hal:hal /home/hal/mqtt-smarthome-system
+    chmod -R g+w /home/hal/mqtt-smarthome-system
+    cd /tmp
+    git clone --branch V72 --depth 1 https://github.com/joan2937/pigpio.git
+    cd pigpio
+    make 
+    make install
+    pigpiod
+    systemctl enable mongod
+    systemctl start mongod
+    systemctl enable mqtt-smarthome-system
+    systemctl start mqtt-smarthome-system
 
 bootcmd:
   - ip link add link eth0 name eth0.6 type vlan id 6
   - mkdir -p /media/backup
   - mkdir -p /media/memory
-
-runcmd:
-  - sed -i 's/obscure//g' /etc/pam.d/common-password
-  - apt-get remove cmdtest yarn -y
-  - apt-get update
-  - apt-get install yarn -y
-  - setcap cap_net_bind_service,cap_net_raw+eip $(eval readlink -f `which node`)
-  - modprobe vhci-hcd
-  - chown -R hal:hal /home/hal
-  - sudo -u hal yarn global add pm2
-  - git init /home/hal/mqtt-smarthome-system
-  - git init /home/git/mqtt-smarthome-system --bare
-  - chown -R hal:hal /home/hal/mqtt-smarthome-system
-  - chown -R git:git /home/git/mqtt-smarthome-system
-  - sudo -u git git -C /home/git/mqtt-smarthome-system fetch -q https://github.com/lyuzashi/mqtt-smarthome-system.git master:master
-  - cd /home/git/mqtt-smarthome-system
-  - sudo -u git /home/git/mqtt-smarthome-system/hooks/post-update
-  - cd /home/hal/mqtt-smarthome-system
-  - mkdir -p greenlock.d; mkdir -p data; mkdir -p .nodered 
-  - sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
-  - chmod -R g+w /home/hal/mqtt-smarthome-system
-  - cd /tmp
-  - git clone --branch V72 --depth 1 https://github.com/joan2937/pigpio.git
-  - cd pigpio
-  - make 
-  - make install
-  - pigpiod
-  - systemctl enable mongod
-  - systemctl start mongod
-  - systemctl enable mqtt-smarthome-system
-  - systemctl start mqtt-smarthome-system
   - rm -f /etc/resolv.conf # Disable DNSMasq server which resolves with WAN
   - ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-  - mkdir -p /media/{backup,memory}/mqtt-smarthome-system/{greenlock.d,.nodered,data}
-  - lsyncd /etc/lsync/lsync.conf
-  # Copy from Memory to Backup
-  - rsync -rt /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/backup/mqtt-smarthome-system/
-  # Copy from Backup to location
-  - rsync -rt /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/hal/mqtt-smarthome-system/
+  - mount -a # Re-mount davfs if failed
 
-power_state:
-  mode: reboot
-  condition: True
+runcmd:
+  - /home/hal/setup
 
 apt:
   preserve_sources_list: true
