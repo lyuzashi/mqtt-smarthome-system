@@ -26,36 +26,46 @@ import XTerm from './components/xterm';
 
   render() {*/ 
 
+class NamedTabs extends Component {
+  render() {
+    this.names = this.props.children.map(c => c.props.name); 
+    return this.props.children;
+  }
+}
+
 const Interface = () => {
+  const namedTabs = useRef();
   const [tab, setTab] = useState(0);
   const location = useLocation();
   const history = useHistory();
+  const names = namedTabs.current && namedTabs.current.names
+  const indexes = names && names.reduce((accumulator, value, key) =>
+    Object.assign(accumulator, { [value]: key }), {});
+
+  console.log(names, indexes, namedTabs.current);
+
   useEffect(() => {
-    console.log(location.pathname) // setTab from name
-    setTab(location.pathname);
-  }, [location]);
-  useEffect(() => {
-    // history.push(tab) // get tab name from index;
+    names && setTab(indexes[location.pathname]);
   });
   return (
     <Fragment>
       <Body />
-      <Tabs selectedIndex={tab} onSelect={setTab}> 
+      <Tabs selectedIndex={tab} onSelect={i => setTab(i)}> 
         <TabList>
           <Tab>🎛</Tab>
           <Tab>⌨️</Tab>
         </TabList>
-        <TabPanel>
-          {/*  ref={tab => this.tabs['config'] = tab} */}
-          <Controls />
-        </TabPanel>
-        <PersistentTabPanel>
-          {/* ref={tab => this.tabs['terminal'] = tab}  */}
-          <PanelGroup direction="column" borderColor="grey">
-              <Config />
-              <XTerm />
-            </PanelGroup>
-        </PersistentTabPanel>
+        <NamedTabs ref={namedTabs}>
+          <TabPanel name="/config">
+            <Controls />
+          </TabPanel>
+          <PersistentTabPanel name="/terminal">
+            <PanelGroup direction="column" borderColor="grey">
+                <Config />
+                <XTerm />
+              </PanelGroup>
+          </PersistentTabPanel>
+        </NamedTabs>
       </Tabs>
     </Fragment>
   );
