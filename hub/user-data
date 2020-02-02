@@ -214,13 +214,14 @@ write_files:
     cd /home/hal/mqtt-smarthome-system
     mkdir -p {greenlock.d,.nodered,data}
     mount -a
+    mount https://memory.grid.robotjamie.com
     mkdir -p /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data}
     mkdir -p /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data}
-    lsyncd /etc/lsyncd/lsync.conf.lua
     # Copy from Memory to Backup
     rsync -rt /media/memory/mqtt-smarthome-system/{greenlock.d,.nodered,data} /media/backup/mqtt-smarthome-system/
     # Copy from Backup to location
     rsync -rt /media/backup/mqtt-smarthome-system/{greenlock.d,.nodered,data} /home/hal/mqtt-smarthome-system/
+    lsyncd /etc/lsyncd/lsync.conf.lua
     sudo -u hal /home/hal/mqtt-smarthome-system/.git/hooks/post-merge
     chown -R hal:hal /home/hal/mqtt-smarthome-system
     chmod -R g+w /home/hal/mqtt-smarthome-system

@@ -1,5 +1,5 @@
 import React, { Component, Fragment, useEffect, useState, useRef } from 'react';
-import { BrowserRouter as Router, useLocation, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation, useHistory, Redirect } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel, PersistentTabPanel } from './components/tabs';
 import PanelGroup from 'react-panelgroup';
 import Controls from './components/controls';
@@ -29,33 +29,46 @@ import XTerm from './components/xterm';
 class NamedTabs extends Component {
   render() {
     this.names = this.props.children.map(c => c.props.name); 
-    return this.props.children;
+    return this.props.show === false ? null : this.props.children;
   }
+}
+
+const useNames = (namedTabs) => {
+  const [names, setNames] = useState();
+  const [indexes, setIndexes] = useState();
+  useEffect(() => {
+    const namesValue = namedTabs.current && namedTabs.current.names
+    const indexesValue = namesValue && namesValue.reduce((accumulator, value, key) =>
+      Object.assign(accumulator, { [value]: key }), {});
+    setNames(namesValue);
+    setIndexes(indexesValue);
+  }, [namedTabs]);
+  return { names, indexes };
 }
 
 const Interface = () => {
   const namedTabs = useRef();
-  const [tab, setTab] = useState(0);
   const location = useLocation();
   const history = useHistory();
-  const names = namedTabs.current && namedTabs.current.names
-  const indexes = names && names.reduce((accumulator, value, key) =>
-    Object.assign(accumulator, { [value]: key }), {});
+  const { names, indexes } = useNames(namedTabs);
+  const [tab, setTab] = useState(undefined);
 
-  console.log(names, indexes, namedTabs.current);
-
+  useEffect(() => indexes && setTab(indexes[location.pathname] || 0), [location, indexes]);
   useEffect(() => {
-    names && setTab(indexes[location.pathname]);
-  });
+    if (!names) return;
+    const route = names[tab] || tab === undefined && names[0];
+    history.push(route)
+  }, [tab]);
+
   return (
     <Fragment>
       <Body />
-      <Tabs selectedIndex={tab} onSelect={i => setTab(i)}> 
+      <Tabs selectedIndex={tab || 0 } onSelect={i => setTab(i)}> 
         <TabList>
           <Tab>🎛</Tab>
           <Tab>⌨️</Tab>
         </TabList>
-        <NamedTabs ref={namedTabs}>
+        <NamedTabs ref={namedTabs} show={tab !== undefined}>
           <TabPanel name="/config">
             <Controls />
           </TabPanel>
