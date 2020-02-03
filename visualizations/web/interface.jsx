@@ -6,32 +6,16 @@ import Controls from './components/controls';
 import Body from './components/body';
 import Config from './components/config';
 import XTerm from './components/xterm';
+import Plan from './components/plan';
 
-/* export default class App extends Component {
-
-  constructor(...args) {
-    super(...args);
-    this.tabs = {};
-    this.state = { id: 0 };
-  }
-
-  select(id) {
-    const name = Object.keys(this.tabs)[id];
-    const component = Object.values(this.tabs)[id];
-    console.log(this.state.id, name, component, id);
-    this.setState({ id });
-    // There is a render loop bug when using PersistentTabPanel
-    return false;
-  }
-
-  render() {*/ 
-
-class NamedTabs extends Component {
+class TabPanelRoutes extends Component {
   render() {
     this.names = this.props.children.map(c => c.props.name); 
     return this.props.show === false ? null : this.props.children;
   }
 }
+
+const TabRoutes = ({ show, children }) => show === false ? null : children;
 
 const useNames = (namedTabs) => {
   const [names, setNames] = useState();
@@ -63,12 +47,17 @@ const Interface = () => {
   return (
     <Fragment>
       <Body />
-      <Tabs selectedIndex={tab || 0 } onSelect={i => setTab(i)}> 
+      <Tabs selectedIndex={tab || 0 } onSelect={i => setTab(i)}>
         <TabList>
-          <Tab>🎛</Tab>
-          <Tab>⌨️</Tab>
+          <TabRoutes show={tab !== undefined}>
+            <Tab>🎛</Tab>
+            <Tab>⌨️</Tab>
+            <Tab>🗺</Tab>
+            <Tab>🏡</Tab>
+            <Tab>🎬</Tab>
+          </TabRoutes>
         </TabList>
-        <NamedTabs ref={namedTabs} show={tab !== undefined}>
+        <TabPanelRoutes ref={namedTabs} show={tab !== undefined}>
           <TabPanel name="/config">
             <Controls />
           </TabPanel>
@@ -78,7 +67,16 @@ const Interface = () => {
                 <XTerm />
               </PanelGroup>
           </PersistentTabPanel>
-        </NamedTabs>
+          <TabPanel name="/geo">
+
+          </TabPanel>
+          <TabPanel name="/plan">
+            <Plan></Plan>
+          </TabPanel>
+          <TabPanel name="/show">
+
+          </TabPanel>
+        </TabPanelRoutes>
       </Tabs>
     </Fragment>
   );
