@@ -3,9 +3,9 @@ import MessageSlot from './message-slot';
 export default class Readable {
   slots = new Set();
 
-  enqueue ({ topic, payload }){
+  enqueue (payload){
     for (const [,slot] of this.slots.entries()) {
-      slot.write({ topic, payload });
+      slot.write(payload);
     }
   }
 

@@ -55,4 +55,12 @@
     - type: osc
   interface:
     - type: serial
-    
+-
+  id: astro
+  type: location
+  protocols:
+    - type: eventsource
+      hub: https://memory.grid.robotjamie.com/location
+    - type: overland
+  interfaces:
+    - type: location

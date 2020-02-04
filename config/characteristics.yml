@@ -17,4 +17,10 @@ ContinuousMotion:
     - name: raw
     - name: retrigger
       delay: 5000
+Longitude:
+  type: float
+  methods: [status, get]
+Latitude:
+  type: float
+  methods: [status, get]
 

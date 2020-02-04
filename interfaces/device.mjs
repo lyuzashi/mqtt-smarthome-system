@@ -1,11 +1,17 @@
 import vm from 'vm';
-import Readable from '../system/common/readable';
+import createProtocol from './protocols';
+// import Readable from '../system/common/readable';
 // import Characteristic from '../../system/common/characteristic';
 
-export default class Device extends Readable {
-  constructor({ id, mode, characteristics }) {
-    super();
-    Object.assign(this, characteristics);
+export default class Device {
+  constructor(device) {
+    const { id, mode, characteristics, hub, protocols } = device;
+    this.protocol = protocols.map(createProtocol);
+    // Point each protocol to the next?
+    Object.assign(this, {
+      characteristics,
+    });
+    
   }
 
   previousValue = undefined;

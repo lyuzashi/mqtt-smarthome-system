@@ -7,3 +7,8 @@ motion sensor:
     - name: MotionDetected
     - name: OccupancyDetected
     - name: ContinuousMotion
+location:
+  participant: location
+  characteristics:
+    - name: Longitude
+    - name: Latitude

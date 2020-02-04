@@ -16,6 +16,7 @@
     "color-temperature": "^0.2.7",
     "debug": "^4.1.1",
     "etherport-client": "^0.1.4",
+    "eventsource": "^1.0.7",
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
     "firmata": "^2.0.0",

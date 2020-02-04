@@ -7,6 +7,8 @@ import PIGPIO from './pigpio-device';
   for await (const { addresses, port, name } of discover('gpio')) {
     try {
       console.log('Found', name);
+      // TODO this should be based on interface, not protocol
+      // TODO introduce hub discovery
       const client = new PigpioClient({ host: addresses[0], port });
       const pigpioDevices = devices.
         filter(({ hub, protocol }) =>
