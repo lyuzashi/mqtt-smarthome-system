@@ -8,14 +8,14 @@ const protocols = {
 
 const registry = new Map();
 
-export default ({ type, hub }) => {
+export default ({ type, ...options }) => {
   // find instance of interface by hub or create new instance
-  if (hub && registry.has(hub)) {
-    return registry.get(hub);
+  if (options.hub && registry.has(options.hub)) {
+    return registry.get(options.hub);
   }
-  const instance = new protocols[type]({ hub });
-  if(hub) {
-    registry.set(hub, instance);
+  const instance = new protocols[type](options);
+  if (options.hub) {
+    registry.set(options.hub, instance);
   }
   return instance;
 }

@@ -61,6 +61,8 @@
   protocols:
     - type: eventsource
       hub: https://memory.grid.robotjamie.com/location
+      format: json
+      payload: data
     - type: overland
   interfaces:
     - type: location

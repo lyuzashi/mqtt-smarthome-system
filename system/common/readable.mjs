@@ -16,3 +16,4 @@ export default class Readable {
   };
 }
 
+// readable[Symbol.asyncIterator]()

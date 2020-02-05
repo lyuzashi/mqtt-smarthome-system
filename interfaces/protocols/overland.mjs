@@ -9,7 +9,7 @@ export default class OverlandProtocol extends Readable {
   async handleProtocol() {
     for await (const payload of this.protocol.read()) {
       console.log('New payload', payload);
-      // TODO pass through overland protocol?
+      // TODO extract parameters from overland packet
     }
   }
 
