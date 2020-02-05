@@ -2,8 +2,7 @@ import WebDavFS from 'webdav-fs';
 import promisify from 'util.promisify';
 import { context } from '../shell';
 
-const url = 'https://memory.grid.robotjamie.com/';
-// const url = 'http://localhost:8080/data/';
+const url = process.env.NODE_ENV === 'production' ? '/data/' : 'https://memory.grid.robotjamie.com/';
 
 const fs = WebDavFS(url);
 

@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import { join, basename } from 'path';
 import styled, { css } from 'styled-components';
-import fs from '../webdav-fs';
+import fs from '../../../system/common/webdav-fs';
 
 const Tree = styled.div`
   ${props => props.root && css`

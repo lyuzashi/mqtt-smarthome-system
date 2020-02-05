@@ -1,11 +1,17 @@
 import EventSource from 'eventsource';
+import objectPath from 'object-path';
 import { Readable } from 'stream';
 // import Readable from '../../system/common/readable';
 
 export default class EventSourceProtocol extends Readable {
-  constructor({ hub }) {
+  constructor({ hub, format, payload, device }) {
     super({ objectMode: true });
-    this.stream = new EventSource(hub);
+    const stream = new EventSource(hub);
+    Object.assign(this, {
+      stream,
+      format,
+      payload,
+    })
   }
   
   _read() {
@@ -13,7 +19,11 @@ export default class EventSourceProtocol extends Readable {
   }
   
   handleMessage(message) {
-    // TOOO decode data according to options
-    this.push(message);
+    const { data } = message;
+    switch (this.format) {
+      case 'json':
+        this.push(objectPath.get(JSON.parse(data), this.payload));
+      break;
+    }
   }
 }

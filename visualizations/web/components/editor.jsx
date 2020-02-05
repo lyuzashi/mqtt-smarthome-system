@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import ObserveSize from 'react-observe-size';
 import styled from 'styled-components';
-import fs from '../webdav-fs';
+import fs from '../../../system/common/webdav-fs';
 
 const Wrapper = styled.div`
   width: 100%;

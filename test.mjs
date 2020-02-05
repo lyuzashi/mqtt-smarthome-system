@@ -23,7 +23,11 @@ const { context } = repl.start();
 context.ES = ES;
 
 
-var e = new ES({ hub: 'https://memory.grid.robotjamie.com/location' });
+var e = new ES({ 
+  hub: 'https://memory.grid.robotjamie.com/location',
+  format: 'json',
+  payload: 'data',
+ });
 e.on('data', console.log)
 
 // (async () => { 

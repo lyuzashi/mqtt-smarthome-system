@@ -64,5 +64,6 @@
       format: json
       payload: data
     - type: overland
+      payload: geometry.coordinates
   interfaces:
     - type: location

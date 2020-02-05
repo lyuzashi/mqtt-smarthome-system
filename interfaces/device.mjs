@@ -1,6 +1,6 @@
 import vm from 'vm';
 import createProtocol from './protocols';
-import { Stream, PassThrough } from 'stream';
+import { Stream, PassThrough, pipeline } from 'stream';
 import Readable from '../system/common/readable';
 // import Characteristic from '../../system/common/characteristic';
 
@@ -12,13 +12,14 @@ export default class Device {
     // (enqueue from top, read from bottom)
     // If protocol is not array, just select and return as this.protocol
 
-    const protocolLayers = protocols.map(createProtocol);
+    const protocolLayers = protocols.map(options => createProtocol({ ...options, device }));
 
     if (protocolLayers.length <= 1) {
       this.protocol = protocolLayers[0];
     } else if (protocolLayers.every(layer => layer instanceof Stream)) {
       this.protocol = new PassThrough();
-      // TODO create pipeline
+      // TODO does a pipeline work in reverse for writing to device?
+      pipeline(...protocolLayers, this.protocol);
     } else {
       // TODO case where several layers that aren't all streams are used
     }
