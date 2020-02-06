@@ -1,9 +1,11 @@
 import EtherportClient from './etherport-client';
-import EventSource from './eventsource';
+import EventSourceProtocol from './eventsource';
+import OverlandProtocol from './overland.mjs';
 
 const protocols = {
   'etherport-client': EtherportClient,
-  eventsource: EventSource,
+  eventsource: EventSourceProtocol,
+  overland: OverlandProtocol,
 }
 
 const registry = new Map();

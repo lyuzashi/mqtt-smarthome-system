@@ -10,7 +10,6 @@ export default class OverlandProtocol extends Transform {
   _transform(chunk, encoding, callback) {
     const { device_id } = chunk.properties;
     if (device_id !== this.device.id) {
-      // TODO is this the correct way to discard a chunk?
       return callback();
     } 
     if (this.payload) {

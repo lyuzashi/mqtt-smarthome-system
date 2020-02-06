@@ -16,7 +16,7 @@ const smarthomeTopic = '+participant/+method/+item/#interfaces';
 
 // TODO allow overrides at every level e.g. device with characteristic properties
 devices.forEach(device => {
-  device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name;
+  device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name || device.id;
   const driver = new Deferred;
   registry.set(device.fullName, driver.promise);
   device.register = driver.resolve;

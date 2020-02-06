@@ -1,7 +1,6 @@
 import EventSource from 'eventsource';
 import objectPath from 'object-path';
 import { Readable } from 'stream';
-// import Readable from '../../system/common/readable';
 
 export default class EventSourceProtocol extends Readable {
   constructor({ hub, format, payload, device }) {
