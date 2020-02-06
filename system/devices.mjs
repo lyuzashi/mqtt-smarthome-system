@@ -20,6 +20,7 @@ devices.forEach(device => {
   const driver = new Deferred;
   registry.set(device.fullName, driver.promise);
   device.register = driver.resolve;
+  device.driver = driver.promise;
   const type = types[device.type];
   if (type) {
     Object.assign(device, type);

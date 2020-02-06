@@ -5,7 +5,7 @@ import Characteristic from '../system/common/characteristic';
 
 export default class Device {
   constructor(device) {
-    const { id, mode, characteristics, hub, protocols } = device;
+    const { id, mode, characteristics, hub, protocols, register } = device;
 
     // If protocols are all readable, chain and construct a chained readable 
     // (enqueue from top, read from bottom)
@@ -29,6 +29,7 @@ export default class Device {
       this.characteristics[name] = new Characteristic({ name, device: this, ...options });
     })
 
+    register(this);
   }
 
   // Runs aggregate method when characteristic values change, subscribing as required

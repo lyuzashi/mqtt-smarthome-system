@@ -1,1 +1,1 @@
-module.exports = __dirname;
+module.exports = process.title === 'browser' ? '/' : __dirname;

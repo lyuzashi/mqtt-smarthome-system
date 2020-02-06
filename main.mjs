@@ -6,4 +6,5 @@ import './interfaces/midi';
 import './interfaces/hap';
 import './interfaces/hue';
 import './interfaces/gpio';
+import './interfaces/location';
 import './visualizations/web';

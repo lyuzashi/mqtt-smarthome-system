@@ -6,6 +6,7 @@ import Controls from './components/controls';
 import Body from './components/body';
 import Config from './components/config';
 import XTerm from './components/xterm';
+import Devices from './components/devices';
 import Plan from './components/plan';
 
 class TabPanelRoutes extends Component {
@@ -52,6 +53,7 @@ const Interface = () => {
           <TabRoutes show={tab !== undefined}>
             <Tab>🎛</Tab>
             <Tab>⌨️</Tab>
+            <Tab>🕹</Tab>
             <Tab>🗺</Tab>
             <Tab>🏡</Tab>
             <Tab>🎬</Tab>
@@ -67,6 +69,9 @@ const Interface = () => {
                 <XTerm />
               </PanelGroup>
           </PersistentTabPanel>
+          <TabPanel name="/devices">
+            <Devices />
+          </TabPanel>
           <TabPanel name="/geo">
 
           </TabPanel>
