@@ -19,7 +19,7 @@ export default () => {
 
   return (
     <DeviceList>
-      {devices.map(device => <DeviceStatus {...device} />)}
+      {devices.map(device => <DeviceStatus key={device.fullName} {...device} />)}
     </DeviceList>
   )
 }

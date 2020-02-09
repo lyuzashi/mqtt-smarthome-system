@@ -12,6 +12,7 @@ const selectProtocol = (config) => {
 
 export default class FirmataDevice extends Firmata {
   constructor(config) {
+    console.log('Looking for Firmata device', config)
     const protocol = selectProtocol(config);
     super(protocol);
     Object.assign(this, { config });
@@ -19,7 +20,7 @@ export default class FirmataDevice extends Firmata {
   }
 
   setup() {
-    console.log('ready');
+    console.log('FIRMATA ready');
     this.pinMode(this.config.id, this.MODES.PWM);
     this.analogWrite(this.config.id, 0);
   }

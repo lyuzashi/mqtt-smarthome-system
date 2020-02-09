@@ -12,3 +12,8 @@ location:
   characteristics:
     - name: Longitude
     - name: Latitude
+dimmable light:
+  participant: lights
+  characteristics:
+    - name: On
+    - name: Brightness

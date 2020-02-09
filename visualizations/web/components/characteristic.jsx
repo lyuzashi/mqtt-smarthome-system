@@ -1,15 +1,37 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import {  subscribe, unsubscribe } from '../mqtt-client';
 
+const Name = styled.dt`
+  font-size: 0.8em;
+  color: #bbb;
+  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+`;
+
+const CharacteristicDetail = styled.dl`
+
+`;
+
+const Value = styled.dd`
+  font-size: 0.8em;
+  color: #ccc;
+  font-family: "Monaco",monospace;
+  margin-left: 0.5em;
+`;
+
 export default class Characteristic extends Component {
+  constructor(props) {
+    super(props);
+    this.statusTopic = this.props.methods.find(({ method }) => method === 'status').topic;
+    this.update = this.update.bind(this);
+  }
 
   componentDidMount() {
-    // TODO find status topic
-    subscribe(this.props.topic)(this.update);
+    subscribe(this.statusTopic)(this.update);
   }
 
   componentWillUnmount() {
-    unsubscribe(this.props.topic, this.update);
+    unsubscribe(this.statusTopic, this.update);
   }
 
   update(payload) {
@@ -18,8 +40,12 @@ export default class Characteristic extends Component {
     });
   }
 
-
   render() {
-    return (<div>{this.state && this.state.value}</div>)
+    return (
+      <CharacteristicDetail>
+        <Name>{this.props.name}</Name>
+        <Value>{this.state && this.state.value}</Value>
+      </CharacteristicDetail>
+    );
   }
 }

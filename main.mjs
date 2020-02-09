@@ -7,4 +7,6 @@ import './interfaces/hap';
 import './interfaces/hue';
 import './interfaces/gpio';
 import './interfaces/location';
+// import './interfaces/micro';
+import './interfaces/lights';
 import './visualizations/web';

@@ -3,12 +3,20 @@ import transform from './characteristic-logic';
 import { Duplex } from 'stream';
 import mqtt from '../mqtt'
 
-export default class Characteristic extends Duplex {
-  constructor({ name, type, methods = [], logic = [{ name: 'raw' }], device }) {
-    super({ objectMode: true });
-    Object.assign(this, { name, type, methods, logic, device });
+const castType = ({ type, value }) => {
+  switch(type) {
+    case 'float':
+      return parseFloat(value, 10);
+    break;
   }
+}
 
+export default class Characteristic extends Duplex {
+  constructor({ name, type, methods = [], logic = [{ name: 'raw' }], device, retain = true }) {
+    super({ objectMode: true });
+    Object.assign(this, { name, type, methods, logic, device, retain });
+
+  }
 
   _write(chunk, encoding, callback) {
     // Update status
@@ -18,7 +26,27 @@ export default class Characteristic extends Duplex {
     callback();
   }
 
-  // read() - inherited for streaming changes 
+  subbed = false;
+
+  // Device reads from MQTT stream, so subscribe here and push on message
+  _read() {
+    if (this.subbed) return;
+    this.subbed = true;
+    // TODO prevent this being called again if already subscribed - memoize
+    console.log('reading?', this.setMethods)
+    this.setMethods.forEach(({ topic }) => {
+      // TODO any transforming of raw data into a characteristic
+      // at least handle typeing
+      console.log('subscribing to', topic, this.type);
+      var s = mqtt.subscribe(topic,  (topic, value) => {
+        console.log('characteristic got value', value);
+        this.push(castType({ type: this.type, value }));
+      });
+      console.log('🦁', s)
+    });
+
+  }
+
 
   // Transforms data and calls device.write
   // set(data) {
@@ -37,6 +65,10 @@ export default class Characteristic extends Duplex {
   // TODO memoize
   get statusMethods() {
     return this.methods.filter(({ method }) => method === 'status');
+  }
+
+  get setMethods() {
+    return this.methods.filter(({ method }) => method === 'set');
   }
 
   // Set status of characteristic 
@@ -68,7 +100,7 @@ export default class Characteristic extends Duplex {
     mqtt.publish({
       topic,
       payload: String(payload),
-      retain: true,
+      retain: this.retain,
     });
   }
 

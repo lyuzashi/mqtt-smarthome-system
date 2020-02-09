@@ -10,8 +10,13 @@ export default class Device {
     // If protocols are all readable, chain and construct a chained readable 
     // (enqueue from top, read from bottom)
     // If protocol is not array, just select and return as this.protocol
-
-    const protocolLayers = protocols.map(options => createProtocol({ ...options, device }));
+    console.log(device.fullName, hub);
+    const protocolLayers = protocols.reduce((layers, options, i) => {
+      const protocol = i > 0 && layers[i - 1];
+      console.log('Creating layer', options.type, i, hub, layers.map(l => l.name))
+      layers.push(createProtocol({ ...options, hub, device, protocol }));
+      return layers;
+    }, []);
 
     if (protocolLayers.length <= 1) {
       this.protocol = protocolLayers[0];
@@ -20,7 +25,7 @@ export default class Device {
       // TODO does a pipeline work in reverse for writing to device?
       pipeline(...protocolLayers, this.protocol);
     } else {
-      // TODO case where several layers that aren't all streams are used
+      this.protocol = protocolLayers[protocolLayers.length -1];
     }
 
     this.characteristics = {};

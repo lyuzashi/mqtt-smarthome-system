@@ -20,11 +20,9 @@ export default (device) => {
   return (
     <Device>
       <Name>{device.fullName}</Name>
-        {device.characteristics && device.characteristics.map(characteristic => (
-          <div>{characteristic.name}
-          <Characteristic {...characteristic} />
-          </div>
-        ))}
+        {device.characteristics && device.characteristics.map(characteristic =>
+          <Characteristic key={characteristic.name} {...characteristic} />
+        )}
     </Device>
   )
 }

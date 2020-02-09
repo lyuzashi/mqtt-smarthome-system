@@ -4,6 +4,7 @@ import { Readable } from 'stream';
 
 export default class EventSourceProtocol extends Readable {
   constructor({ hub, format, payload, device }) {
+    console.log('creating esp', hub)
     super({ objectMode: true });
     const stream = new EventSource(hub);
     Object.assign(this, {
