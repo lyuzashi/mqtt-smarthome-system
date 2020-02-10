@@ -3,12 +3,15 @@ import path from 'path';
 import Pattern from 'mqtt-pattern';
 import Deferred from './common/deferred';
 import root from '../root';
+import { context } from './shell'; 
 
 export const devices = YAML.load(path.resolve(root, 'config/devices.yml'));
 export const types = YAML.load(path.resolve(root, 'config/types.yml'));
 export const characteristics = YAML.load(path.resolve(root, 'config/characteristics.yml'));
 
 const registry = new Map;
+
+context.devices = devices;
 
 export default registry.get.bind(registry);
 

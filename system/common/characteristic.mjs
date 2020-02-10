@@ -1,6 +1,6 @@
 
-import transform from './characteristic-logic';
 import { Duplex } from 'stream';
+import transform from './characteristic-logic';
 import mqtt from '../mqtt'
 
 const castType = ({ type, value }) => {
@@ -16,102 +16,78 @@ export default class Characteristic extends Duplex {
     super({ objectMode: true });
     Object.assign(this, { name, type, methods, logic, device, retain });
 
-  }
-
-  _write(chunk, encoding, callback) {
-    // Update status
-    // TOOD transform based on 'type' e.g. float, int, string
-    this.status(chunk);
-
-    callback();
-  }
-
-  subbed = false;
-
-  // Device reads from MQTT stream, so subscribe here and push on message
-  _read() {
-    if (this.subbed) return;
-    this.subbed = true;
-    // TODO prevent this being called again if already subscribed - memoize
-    console.log('reading?', this.setMethods)
-    this.setMethods.forEach(({ topic }) => {
-      // TODO any transforming of raw data into a characteristic
-      // at least handle typeing
-      console.log('subscribing to', topic, this.type);
-      var s = mqtt.subscribe(topic,  (topic, value) => {
-        console.log('characteristic got value', value);
-        this.push(castType({ type: this.type, value }));
-      });
-      console.log('🦁', s)
+    // Handle get topics, informing device to retrieve value
+    this.getMethods.forEach(method => {
+      if (this.subscriptions.has(method)) return;
+      const { topic } = method;
+      const handler = () => this.emit('request');
+      mqtt.subscribe(topic, handler);
+      this.subscriptions.set(method, handler);
     });
-
   }
 
-
-  // Transforms data and calls device.write
-  // set(data) {
-
-  // }
-
-  // Request current status from protocol. Might call device.write
-  // get({ live, characteristic }) {
-  //   // this.methods.find(method => method.type === 'get)
-  //   // Retrieve latest cached value and callback with refresh method
-  //   // Option (live) to return promise which waits for status with timeout?
-  //   // const data = await pin.read();
-  //   // this.status(data);
-  // }
-
-  // TODO memoize
   get statusMethods() {
-    return this.methods.filter(({ method }) => method === 'status');
+    return this._statusMethods || (this._statusMethods = this.methods.filter(({ method }) => method === 'status'));
   }
 
   get setMethods() {
-    return this.methods.filter(({ method }) => method === 'set');
+    return this._setMethods || (this._setMethods = this.methods.filter(({ method }) => method === 'set'));
   }
 
-  // Set status of characteristic 
-  status(data) {
+  get getMethods() {
+    return this._getMethods || (this._getMethods = this.methods.filter(({ method }) => method === 'get'));
+  }
+
+  subscriptions = new WeakMap();
+
+  // Device notifies value to MQTT
+  _write(chunk, encoding, callback) {
     this.statusMethods.forEach(({ topic, type }) => {
       let transformedQueueAtEnd = true;
-      let transformedData = data;
-      for (const options of this.logic) {
-        ({ 
-          data: transformedData = transformedData, 
-          queueAtEnd: transformedQueueAtEnd = transformedQueueAtEnd 
-        } = transform({
-          options,
-          type,
-          topic,
-          data: transformedData,
-          previousValue: this.previousValue,
-          enqueue: this.enqueue.bind(this),
-          queueAtEnd: transformedQueueAtEnd
-        }));
-      }
+      let transformedData = chunk;
+      // for (const options of this.logic) {
+      //   ({ 
+      //     data: transformedData = transformedData, 
+      //     queueAtEnd: transformedQueueAtEnd = transformedQueueAtEnd 
+      //   } = transform({
+      //     options,
+      //     type,
+      //     topic,
+      //     data: transformedData,
+      //     previousValue: this.previousValue,
+      //     enqueue: this.enqueue.bind(this),
+      //     queueAtEnd: transformedQueueAtEnd
+      //   }));
+      // }
       if (transformedQueueAtEnd) {
-        this.enqueue({ topic, payload: data });
+        mqtt.publish({
+          topic,
+          payload: String(transformedData),
+          retain: this.retain,
+        });
       }
     });
+    callback();
   }
 
-  enqueue({ topic, payload }) {
-    mqtt.publish({
-      topic,
-      payload: String(payload),
-      retain: this.retain,
+  // Device reads from MQTT stream, so subscribe here and push on message
+  _read() {
+    this.setMethods.forEach(method => {
+      if (this.subscriptions.has(method)) return;
+      const { topic } = method;
+      const handler = (topic, value) => {
+        const payload = castType({ type: this.type, value });
+        if (!this.push(payload)) {
+          mqtt.unsubscribe(topic, handler);
+        }
+      }
+      mqtt.subscribe(topic, handler);
+      this.subscriptions.set(method, handler);
     });
   }
 
-  // Records methods and topics, previous value and handles transforming
+  update() {
+    // push payload to device with this.push
+  }
 
-  // { name: 'ContinuousMotion',
-  // type: 'boolean',
-  // methods:
-  //  [ { method: 'status',
-  //      topic: 'motion/status/Bedroom Motion Sensor/ContinuousMotion' },
-  //    { method: 'get',
-  //      topic: 'motion/get/Bedroom Motion Sensor/ContinuousMotion' } ],
-  // logic: [ { name: 'raw' }, { name: 'retrigger', delay: 5000 } ] } ]
 }

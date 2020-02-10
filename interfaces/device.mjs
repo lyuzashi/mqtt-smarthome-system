@@ -32,7 +32,27 @@ export default class Device {
 
     characteristics.forEach(({ name, ...options }) => {
       this.characteristics[name] = new Characteristic({ name, device: this, ...options });
-    })
+      // TODO create getter and setter for each characteristic
+    });
+
+    const Brightness = characteristics.Brightness;
+
+    Object.defineProperty(this, 'Brightness', {
+      set(value) {
+        // update triggers a read.push so device protocols are run with new data
+        Brightness.update(value);
+      },
+      get() {
+        // return last data from characteristic with Symbol.asyncIterator defined
+        return Object.defineProperty(new Number(0.3), Symbol.asyncIterator, {
+          value() {
+            // return iterator of stream
+          }
+        })
+      }
+    });
+
+    console.log('🍩', this.Brightness)
 
     register(this);
   }
