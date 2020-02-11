@@ -3,6 +3,18 @@ import createProtocol from './protocols';
 import { Stream, PassThrough, pipeline } from 'stream';
 import Characteristic from '../system/common/characteristic';
 
+const primativeType = (type) => {
+  switch(type) {
+    case 'number':
+    case 'float':
+      return Number;
+    case 'boolean':
+      return Boolean;
+    case 'string':
+      return String;
+  }
+}
+
 export default class Device {
   constructor(device) {
     const { id, mode, characteristics, hub, protocols, register } = device;
@@ -10,10 +22,8 @@ export default class Device {
     // If protocols are all readable, chain and construct a chained readable 
     // (enqueue from top, read from bottom)
     // If protocol is not array, just select and return as this.protocol
-    console.log(device.fullName, hub);
     const protocolLayers = protocols.reduce((layers, options, i) => {
       const protocol = i > 0 && layers[i - 1];
-      console.log('Creating layer', options.type, i, hub, layers.map(l => l.name))
       layers.push(createProtocol({ ...options, hub, device, protocol }));
       return layers;
     }, []);
@@ -30,25 +40,22 @@ export default class Device {
 
     this.characteristics = {};
 
-    characteristics.forEach(({ name, ...options }) => {
-      this.characteristics[name] = new Characteristic({ name, device: this, ...options });
+    characteristics.forEach(({ name, type, ...options }) => {
+      const characteristic = new Characteristic({ device: this, name, type, ...options });
+      this.characteristics[name] = characteristic
+      const Type = primativeType(type);
       // TODO create getter and setter for each characteristic
-    });
-
-    const Brightness = this.characteristics.Brightness;
-
-    Object.defineProperty(this, 'Brightness', {
-      set(value) {
-        // update triggers a read.push so device protocols are run with new data
-        Brightness.update(value);
-      },
-      get() {
-        // return last data from characteristic with Symbol.asyncIterator defined
-        const value = new Number(Brightness.lastValue);
-        return Object.defineProperty(value, Symbol.asyncIterator, {
-          value: Brightness[Symbol.asyncIterator].bind(Brightness),
-        })
-      }
+      Object.defineProperty(this, name, {
+        set(value) {
+          characteristic.update(value);
+        },
+        get() {
+          const value = new Type(characteristic.lastValue);
+          return Object.defineProperty(value, Symbol.asyncIterator, {
+            value: characteristic[Symbol.asyncIterator].bind(characteristic),
+          })
+        }
+      });
     });
 
     register(this);

@@ -27,23 +27,20 @@ export default class FirmataLight extends Duplex {
   }
   
   _write({ channel, value, request }, encoding, callback) {
-
-
-    // if (this.ready) {
+    if (this.ready) {
       switch (channel) {
         case 'brightness':
           // TODO transitions, special functions and cases etc
           if (!request) {
             console.log('Writing to device', value * 1024)
-            // TODO remove this.ready from here
-            if (this.ready) this.protocol.analogWrite(this.device.id, value * 1024);
+            this.protocol.analogWrite(this.device.id, value * 1024);
             this.channelValues.set(channel, value);
           }
           // Publish status since Firmata is write-only for PWM
           this.push({ channel, value: this.channelValues.get(channel) }); 
         break;
       }
-    // }
+    }
     callback();
   }
 

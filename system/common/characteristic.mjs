@@ -24,6 +24,9 @@ export default class Characteristic extends Duplex {
       mqtt.subscribe(topic, handler);
       this.subscriptions.set(method, handler);
     });
+
+    // If retain == true, on startup subscribe to status method to retrieve retained value then push
+    // to device 
   }
 
   get statusMethods() {

@@ -5,6 +5,8 @@ import Deferred from './common/deferred';
 import root from '../root';
 import { context } from './shell'; 
 
+// TODO rely on parcel bundler to import these in that context, sharing device construction code
+// in another file
 export const devices = YAML.load(path.resolve(root, 'config/devices.yml'));
 export const types = YAML.load(path.resolve(root, 'config/types.yml'));
 export const characteristics = YAML.load(path.resolve(root, 'config/characteristics.yml'));
