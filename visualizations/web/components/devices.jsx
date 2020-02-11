@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { devices } from '../../../system/devices';
+import { devices } from '../../../system/devices/web';
 import DeviceStatus from './device-status';
 
 console.log(devices);

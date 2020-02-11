@@ -1,26 +1,15 @@
-import YAML from 'yamljs';
-import path from 'path';
 import Pattern from 'mqtt-pattern';
-import Deferred from './common/deferred';
-import root from '../root';
-import { context } from './shell'; 
-
-// TODO rely on parcel bundler to import these in that context, sharing device construction code
-// in another file
-export const devices = YAML.load(path.resolve(root, 'config/devices.yml'));
-export const types = YAML.load(path.resolve(root, 'config/types.yml'));
-export const characteristics = YAML.load(path.resolve(root, 'config/characteristics.yml'));
-
-const registry = new Map;
-
-context.devices = devices;
-
-export default registry.get.bind(registry);
+import Deferred from '../common/deferred';
 
 const smarthomeTopic = '+participant/+method/+item/#interfaces';
+const registry = new Map;
+
+const getRegistry = registry.get.bind(registry);
+
+export { getRegistry as registry };
 
 // TODO allow overrides at every level e.g. device with characteristic properties
-devices.forEach(device => {
+export default ({ devices, types, characteristics }) => devices.map(device => {
   device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name || device.id;
   const driver = new Deferred;
   registry.set(device.fullName, driver.promise);
@@ -51,5 +40,5 @@ devices.forEach(device => {
       }
     })
   }
-
+  return device;
 });
