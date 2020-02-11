@@ -40,32 +40,17 @@ export default class Characteristic extends Duplex {
 
   subscriptions = new WeakMap();
 
+  lastValue = undefined;
+
   // Device notifies value to MQTT
   _write(chunk, encoding, callback) {
     this.statusMethods.forEach(({ topic, type }) => {
-      let transformedQueueAtEnd = true;
-      let transformedData = chunk;
-      // for (const options of this.logic) {
-      //   ({ 
-      //     data: transformedData = transformedData, 
-      //     queueAtEnd: transformedQueueAtEnd = transformedQueueAtEnd 
-      //   } = transform({
-      //     options,
-      //     type,
-      //     topic,
-      //     data: transformedData,
-      //     previousValue: this.previousValue,
-      //     enqueue: this.enqueue.bind(this),
-      //     queueAtEnd: transformedQueueAtEnd
-      //   }));
-      // }
-      if (transformedQueueAtEnd) {
-        mqtt.publish({
-          topic,
-          payload: String(transformedData),
-          retain: this.retain,
-        });
-      }
+      mqtt.publish({
+        topic,
+        payload: String(chunk),
+        retain: this.retain,
+      });
+      this.lastValue = chunk;
     });
     callback();
   }
@@ -77,6 +62,7 @@ export default class Characteristic extends Duplex {
       const { topic } = method;
       const handler = (topic, value) => {
         const payload = castType({ type: this.type, value });
+        this.lastValue = payload;
         if (!this.push(payload)) {
           mqtt.unsubscribe(topic, handler);
         }
@@ -86,8 +72,8 @@ export default class Characteristic extends Duplex {
     });
   }
 
-  update() {
-    // push payload to device with this.push
+  update(payload) {
+    this.push(payload);
   }
 
 }

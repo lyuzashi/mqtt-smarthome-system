@@ -39,13 +39,6 @@
   # id: 12
   id: 13
   # id: 5
-  # Consider moving hub back to root of device
-  # only first level protocol needs the data
-  # and can act on shared or not.
-  # Lower level protocols should follow their attachment
-  # which means the protocol selector
-  # should exit early when instance exits?
-  # But firmata light needs its own handling!
   hub: ESP_9025BD
   protocols:
     - type: etherport-client

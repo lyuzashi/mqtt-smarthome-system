@@ -35,7 +35,7 @@ export default class Device {
       // TODO create getter and setter for each characteristic
     });
 
-    const Brightness = characteristics.Brightness;
+    const Brightness = this.characteristics.Brightness;
 
     Object.defineProperty(this, 'Brightness', {
       set(value) {
@@ -44,15 +44,12 @@ export default class Device {
       },
       get() {
         // return last data from characteristic with Symbol.asyncIterator defined
-        return Object.defineProperty(new Number(0.3), Symbol.asyncIterator, {
-          value() {
-            // return iterator of stream
-          }
+        const value = new Number(Brightness.lastValue);
+        return Object.defineProperty(value, Symbol.asyncIterator, {
+          value: Brightness[Symbol.asyncIterator].bind(Brightness),
         })
       }
     });
-
-    console.log('🍩', this.Brightness)
 
     register(this);
   }
