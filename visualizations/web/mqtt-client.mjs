@@ -1,4 +1,4 @@
-import mqtt from 'mosca/public/mqtt';
+import mqtt from 'mqtt';
 import EventEmitter from 'events';
 
 const subscriptions = new Map();

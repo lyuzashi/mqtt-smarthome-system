@@ -2,6 +2,7 @@ import bug from 'debug';
 import Server from './mosca-server';
 import Client from './client';
 import os from 'os';
+import net from 'net';
 import app from '../web';
 import mdns from 'mdns';
 import shutdown from '../shutdown';
@@ -15,18 +16,19 @@ export default (() => {
   if (isChildProcess) {
     return new Client();
   } else {
+    const port = 1883;
     const server = new Server();
-    server.on('ready', () => {
-      debug('Mosca server listening on %d', server.servers[0].address().port);
+    const socket = net.createServer(server.handle);
+    socket.listen(port, () => {
+      debug('Mosca server listening on %d', port);
       service.start();
       server.on('closed', () => {
         service.stop();
       }); 
       shutdown.on('exit', () => {
-        server.close();
+        socket.close();
       })
     });
-
     context.mqtt = server;
     return server;
   }

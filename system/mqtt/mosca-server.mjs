@@ -1,17 +1,23 @@
-import Mosca from 'mosca';
+// import Mosca from 'mosca';
+import Aedes from 'aedes';
+import Redis from 'aedes-persistence-redis';
 
-export default class Server extends Mosca.Server {
+export default class Server extends Aedes.Server {
 
   constructor(...opts) {
     super({
-      backend: {
-        type: 'redis',
-      },
-      persistence: {
-        factory: Mosca.persistence.Redis
-      }
+      // TODO replace with MongoDB Persistence on Memory
+      persistence: Redis(),
     })
-    // TODO merge ...opts
+  //   super({
+  //     backend: {
+  //       type: 'redis',
+  //     },
+  //     persistence: {
+  //       factory: Mosca.persistence.Redis
+  //     }
+  //   })
+  //   // TODO merge ...opts
   }
 
   connect() {
