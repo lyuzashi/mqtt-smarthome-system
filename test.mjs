@@ -8,7 +8,8 @@ import repl from 'repl';
 // import getKey from './config/keys'
 // import './visualizations/web';
 // import RED from './system/red';
-import ES from './interfaces/protocols/eventsource';
+// import ES from './interfaces/protocols/eventsource';
+import Server from './aedes';
 
 const { context } = repl.start();
 
@@ -20,15 +21,11 @@ const { context } = repl.start();
 // context.HubLocation = HubLocation;
 // context.getKey = getKey;
 // context.RED = RED;
-context.ES = ES;
+// context.ES = ES;
+context.Server = Server;
 
 
-var e = new ES({ 
-  hub: 'https://memory.grid.robotjamie.com/location',
-  format: 'json',
-  payload: 'data',
- });
-e.on('data', console.log)
+
 
 // (async () => { 
 //   for await (const x of discover('opc')) { 

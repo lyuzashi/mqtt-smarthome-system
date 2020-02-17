@@ -27,6 +27,24 @@ export default class Characteristic extends Duplex {
 
     // If retain == true, on startup subscribe to status method to retrieve retained value then push
     // to device 
+    if (retain == true) {
+      this.statusMethods.forEach(({ topic }) => {
+        const handler = (_, value) => {
+          console.log(topic, 'got value', value);
+          if (this.lastValue === undefined) {
+            const payload = castType({ type: this.type, value });
+            this.lastValue = payload;
+            console.log('Updating current', name, payload);
+            if (!this.push(payload)) {
+              mqtt.unsubscribe(topic, handler);
+            }
+          }
+          mqtt.unsubscribe(topic, handler);
+        }
+        console.log('subscribing to', topic);
+        mqtt.subscribe(topic, handler);
+      });
+    }
   }
 
   get statusMethods() {

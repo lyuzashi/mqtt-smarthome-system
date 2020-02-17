@@ -18,8 +18,12 @@ export default class Server extends Aedes.Server {
   //     }
   //   })
   //   // TODO merge ...opts
+    // this.subscribe = this.subscribe.bind(this);
+    // this.unsubscribe = this.unsubscribe.bind(this);
   }
 
+  subscriptions = new WeakMap();
+    
   connect() {
     this.emit('connect');
     return this;
@@ -33,5 +37,25 @@ export default class Server extends Aedes.Server {
       return super.publish({ topic, payload, ...options });
     }
     return super.publish(packet, client, callback);
+  }
+
+  subscribe(topic, func, done) {
+    if(this.subscriptions) {
+      const handler = ({ payload }, callback) => {
+        func(topic, payload);
+        callback();
+      }
+      this.subscriptions.set(func, handler);
+      return super.subscribe(topic, handler, done);
+    }
+    return super.subscribe(topic, func, done);
+  }
+
+  unsubscribe(topic, func, done) {
+    if(this.subscriptions) {
+      const handler = this.subscriptions.get(func);
+      return super.unsubscribe(topic, handler, done);
+    }
+    return super.unsubscribe(topic, func, done);
   }
 }
