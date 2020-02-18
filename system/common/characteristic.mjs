@@ -30,18 +30,15 @@ export default class Characteristic extends Duplex {
     if (retain == true) {
       this.statusMethods.forEach(({ topic }) => {
         const handler = (_, value) => {
-          console.log(topic, 'got value', value);
           if (this.lastValue === undefined) {
             const payload = castType({ type: this.type, value });
             this.lastValue = payload;
-            console.log('Updating current', name, payload);
             if (!this.push(payload)) {
               mqtt.unsubscribe(topic, handler);
             }
           }
           mqtt.unsubscribe(topic, handler);
         }
-        console.log('subscribing to', topic);
         mqtt.subscribe(topic, handler);
       });
     }

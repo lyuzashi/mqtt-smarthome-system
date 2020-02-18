@@ -35,6 +35,7 @@ export default class Characteristic extends Component {
   }
 
   update(payload) {
+    console.log(payload);
     this.setState({
       value: payload
     });

@@ -1,5 +1,6 @@
 import bug from 'debug';
-import Server from './mosca-server';
+import { Duplex } from 'stream';
+import Server from './server';
 import Client from './client';
 import os from 'os';
 import net from 'net';
@@ -8,15 +9,17 @@ import mdns from 'mdns';
 import shutdown from '../shutdown';
 import { context } from '../shell';
 
+const port = 1883;
+
 const debug = bug('smarthome:mqtt');
 const isChildProcess = !!process.send;
-const service = mdns.createAdvertisement(mdns.tcp('mqtt'), 1883);
+const service = mdns.createAdvertisement(mdns.tcp('mqtt'), port);
 
 export default (() => {
   if (isChildProcess) {
-    return new Client();
+    const pipe = new net.Socket({ fd: 3 });
+    return new Client(pipe);
   } else {
-    const port = 1883;
     const server = new Server();
     const socket = net.createServer(server.handle);
     socket.listen(port, () => {
@@ -29,8 +32,11 @@ export default (() => {
         socket.close();
       })
     });
-    context.mqtt = server;
-    return server;
+    const stream = new Duplex();
+    const client = new Client(stream);
+    server.handle(stream);
+    context.mqtt = client;
+    return client;
   }
 
 })();

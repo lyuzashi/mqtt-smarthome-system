@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import root from '../root';
 import fork from '../system/fork';
-import attach from '../system/mqtt/attach';
+// import attach from '../system/mqtt/attach';
 import app from '../system/web';
 import shutdown from '../system/shutdown';
 import fs from '../system/common/webdav-fs';
@@ -9,7 +9,8 @@ import fs from '../system/common/webdav-fs';
 let child;
 
 const start = () => {
-  child = attach(fork(resolve(root, 'logic/mqtt-scripts.mjs')));
+  // child = attach(fork(resolve(root, 'logic/mqtt-scripts.mjs')));
+  child = fork(resolve(root, 'logic/mqtt-scripts.mjs'));
   child.on('exit', start);
 }
 

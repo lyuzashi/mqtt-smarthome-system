@@ -12,7 +12,7 @@
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",
     "aedes": "^0.40.1",
-    "aedes-persistence-redis": "^6.0.1",
+    "aedes-persistence-mongodb": "^7.0.1",
     "auto-sni": "^2.3.2",
     "c0lor": "^0.1.0",
     "circle-enclose": "^1.0.0",
