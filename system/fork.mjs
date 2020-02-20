@@ -9,4 +9,4 @@ import { fork } from 'child_process';
 
 // const child = fork(program, parameters, options);
 
-export default program => fork(program, [], { stdio: [null, null, null, 'pipe'] });
+export default program => fork(program, [], { stdio: [null, null, null, 'ipc', 'pipe'] });

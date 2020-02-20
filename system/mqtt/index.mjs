@@ -17,8 +17,7 @@ const service = mdns.createAdvertisement(mdns.tcp('mqtt'), port);
 
 export default (() => {
   if (isChildProcess) {
-    const pipe = new net.Socket({ fd: 3 });
-    return new Client(pipe);
+    return new Client();
   } else {
     const server = new Server();
     const socket = net.createServer(server.handle);
@@ -32,11 +31,7 @@ export default (() => {
         socket.close();
       })
     });
-    const stream = new Duplex();
-    const client = new Client(stream);
-    server.handle(stream);
-    context.mqtt = client;
-    return client;
+    return new Client({ server });;
   }
 
 })();
