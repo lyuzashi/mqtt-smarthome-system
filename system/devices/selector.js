@@ -1,0 +1,1 @@
+module.exports = process.title === 'browser' ? require('./web') : require('./server');

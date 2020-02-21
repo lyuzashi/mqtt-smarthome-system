@@ -1,6 +1,7 @@
 import mqtt from 'mqtt';
 import MQTTEmitter from 'mqtt-emitter';
 import fs from 'fs';
+import { topicCast } from '../devices';
 
 /*
 Distributors are unique for each subscription on the server to allow unsubscribing without affecting
@@ -8,16 +9,13 @@ other listeners to the same topic.
 */
 
 export default class Client {
-
-  events = new MQTTEmitter();
-  subscriptions = new WeakMap();
-  distributors = new WeakMap();
   
-  constructor({ server }) {
+  constructor({ server } = {}) {
+    const events = new MQTTEmitter();
+    const subscriptions = new WeakMap();
+    const distributors = new WeakMap();
     if (server) {
       // In-process server
-      // This subscribes to all...
-      // server.on('publish', ({ topic, payload }) => this.events.emit(topic, payload));
       Object.assign(this, { server });
     } else if (process.title === 'browser') {
       // Websockets
@@ -33,22 +31,29 @@ export default class Client {
     if (this.client) {
       this.client.on('message', (topic, payload) => this.events.emit(topic, payload));
     }
+    Object.assign(this, { events, subscriptions, distributors })
   }
 
   handle(...args) {
     if (this.server) return this.server.handle.apply(this.server, args);
   }
 
+  transform(topic, payload, callback) {
+    const type = topicCast.get(topic);
+    console.log(topic, type, payload);
+    callback(payload);
+  }
+
   subscribe(subscriptionTopic, callback) {
     if (this.server) {
-      const distributeMessage = ({ topic, payload }) => this.events.emit(topic, payload);
+      const distributeMessage = ({ topic, payload }, next) => next(this.events.emit(topic, payload));
       this.server.subscribe(subscriptionTopic, distributeMessage);
       this.distributors.set(callback, distributeMessage);
     }
     if (this.client) this.client.subscribe(subscriptionTopic);
-    const handler = (payload, params, topic, topic_pattern) => callback(topic, payload);
+    const handler = (payload, params, topic, topic_pattern) => this.transform(topic, payload, callback);
     this.subscriptions.set(callback, handler);
-    this.events.on(subscriptionTopic, callback);
+    this.events.on(subscriptionTopic, handler);
   }
 
   unsubscribe(subscriptionTopic, callback) {
@@ -57,16 +62,21 @@ export default class Client {
       if (distributeMessage) this.server.unsubscribe(subscriptionTopic, distributeMessage);
       this.distributors.delete(callback);
     }
-    // On a client this would unsubscribe other listners to this topic
+    // On a client this would unsubscribe other listeners to this topic
     if (this.client) this.client.unsubscribe(subscriptionTopic);
     const handler = this.subscriptions.get(callback);
     this.subscriptions.delete(callback);
-    this.events.off(handler);
+    this.events.removeListener(subscriptionTopic, handler);
   }
 
-  publish(topic, payload, options) {
-    if (this.server) this.server.publish({ topic,  payload, ...options });
-    if (this.client) this.client.publish({ topic, message: payload, ...options });
+  publish(topicPacket, payloadInline, optionsInline) {
+    const { topic, payload, ...options } = 'object' === typeof topicPacket ? topicPacket :
+    { topic: topicPacket, payload: payloadInline, ...optionsInline };
+
+    // TODO generate buffer conditionally, don't transform existing buffers, and handle numbers specially
+
+    if (this.server) this.server.publish({ topic, payload: Buffer.from(String(payload)), ...options });
+    if (this.client) this.client.publish({ topic, message: Buffer.from(String(payload)), ...options });
   }
 
 }

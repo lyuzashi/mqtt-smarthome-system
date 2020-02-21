@@ -8,7 +8,6 @@ export default class FirmataLight extends Duplex {
   constructor({ device, protocol, ...options }) {
     super({ objectMode: true });
     Object.assign(this, { device, protocol });
-
     protocol.on('ready', () => this.setup(device));
     device.driver.then(driver => Object.assign(this, { driver }))
   }

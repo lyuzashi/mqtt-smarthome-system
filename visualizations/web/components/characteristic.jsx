@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import {  subscribe, unsubscribe } from '../mqtt-client';
+import mqtt from '../mqtt-client';
 
 const Name = styled.dt`
   font-size: 0.8em;
@@ -27,15 +27,14 @@ export default class Characteristic extends Component {
   }
 
   componentDidMount() {
-    subscribe(this.statusTopic)(this.update);
+    mqtt.subscribe(this.statusTopic, this.update);
   }
 
   componentWillUnmount() {
-    unsubscribe(this.statusTopic, this.update);
+    mqtt.unsubscribe(this.statusTopic, this.update);
   }
 
   update(payload) {
-    console.log(payload);
     this.setState({
       value: payload
     });

@@ -1,15 +1,15 @@
-import Pattern from 'mqtt-pattern';
-import Deferred from '../common/deferred';
+const Pattern = require('mqtt-pattern');
+const Deferred = require('../common/deferred');
 
 const smarthomeTopic = '+participant/+method/+item/#interfaces';
 const registry = new Map;
 
+const topicCast = new Map;
+
 const getRegistry = registry.get.bind(registry);
 
-export { getRegistry as registry };
-
 // TODO allow overrides at every level e.g. device with characteristic properties
-export default ({ devices, types, characteristics }) => devices.map(device => {
+const build = ({ devices, types, characteristics }) => devices.map(device => {
   device.fullName = device.room && device.name ? `${device.room} ${device.name}` : device.name || device.id;
   const driver = new Deferred;
   registry.set(device.fullName, driver.promise);
@@ -25,15 +25,15 @@ export default ({ devices, types, characteristics }) => devices.map(device => {
       if (definition) {
         if (definition.methods) {
           definition.methods.forEach((method, index) => {
-            definition.methods[index] = {
+            // TODO if method is status, register the characteristic type for mqtt casting
+            const topic = Pattern.fill(smarthomeTopic, {
+              participant: device.participant,
+              item: device.fullName, 
               method,
-              topic: Pattern.fill(smarthomeTopic, {
-                participant: device.participant,
-                item: device.fullName, 
-                method,
-                interfaces: [characteristic.name]
-              })
-            }
+              interfaces: [characteristic.name]
+            });
+            if (method == 'status') topicCast.set(topic, definition.type);
+            definition.methods[index] = { method, topic };
           })
         }
         Object.assign(characteristic, definition);
@@ -42,3 +42,5 @@ export default ({ devices, types, characteristics }) => devices.map(device => {
   }
   return device;
 });
+
+module.exports = { build, registry: getRegistry, topicCast };

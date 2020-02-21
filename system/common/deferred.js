@@ -1,4 +1,4 @@
-export default class Deferred {
+class Deferred {
   constructor() {
     this.resolved = false;
     this.rejected = false;
@@ -27,3 +27,5 @@ export default class Deferred {
     return args[0];
   }
 }
+
+module.exports = Deferred;

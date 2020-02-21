@@ -3,7 +3,7 @@ import Pattern from 'mqtt-pattern';
 import truthy from 'truthy';
 import PushButton from './push-button';
 import Slider from './slider';
-import { publish, subscribe, unsubscribe } from '../mqtt-client';
+import mqtt from '../mqtt-client';
 
 const smarthomeTopic = '+toplevelname/+method/+item/#interfaces';
 
@@ -22,11 +22,11 @@ export default class DeviceSwitch extends Component {
   }
 
   componentDidMount() {
-    subscribe(this.statusTopic)(this.update);
+    mqtt.subscribe(this.statusTopic, this.update);
   }
 
   componentWillUnmount() {
-    unsubscribe(this.statusTopic, this.update);
+    mqtt.unsubscribe(this.statusTopic, this.update);
   }
 
   update(payload) {
@@ -53,14 +53,14 @@ export default class DeviceSwitch extends Component {
       switch(this.props.style) {
         case 'checkbox':
           if(event.target.checked === undefined) {
-            publish(this.setTopic, !this.state[this.interface] ? '1' : '0');
+            mqtt.publish(this.setTopic, !this.state[this.interface] ? '1' : '0');
           } else {
-            publish(this.setTopic, event.target.checked ? '1' : '0');
+            mqtt.publish(this.setTopic, event.target.checked ? '1' : '0');
           }
         break;
         case 'range':
           console.log('publishing', event.target.value);
-          publish(this.setTopic, String(parseInt(event.target.value, 10)));
+          mqtt.publish(this.setTopic, String(parseInt(event.target.value, 10)));
         break;
       } 
       // this.setState({ [`${this.interface}-target`]: event.target.value });
