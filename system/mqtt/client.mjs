@@ -40,7 +40,13 @@ export default class Client {
 
   transform(topic, payload, callback) {
     const type = topicCast.get(topic);
-    console.log(topic, type, payload);
+
+    switch(type) {
+      case 'float':
+        return callback(parseFloat(payload, 10));
+      break;
+    }
+
     callback(payload);
   }
 

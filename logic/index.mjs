@@ -9,8 +9,7 @@ import fs from '../system/common/webdav-fs';
 let child;
 
 const start = () => {
-  // child = attach(fork(resolve(root, 'logic/mqtt-scripts.mjs')));
-  child = fork(resolve(root, 'logic/mqtt-scripts.mjs'));
+  child = attach(fork(resolve(root, 'logic/mqtt-scripts.mjs')));
   child.on('exit', start);
 }
 
