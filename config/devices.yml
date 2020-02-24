@@ -49,6 +49,17 @@
   name: TV Lanterns
   room: Lounge
 -
+  id: 12
+  hub: ESP_9025BD
+  protocols:
+    - type: etherport-client
+      port: 3030
+    - type: firmata
+    - type: firmata-light
+  type: dimmable light
+  name: Window Lanterns
+  room: Lounge
+-
   id: VID_239a&PID_802f
   name: NeoTrellis
   protocol:

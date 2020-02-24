@@ -31,7 +31,7 @@ export default class Characteristic extends Duplex {
       this.statusMethods.forEach(({ topic }) => {
         const handler = (_, value) => {
           if (this.lastValue === undefined) {
-            if (!this.update(value)) {
+            if (!this.statusUpdate(value)) {
               mqtt.unsubscribe(topic, handler);
             }
           }
@@ -77,7 +77,7 @@ export default class Characteristic extends Duplex {
       if (this.subscriptions.has(method)) return;
       const { topic } = method;
       const handler = (topic, value) => {
-        if (!this.update(value)) {
+        if (!this.statusUpdate(value)) {
           mqtt.unsubscribe(topic, handler);
         }
       }
@@ -88,8 +88,12 @@ export default class Characteristic extends Duplex {
 
   update(value) {
     const payload = castType({ type: this.type, value });
+    return this.push(payload);
+  }
+
+  statusUpdate(value) {
+    const payload = castType({ type: this.type, value });
     this.lastValue = payload;
-    console.log('Cast payload', payload);
     return this.push(payload);
   }
 
