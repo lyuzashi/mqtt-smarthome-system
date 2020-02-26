@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Characteristic from './characteristic';
+import Geography from './geography';
 
 const Device = styled.div`
   border: 1px solid #353030;
@@ -16,6 +17,13 @@ const Name = styled.div`
 `;
 
 export default (device) => {
+  const aggregates = [];
+  if (device.characteristics) {
+    if (device.characteristics.find(({ name }) => name == 'Longitude') && 
+      device.characteristics.find(({ name }) => name == 'Longitude' )) {
+        aggregates.push(Geography);
+      }
+  }
 
   return (
     <Device>
@@ -23,6 +31,7 @@ export default (device) => {
         {device.characteristics && device.characteristics.map(characteristic =>
           <Characteristic key={characteristic.name} {...characteristic} />
         )}
+        {aggregates.map((Component, index) => <Component key={index} />)}
     </Device>
   )
 }

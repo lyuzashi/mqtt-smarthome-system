@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { devices } from '../../../system/devices';
 import DeviceStatus from './device-status';
 
-console.log(devices);
-
 const DeviceList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -29,4 +29,6 @@ Longitude:
 Latitude:
   type: float
   methods: [status, get]
-
+Online:
+  type: boolean
+  methods: [status, get]

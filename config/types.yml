@@ -17,3 +17,4 @@ dimmable light:
   characteristics:
     - name: On
     - name: Brightness
+    - name: Online

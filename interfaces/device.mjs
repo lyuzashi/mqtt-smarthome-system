@@ -44,9 +44,10 @@ export default class Device {
       const characteristic = new Characteristic({ device: this, name, type, ...options });
       this.characteristics[name] = characteristic
       const Type = primativeType(type);
-      // TODO create getter and setter for each characteristic
+      // TODO no setter for read-only characteristics (missing set topic)
       Object.defineProperty(this, name, {
         set(value) {
+          console.log('Setting', name, value);
           characteristic.update(value);
         },
         get() {

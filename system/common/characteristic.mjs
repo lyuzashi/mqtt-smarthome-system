@@ -12,6 +12,10 @@ const castType = ({ type, value }) => {
 }
 
 export default class Characteristic extends Duplex {
+  subscriptions = new WeakMap();
+  lastValue = undefined;
+  written = false;
+
   constructor({ name, type, methods = [], logic = [{ name: 'raw' }], device, retain = true }) {
     super({ objectMode: true });
     Object.assign(this, { name, type, methods, logic, device, retain });
@@ -30,7 +34,7 @@ export default class Characteristic extends Duplex {
     if (retain == true) {
       this.statusMethods.forEach(({ topic }) => {
         const handler = (_, value) => {
-          if (this.lastValue === undefined) {
+          if (this.lastValue === undefined && !this.written) {
             if (!this.statusUpdate(value)) {
               mqtt.unsubscribe(topic, handler);
             }
@@ -54,12 +58,9 @@ export default class Characteristic extends Duplex {
     return this._getMethods || (this._getMethods = this.methods.filter(({ method }) => method === 'get'));
   }
 
-  subscriptions = new WeakMap();
-
-  lastValue = undefined;
-
   // Device notifies value to MQTT
   _write(chunk, encoding, callback) {
+    this.written = true;
     this.statusMethods.forEach(({ topic, type }) => {
       mqtt.publish({
         topic,

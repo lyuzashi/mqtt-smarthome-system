@@ -17,8 +17,14 @@ export default class DimmableLight extends Device {
     });
 
     this.protocol.on('data', ({ channel, value }) => {
-      console.log('Writing to characteristic', value);
-      Brightness.write(value);
+      switch (channel) {
+        case 'brightness':
+          Brightness.write(value);
+        break;
+        case 'online': 
+          this.characteristics.Online.write(value);
+        break;
+      }
     });
   }
 

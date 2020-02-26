@@ -36,9 +36,18 @@
   participant: display
   methods: [set]
 -
-  # id: 12
   id: 13
-  # id: 5
+  hub: ESP_9025BD
+  protocols:
+    - type: etherport-client
+      port: 3030
+    - type: firmata
+    - type: firmata-light
+  type: dimmable light
+  name: Window Lanterns
+  room: Lounge
+-
+  id: 5
   hub: ESP_9025BD
   protocols:
     - type: etherport-client
@@ -57,7 +66,7 @@
     - type: firmata
     - type: firmata-light
   type: dimmable light
-  name: Window Lanterns
+  name: Corner Lanterns
   room: Lounge
 -
   id: VID_239a&PID_802f

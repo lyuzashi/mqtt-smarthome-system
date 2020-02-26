@@ -19,9 +19,9 @@ export default class FirmataLight extends Duplex {
   setup() {
     // TODO handle multiple pins for multi-color device
     // default channel is brightness
-    console.log('ready');
     this.protocol.pinMode(this.device.id, this.protocol.MODES.PWM);
 
+    this.push({ channel: 'online', value: true }); 
     this.ready = true;
   }
   
@@ -31,7 +31,6 @@ export default class FirmataLight extends Duplex {
         case 'brightness':
           // TODO transitions, special functions and cases etc
           if (!request) {
-            console.log('Writing to device', value * 1024)
             this.protocol.analogWrite(this.device.id, value * 1024);
             this.channelValues.set(channel, value);
           }

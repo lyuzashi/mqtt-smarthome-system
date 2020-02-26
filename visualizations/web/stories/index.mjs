@@ -4,6 +4,7 @@ import Button from '../components/Button';
 import Chromacity from '../components/chromacity';
 import ChromacityGL from '../components/chromacitygl';
 import Dial from '../components/dial';
+import Geography from '../components/geography';
 import { Centred } from 'story-router';
 
 // const storyProps = { text: 'Parcel Storybook' };
@@ -48,4 +49,8 @@ export default [
       height: '200px',
     }, // storyProps // adding props
   },
+  {
+    name: 'geography',
+    component: Geography,
+  }
 ];

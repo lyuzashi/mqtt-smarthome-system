@@ -1,3 +1,4 @@
+const clone = require('clone');
 const Pattern = require('mqtt-pattern');
 const Deferred = require('../common/deferred');
 
@@ -17,11 +18,11 @@ const build = ({ devices, types, characteristics }) => devices.map(device => {
   device.driver = driver.promise;
   const type = types[device.type];
   if (type) {
-    Object.assign(device, type);
+    Object.assign(device, clone(type));
   }
   if (device.characteristics) {
     device.characteristics.forEach(characteristic => {
-      const definition = characteristics[characteristic.name];
+      const definition = clone(characteristics[characteristic.name]);
       if (definition) {
         if (definition.methods) {
           definition.methods.forEach((method, index) => {
