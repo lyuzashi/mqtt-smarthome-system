@@ -76,7 +76,7 @@
     "webdav-fs": "^1.11.0",
     "webdav-server": "^2.6.2",
     "websocket-stream": "^5.1.2",
-    "xterm": "^3.7.0",
+    "xterm": "^3.8.1",
     "yamljs": "^0.3.0"
   },
   "repository": {
