@@ -8,6 +8,7 @@ const Device = styled.div`
   border-radius: 2px;
   background-color: #222;
   padding: 5px 7px;
+  position: relative;
 `;
 
 const Name = styled.div`
@@ -19,9 +20,10 @@ const Name = styled.div`
 export default (device) => {
   const aggregates = [];
   if (device.characteristics) {
-    if (device.characteristics.find(({ name }) => name == 'Longitude') && 
-      device.characteristics.find(({ name }) => name == 'Longitude' )) {
-        aggregates.push(Geography);
+    const Longitude = device.characteristics.find(({ name }) => name == 'Longitude');
+    const Latitude = device.characteristics.find(({ name }) => name == 'Latitude');
+    if (Longitude && Latitude) {
+        aggregates.push(<Geography key="geography" center={[Longitude, Latitude]} />);
       }
   }
 
@@ -31,7 +33,7 @@ export default (device) => {
         {device.characteristics && device.characteristics.map(characteristic =>
           <Characteristic key={characteristic.name} {...characteristic} />
         )}
-        {aggregates.map((Component, index) => <Component key={index} />)}
+        {aggregates}
     </Device>
   )
 }

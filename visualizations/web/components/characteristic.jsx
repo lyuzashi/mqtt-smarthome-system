@@ -9,7 +9,8 @@ const Name = styled.dt`
 `;
 
 const CharacteristicDetail = styled.dl`
-
+  position: relative;
+  z-index: 1;
 `;
 
 const Value = styled.dd`
