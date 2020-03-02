@@ -43,7 +43,7 @@ export default class Characteristic extends Component {
 
   render() {
     return (
-      <CharacteristicDetail>
+      <CharacteristicDetail title={this.statusTopic}>
         <Name>{this.props.name}</Name>
         <Value>{this.state && this.state.value}</Value>
       </CharacteristicDetail>

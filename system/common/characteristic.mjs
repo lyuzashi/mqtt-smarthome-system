@@ -33,7 +33,7 @@ export default class Characteristic extends Duplex {
     // to device 
     if (retain == true) {
       this.statusMethods.forEach(({ topic }) => {
-        const handler = (_, value) => {
+        const handler = (value) => {
           if (this.lastValue === undefined && !this.written) {
             if (!this.statusUpdate(value)) {
               mqtt.unsubscribe(topic, handler);
@@ -77,7 +77,7 @@ export default class Characteristic extends Duplex {
     this.setMethods.forEach(method => {
       if (this.subscriptions.has(method)) return;
       const { topic } = method;
-      const handler = (topic, value) => {
+      const handler = (value) => {
         if (!this.statusUpdate(value)) {
           mqtt.unsubscribe(topic, handler);
         }
