@@ -30,10 +30,8 @@ const useCharacteristic = (characteristic) => {
 }
 
 export default ({ center }) => {
-  // TODO create hook for subscribing and loading data
   const lng = useCharacteristic(center[0]);
   const lat = useCharacteristic(center[1]);
-
 
   return (lng && lat && 
     <Geography center={[lat, lng]} zoom={13}>

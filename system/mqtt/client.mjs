@@ -69,7 +69,7 @@ export default class Client {
       this.distributors.delete(callback);
     }
     // On a client this would unsubscribe other listeners to this topic
-    if (this.client) this.client.unsubscribe(subscriptionTopic);
+    if (this.client && this.events.listeners(subscriptionTopic).length === 0) this.client.unsubscribe(subscriptionTopic);
     const handler = this.subscriptions.get(callback);
     this.subscriptions.delete(callback);
     this.events.removeListener(subscriptionTopic, handler);
