@@ -1,5 +1,5 @@
 import { Duplex } from 'stream';
-
+import Deferred from '../../system/common/deferred';
 
 // Protocol for light must write to characteristics if they change on the device and handle write
 // requests 
@@ -12,7 +12,7 @@ export default class FirmataLight extends Duplex {
     device.driver.then(driver => Object.assign(this, { driver }))
   }
 
-  ready = false;
+  ready = new Deferred;
 
   channelValues = new Map();
 
@@ -22,22 +22,21 @@ export default class FirmataLight extends Duplex {
     this.protocol.pinMode(this.device.id, this.protocol.MODES.PWM);
 
     this.push({ channel: 'online', value: true }); 
-    this.ready = true;
+    this.ready.resolve();
   }
   
-  _write({ channel, value, request }, encoding, callback) {
-    if (this.ready) {
-      switch (channel) {
-        case 'brightness':
-          // TODO transitions, special functions and cases etc
-          if (!request) {
-            this.protocol.analogWrite(this.device.id, value * 1024);
-            this.channelValues.set(channel, value);
-          }
-          // Publish status since Firmata is write-only for PWM
-          this.push({ channel, value: this.channelValues.get(channel) }); 
-        break;
-      }
+  async _write({ channel, value, request }, encoding, callback) {
+    await this.ready.promise;
+    switch (channel) {
+      case 'brightness':
+        // TODO transitions, special functions and cases etc
+        if (!request) {
+          this.protocol.analogWrite(this.device.id, value * 1024);
+          this.channelValues.set(channel, value);
+        }
+        // Publish status since Firmata is write-only for PWM
+        this.push({ channel, value: this.channelValues.get(channel) }); 
+      break;
     }
     callback();
   }
