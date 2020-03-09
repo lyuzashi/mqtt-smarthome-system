@@ -9,7 +9,8 @@ import repl from 'repl';
 // import './visualizations/web';
 // import RED from './system/red';
 // import ES from './interfaces/protocols/eventsource';
-import Server from './aedes';
+// import Server from './aedes';
+import MQTT from './system/mqtt';
 
 const { context } = repl.start();
 
@@ -22,7 +23,8 @@ const { context } = repl.start();
 // context.getKey = getKey;
 // context.RED = RED;
 // context.ES = ES;
-context.Server = Server;
+// context.Server = Server;
+context.MQTT = MQTT;
 
 
 

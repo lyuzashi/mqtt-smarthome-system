@@ -1,6 +1,7 @@
 import mqtt from 'mqtt';
 import MQTTEmitter from 'mqtt-emitter';
 import fs from 'fs';
+import Deferred from '../common/deferred';
 import { topicCast } from '../devices';
 
 /*
@@ -39,6 +40,7 @@ export default class Client {
   }
 
   transform(topic, payload, callback) {
+    console.log('got', topic, payload);
     const type = topicCast.get(topic);
 
     switch(type) {
@@ -83,6 +85,17 @@ export default class Client {
 
     if (this.server) this.server.publish({ topic, payload: Buffer.from(String(payload)), ...options });
     if (this.client) this.client.publish({ topic, message: Buffer.from(String(payload)), ...options });
+  }
+
+  getRetained(subscriptionTopic) {
+    const result = new Deferred;
+    const { persistence } = this.server;
+    const streamPayload = () => 
+      persistence.createRetainedStreamCombi([subscriptionTopic])
+        .on('data', ({ topic, payload }) => this.transform(topic, payload, result.resolve))
+        .on('end', () => !result.settled && result.reject());
+    persistence.ready === false ? persistence.once('ready', streamPayload) : streamPayload();
+    return result.promise;
   }
 
 }

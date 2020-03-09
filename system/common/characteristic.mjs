@@ -33,15 +33,14 @@ export default class Characteristic extends Duplex {
     // to device 
     if (retain == true) {
       this.statusMethods.forEach(({ topic }) => {
-        const handler = (value) => {
+        mqtt.getRetained(topic).then(value => {
+          console.log('Got new initial value', topic, value, this.lastValue, this.written);
           if (this.lastValue === undefined && !this.written) {
-            if (!this.statusUpdate(value)) {
-              mqtt.unsubscribe(topic, handler);
-            }
+            !this.statusUpdate(value);
           }
-          mqtt.unsubscribe(topic, handler);
-        }
-        mqtt.subscribe(topic, handler);
+        }).catch(() => {
+          console.log('no initial value for', topic);
+        })
       });
     }
   }
