@@ -1,15 +1,8 @@
 
 import { Duplex } from 'stream';
+import truthy from 'truthy';
 import transform from './characteristic-logic';
 import mqtt from '../mqtt'
-
-const castType = ({ type, value }) => {
-  switch(type) {
-    case 'float':
-      return parseFloat(value, 10);
-    break;
-  }
-}
 
 export default class Characteristic extends Duplex {
   subscriptions = new WeakMap();
@@ -34,12 +27,13 @@ export default class Characteristic extends Duplex {
     if (retain == true) {
       this.statusMethods.forEach(({ topic }) => {
         mqtt.getRetained(topic).then(value => {
-          console.log('Got new initial value', topic, value, this.lastValue, this.written);
           if (this.lastValue === undefined && !this.written) {
             !this.statusUpdate(value);
           }
         }).catch(() => {
-          console.log('no initial value for', topic);
+          // if (typeof default !== 'undefined') {
+          //   // this.statusUpdate(default);
+          // }
         })
       });
     }
@@ -57,13 +51,35 @@ export default class Characteristic extends Duplex {
     return this._getMethods || (this._getMethods = this.methods.filter(({ method }) => method === 'get'));
   }
 
+
+  castType = (value) => {
+    const type = this.type;
+    switch(type) {
+      case 'float':
+        return parseFloat(value, 10);
+      case 'boolean':
+        return truthy(value);
+      break;
+    }
+  }
+  
+  packType = (value) => {
+    const type = this.type;
+    switch(type) {
+      case 'boolean':
+        return Buffer.from([truthy(value) ? 0x01 : 0x00]);
+      break;
+    }
+    return String(value);
+  }
+
   // Device notifies value to MQTT
   _write(chunk, encoding, callback) {
     this.written = true;
     this.statusMethods.forEach(({ topic, type }) => {
       mqtt.publish({
         topic,
-        payload: String(chunk),
+        payload: this.packType(chunk),
         retain: this.retain,
       });
       this.lastValue = chunk;
@@ -87,12 +103,12 @@ export default class Characteristic extends Duplex {
   }
 
   update(value) {
-    const payload = castType({ type: this.type, value });
+    const payload = this.castType(value);
     return this.push(payload);
   }
 
   statusUpdate(value) {
-    const payload = castType({ type: this.type, value });
+    const payload = this.castType(value);
     this.lastValue = payload;
     return this.push(payload);
   }

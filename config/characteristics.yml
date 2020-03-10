@@ -32,3 +32,4 @@ Latitude:
 Online:
   type: boolean
   methods: [status, get]
+  default: false
