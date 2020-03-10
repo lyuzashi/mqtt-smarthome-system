@@ -1,4 +1,4 @@
-import noble from '@s524797336/noble-mac';
+import noble from '@abandonware/noble';
 // import Peripheral from 'noble/lib/peripheral';
 // import { promisify } from 'util';
 

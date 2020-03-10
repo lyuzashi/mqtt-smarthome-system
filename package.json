@@ -9,6 +9,7 @@
     "shellweb": "yarn mjs system/cli.mjs"
   },
   "dependencies": {
+    "@abandonware/noble": "^1.9.2-7",
     "@octokit/rest": "^15.9.4",
     "@octokit/webhooks": "^4.0.0",
     "aedes": "^0.40.1",
@@ -28,7 +29,7 @@
     "gl-react": "^4.0.1",
     "gl-react-dom": "^4.0.1",
     "greenlock-express": "v3",
-    "hap-nodejs": "^0.4.47",
+    "hap-nodejs": "^0.5.6",
     "huejay": "^1.8.4",
     "influx": "^5.0.7",
     "le-acme-core": "^2.1.3",
@@ -36,18 +37,14 @@
     "matchr": "^1.2.0",
     "mdns": "^2.4.0",
     "memfs": "^2.10.1",
-    "midi": "^0.9.5",
+    "midi": "^1.0.0",
     "mired": "^0.0.0",
     "monaco-editor": "^0.14.3",
-    "mosca": "^2.8.3",
-    "mqemitter-cs": "^1.0.1",
     "mqtt": "^3.0.0",
     "mqtt-emitter": "^4.1.0",
     "mqtt-pattern": "^1.2.0",
     "mqtt-scripts": "^1.2.2",
-    "nan": "^2.11.0",
     "nat-upnp": "^1.1.1",
-    "noble-mac": "Timeular/noble-mac.git",
     "node-red": "^1.0.2",
     "node-upnp-utils": "^0.0.5",
     "node-wifi": "^2.0.12",
@@ -82,13 +79,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/lyuzashi/mqtt-smarthome-system.git"
-  },
-  "resolutions": {
-    "mosca/leveldown/nan": "^2.11.0",
-    "mosca/ascoltatori/kerberos/nan": "^2.11.0",
-    "mosca/ascoltatori/zmq/nan": "^2.11.0",
-    "mosca/ascoltatori/kafka-node/snappy/nan": "^2.11.0",
-    "mosca/leveldown": "^4.0.1"
   },
   "devDependencies": {
     "story-router": "^1.0.1"

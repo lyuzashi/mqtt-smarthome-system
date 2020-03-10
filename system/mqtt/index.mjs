@@ -22,7 +22,7 @@ export default (() => {
     const server = new Server();
     const socket = net.createServer(server.handle);
     socket.listen(port, () => {
-      debug('Mosca server listening on %d', port);
+      debug('MQTT server listening on %d', port);
       service.start();
       server.on('closed', () => {
         service.stop();
